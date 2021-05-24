@@ -1,0 +1,59 @@
+type User {
+    name: String!
+    username: String! @unique
+    role: UserRole!
+}
+
+type Bookmark @collection(name: "bookmarks") {
+    title: String!
+    slug: String! @unique
+    description: String
+    link: String! @unique
+    tags: [Tag] @relation
+    type: BookmarkGroup! @relation
+    owner: User! @relation
+    read: Boolean!
+    private: Boolean!
+}
+
+type BookmarkGroup @collection(name: "bookmark_groups") {
+    title: String!
+    slug: String! @unique
+    description: String
+    bookmarks: [Bookmark] @relation
+}
+
+type Tag @collection(name: "tags") {
+    tag: String! @unique
+    bookmarks: [Bookmark] @relation
+}
+
+type Query {
+    findBookmarkBySlug(slug: String!): Bookmark
+    allBookmarks: [Bookmark!]
+    bookmarksByReadFlag(read: Boolean!): [Bookmark!]
+    allBookmarkGroups: [BookmarkGroup!]
+    allTags: [Tag!]
+}
+
+type Mutation {
+    createUser(input: CreateUserInput): User! @resolver(name: "create_user")
+    loginUser(username: String!, password: String!): String! @resolver(name: "login_user")
+}
+
+enum UserRole {
+    ADMIN
+    BUDDY
+}
+
+input CreateUserInput {
+    name: String!
+    username: String!
+    password: String!
+    role: UserRole!
+}
+
+input LoginUserInput {
+    username: String!
+    password: String!
+}
