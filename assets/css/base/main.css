@@ -1,0 +1,20 @@
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+:root {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fff;
+    color: var(--secondary);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 500;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+}

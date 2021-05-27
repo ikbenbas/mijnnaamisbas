@@ -1,6 +1,6 @@
 export default {
     // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-    ssr: false,
+    // ssr: false,
 
     // Target: https://go.nuxtjs.dev/config-target
     target: 'static',
@@ -25,6 +25,7 @@ export default {
 
     // Global CSS: https://go.nuxtjs.dev/config-css
     css: [
+        '~/assets/css/styles.css',
     ],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -74,8 +75,31 @@ export default {
         faunaGraphqlUrl: process.env.FAUNA_GRAPHQL_URL,
         faunaGuestKey: process.env.FAUNA_GUEST_KEY,
     },
-    privateRuntimeConfig: {},
+
+    privateRuntimeConfig: {
+        faunaServerKey: process.env.FAUNA_SERVER_KEY,
+    },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
-    build: {},
+    build: {
+        postcss: {
+            plugins: {
+                'postcss-import': {},
+                'postcss-preset-env': {
+                    stage: 0,
+                    importFrom: './assets/css/base/breakpoints.js',
+                    features: {
+                        'custom-media': true,
+                    },
+                },
+                'postcss-nested-ancestors': {},
+                'postcss-nested': {},
+                'postcss-pxtorem': {
+                    propList: [
+                        '*',
+                    ],
+                },
+            },
+        },
+    },
 };
