@@ -21,5 +21,5 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 
 ## TODO
-[ ] - Implementatie GitHub's Flat Data https://octo.github.com/projects/flat-data
-[ ] - Implementatie Keller's resources https://jochemkeller.nl/.netlify/functions/resources
+- [ ] Implementatie GitHub's Flat Data https://octo.github.com/projects/flat-data
+- [ ] Implementatie Keller's resources https://jochemkeller.nl/.netlify/functions/resources
