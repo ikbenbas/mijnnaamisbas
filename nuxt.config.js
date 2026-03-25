@@ -3,7 +3,16 @@ export default {
     // ssr: false,
 
     // Target: https://go.nuxtjs.dev/config-target
-    target: 'static',
+    // Note: The Tidal feature requires server mode. Run `nuxt dev` or `nuxt build && nuxt start`
+    // instead of `nuxt generate` so the /api/tidal and /api/suggestions server middleware are active.
+    target: 'server',
+
+    // Server middleware for API proxying (Tidal + OpenAI).
+    // These routes are only available in server mode (`nuxt dev` / `nuxt start`).
+    serverMiddleware: [
+        { path: '/api/tidal', handler: '~/server-middleware/tidal.js' },
+        { path: '/api/suggestions', handler: '~/server-middleware/suggestions.js' },
+    ],
 
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
@@ -74,10 +83,15 @@ export default {
     publicRuntimeConfig: {
         faunaGraphqlUrl: process.env.FAUNA_GRAPHQL_URL,
         faunaGuestKey: process.env.FAUNA_GUEST_KEY,
+        // Tidal client ID is safe to expose (used in the browser OAuth redirect)
+        tidalClientId: process.env.TIDAL_CLIENT_ID,
     },
 
     privateRuntimeConfig: {
         faunaServerKey: process.env.FAUNA_SERVER_KEY,
+        // These are kept server-side and never sent to the browser
+        tidalClientSecret: process.env.TIDAL_CLIENT_SECRET,
+        openaiApiKey: process.env.OPENAI_API_KEY,
     },
 
     // Build Configuration: https://go.nuxtjs.dev/config-build
