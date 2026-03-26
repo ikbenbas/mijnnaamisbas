@@ -1,23 +1,23 @@
 {
-  "author": "Bas van Wouwen",
   "name": "mijnnaamisbas",
   "version": "1.0.0",
   "private": true,
+  "author": "Bas van Wouwen",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
+    "dev": "vite dev",
     "eslint": "eslint 'src/**/*.{js,ts,svelte}'",
-    "eslint:fix": "npm run eslint -- --fix"
+    "eslint:fix": "pnpm run eslint -- --fix",
+    "preview": "vite preview"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "pnpm exec lint-staged"
   },
   "lint-staged": {
-    "*.{js,ts,svelte}": "npm run eslint:fix",
-    "package.json": "npx sort-package-json"
+    "*.{js,ts,svelte}": "pnpm run eslint:fix",
+    "package.json": "pnpm exec sort-package-json"
   },
   "dependencies": {
     "@mistralai/mistralai": "2.1.2",
@@ -26,19 +26,20 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "7.0.1",
-    "@sveltejs/vite-plugin-svelte": "5.0.3",
+    "@sveltejs/vite-plugin-svelte": "7.0.0",
     "@typescript-eslint/parser": "8.57.2",
-    "eslint": "8.57.0",
-    "eslint-plugin-svelte": "2.46.1",
-    "lint-staged": "15.5.2",
-    "postcss": "8.5.6",
-    "postcss-import": "16.1.0",
-    "postcss-nested": "7.0.1",
-    "postcss-preset-env": "10.1.5",
-    "simple-git-hooks": "2.11.1",
-    "svelte-check": "4.2.1",
+    "eslint": "10.1.0",
+    "eslint-plugin-svelte": "3.16.0",
+    "lint-staged": "16.4.0",
+    "postcss": "8.5.8",
+    "postcss-import": "16.1.1",
+    "postcss-nested": "7.0.2",
+    "postcss-preset-env": "11.2.0",
+    "simple-git-hooks": "2.13.1",
+    "sort-package-json": "^3.6.1",
+    "svelte-check": "4.4.5",
     "tslib": "2.8.1",
-    "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "typescript": "5.9.3",
+    "vite": "8.0.3"
   }
 }

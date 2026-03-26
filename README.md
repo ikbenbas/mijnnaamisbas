@@ -14,7 +14,7 @@ Personal website for Bas, built with SvelteKit 2 and Svelte 5.
 Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 Create a `.env` file with:
@@ -28,14 +28,14 @@ MISTRAL_API_KEY=your_mistral_api_key
 ## Development
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ## Build
 
 ```bash
-npm run build
-npm run preview
+pnpm build
+pnpm preview
 ```
 
 ## Tidal Playlist Suggestions
