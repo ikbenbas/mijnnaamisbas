@@ -90,7 +90,7 @@
 				placeholder="Add notes about this bookmark..."
 				rows="3"
 				maxlength="500"
-			/>
+			></textarea>
 		</div>
 
 		{#snippet actions()}
