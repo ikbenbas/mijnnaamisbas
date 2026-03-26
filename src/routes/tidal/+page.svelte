@@ -1,5 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import { resolve } from '$app/paths';
     import type { ActionData, PageData } from './$types';
 
     let { data, form }: { data: PageData; form: ActionData } = $props();
@@ -16,7 +17,7 @@
 
 <main class="tidal-page">
     <header class="tidal-header">
-        <a href="/" class="back-link">← Back</a>
+        <a href={resolve('/')} class="back-link">← Back</a>
         <h1>🎵 Tidal Playlist Suggestions</h1>
         <p class="subtitle">Powered by Mistral AI — European AI</p>
     </header>
@@ -67,7 +68,7 @@
         <section class="suggestions">
             <h2>Your Playlist Suggestions</h2>
             <div class="playlist-grid">
-                {#each form.suggestions as playlist}
+                {#each form.suggestions as playlist (playlist.name)}
                     <div class="playlist-card">
                         <h3 class="playlist-name">{playlist.name}</h3>
                         <p class="playlist-description">{playlist.description}</p>
@@ -75,7 +76,7 @@
                             <div class="artists">
                                 <span class="artists-label">Featured artists:</span>
                                 <ul class="artists-list">
-                                    {#each playlist.artists as artist}
+                                    {#each playlist.artists as artist (artist)}
                                         <li>{artist}</li>
                                     {/each}
                                 </ul>
@@ -86,8 +87,9 @@
                             target="_blank"
                             rel="noopener noreferrer"
                             class="tidal-link"
+                            data-sveltekit-reload
                         >
-                            🎵 Search on Tidal
+                            Search on Tidal
                         </a>
                     </div>
                 {/each}

@@ -1,40 +1,15 @@
 import type { PageServerLoad } from './$types';
+import { getHygraphClient, GET_BOOKMARKS } from '$lib';
+import type { Bookmark } from '$lib';
 
-export const load: PageServerLoad = async ({ fetch }) => {
-    const faunaGraphqlUrl = process.env.FAUNA_GRAPHQL_URL ?? '';
-    const faunaServerKey = process.env.FAUNA_SERVER_KEY ?? '';
-
-    if (!faunaGraphqlUrl || !faunaServerKey) {
-        return { bookmarks: [] };
-    }
-
-    try {
-        const response = await fetch(faunaGraphqlUrl, {
-            headers: {
-                authorization: `bearer ${faunaServerKey}`,
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                query: `
-                    query getAllBookmarks {
-                        allBookmarks(_size: 10) {
-                            data {
-                                _id
-                                title
-                                description
-                                link
-                            }
-                        }
-                    }
-                `,
-            }),
-        });
-
-        const data = await response.json();
-        return {
-            bookmarks: data?.data?.allBookmarks?.data ?? [],
-        };
-    } catch {
-        return { bookmarks: [] };
-    }
+export const load: PageServerLoad = async () => {
+	try {
+		const client = getHygraphClient();
+		const data = await client.request<{ bookmarks: Bookmark[] }>(GET_BOOKMARKS, {
+			first: 10
+		});
+		return { bookmarks: data.bookmarks };
+	} catch {
+		return { bookmarks: [] as Bookmark[] };
+	}
 };

@@ -9,7 +9,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "dev": "vite dev",
     "eslint": "eslint 'src/**/*.{js,ts,svelte}'",
-    "eslint:fix": "pnpm run eslint -- --fix",
+    "eslint:fix": "eslint 'src/**/*.{js,ts,svelte}' --fix",
     "preview": "vite preview"
   },
   "simple-git-hooks": {
@@ -22,6 +22,8 @@
   "dependencies": {
     "@mistralai/mistralai": "2.1.2",
     "@sveltejs/kit": "2.55.0",
+    "graphql": "^16.13.2",
+    "graphql-request": "^7.4.0",
     "svelte": "5.55.0"
   },
   "devDependencies": {

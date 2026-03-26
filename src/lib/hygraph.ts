@@ -2,7 +2,7 @@ import { GraphQLClient } from 'graphql-request';
 import { env } from '$env/dynamic/private';
 
 /**
- * Hygraph (formerly GraphCMS) client for the espresso notes app.
+ * Hygraph (formerly GraphCMS) client for the mijnnaamisbas app.
  *
  * Set the following environment variables:
  *   HYGRAPH_ENDPOINT        – your Hygraph project's Content API URL
@@ -26,16 +26,15 @@ function buildClient(token: string | undefined) {
 /**
  * Returns a client authenticated with the read-only token.
  */
-export function getClient() {
+export function getHygraphClient() {
 	return buildClient(env.HYGRAPH_TOKEN);
 }
 
 /**
  * Returns a client authenticated with the mutation token, which must have
- * create/update/publish permissions in Hygraph (Settings → API Access →
- * Permanent Auth Tokens → add "Mutations" permission for EspressoNote).
+ * create/update/publish permissions in Hygraph.
  */
-export function getMutationClient() {
+export function getHygraphMutationClient() {
 	const token = env.HYGRAPH_MUTATION_TOKEN;
 
 	if (!token) {

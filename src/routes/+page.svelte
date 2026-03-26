@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { resolve } from '$app/paths';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
@@ -12,7 +13,7 @@
     <div>
         <h1 class="title">mijnnaamisbas</h1>
         <ul>
-            {#each data.bookmarks as bookmark}
+            {#each data.bookmarks as bookmark (bookmark.id)}
                 <li>{bookmark.title}</li>
             {/each}
         </ul>
@@ -23,7 +24,7 @@
             <a href="https://github.com/sveltejs/kit" target="_blank" rel="noopener noreferrer" class="button--grey">
                 GitHub
             </a>
-            <a href="/tidal" class="button--green">
+            <a href={resolve('/tidal')} class="button--green">
                 🎵 Tidal Playlist Suggestions
             </a>
         </div>

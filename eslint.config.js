@@ -10,6 +10,9 @@ export default [
                 parser: tsParser,
             },
         },
+        rules: {
+            'svelte/no-navigation-without-resolve': 'warn'
+        }
     },
     {
         ignores: ['.svelte-kit/**', 'node_modules/**', 'build/**']

@@ -1,59 +1,49 @@
-type User {
-    name: String!
-    username: String! @unique
-    role: UserRole!
-}
+# Hygraph CMS Content Model
+# This file documents the schema created in Hygraph (https://hygraph.com)
 
-type Bookmark @collection(name: "bookmarks") {
+type Bookmark {
+    id: ID!
     title: String!
-    slug: String! @unique
+    slug: String!
     description: String
-    link: String! @unique
-    tags: [Tag] @relation
-    type: BookmarkGroup! @relation
-    owner: User! @relation
+    link: String!
     read: Boolean!
     private: Boolean!
+    tags: [Tag!]
+    type: BookmarkGroup
+    createdAt: DateTime!
+    updatedAt: DateTime!
 }
 
-type BookmarkGroup @collection(name: "bookmark_groups") {
+type BookmarkGroup {
+    id: ID!
     title: String!
-    slug: String! @unique
+    slug: String!
     description: String
-    bookmarks: [Bookmark] @relation
+    createdAt: DateTime!
+    updatedAt: DateTime!
 }
 
-type Tag @collection(name: "tags") {
-    tag: String! @unique
-    bookmarks: [Bookmark] @relation
+type Tag {
+    id: ID!
+    tag: String!
+    createdAt: DateTime!
+    updatedAt: DateTime!
 }
 
+# Query examples (see src/lib/queries/bookmarks.ts for actual implementations)
 type Query {
-    findBookmarkBySlug(slug: String!): Bookmark
-    allBookmarks: [Bookmark!]
-    bookmarksByReadFlag(read: Boolean!): [Bookmark!]
-    allBookmarkGroups: [BookmarkGroup!]
-    allTags: [Tag!]
+    bookmarks(first: Int, where: BookmarkWhereInput, orderBy: BookmarkOrderByInput): [Bookmark!]!
+    bookmark(where: BookmarkWhereUniqueInput!): Bookmark
+    bookmarkGroups(first: Int, orderBy: BookmarkGroupOrderByInput): [BookmarkGroup!]!
+    tags(orderBy: TagOrderByInput): [Tag!]!
 }
 
+# Mutation examples (see src/lib/queries/bookmarks.ts for actual implementations)
 type Mutation {
-    createUser(input: CreateUserInput): User! @resolver(name: "create_user")
-    loginUser(username: String!, password: String!): String! @resolver(name: "login_user")
+    createBookmark(data: BookmarkCreateInput!): Bookmark!
+    publishBookmark(where: BookmarkWhereUniqueInput!, to: Stage!): Bookmark!
+    updateBookmark(where: BookmarkWhereUniqueInput!, data: BookmarkUpdateInput!): Bookmark!
+    deleteBookmark(where: BookmarkWhereUniqueInput!): Bookmark!
 }
 
-enum UserRole {
-    ADMIN
-    BUDDY
-}
-
-input CreateUserInput {
-    name: String!
-    username: String!
-    password: String!
-    role: UserRole!
-}
-
-input LoginUserInput {
-    username: String!
-    password: String!
-}

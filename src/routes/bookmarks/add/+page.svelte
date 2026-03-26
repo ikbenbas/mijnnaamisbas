@@ -1,16 +1,17 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { resolve } from '$app/paths';
     import { page } from '$app/state';
 
     let link = $derived(page.url.searchParams.get('link') ?? '');
 
     function close() {
-        goto('/bookmarks');
+        goto(resolve('/bookmarks'));
     }
 
     function create() {
         // TODO: Implement bookmark creation
-        goto('/bookmarks');
+        goto(resolve('/bookmarks'));
     }
 </script>
 

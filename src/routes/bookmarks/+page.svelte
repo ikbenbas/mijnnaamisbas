@@ -1,12 +1,13 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { resolve } from '$app/paths';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
 
     function handleKeydown(event: KeyboardEvent) {
         if (event.code === 'KeyN' && event.metaKey && event.ctrlKey) {
-            goto('/bookmarks/add');
+            goto(resolve('/bookmarks/add'));
         }
     }
 </script>
@@ -26,9 +27,9 @@
         </ul>
 
         <ul>
-            {#each data.bookmarks as bookmark}
+            {#each data.bookmarks as bookmark (bookmark.id)}
                 <li>
-                    <a href={bookmark.link} target="_blank" rel="noopener noreferrer">
+                    <a href={bookmark.link} target="_blank" rel="noopener noreferrer" data-sveltekit-reload>
                         {bookmark.title}
                     </a>
                     {#if bookmark.description}
@@ -38,6 +39,6 @@
             {/each}
         </ul>
 
-        <a href="/bookmarks/add">Add New Bookmark</a>
+        <a href={resolve('/bookmarks/add')}>Add New Bookmark</a>
     </div>
 </div>
