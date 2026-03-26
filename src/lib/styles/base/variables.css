@@ -1,0 +1,61 @@
+:root {
+    /* Colors */
+
+    /* #069842 — Green */
+    --primary-rgb: 6, 152, 66;
+    --primary: rgb(var(--primary-rgb));
+
+    /* #292958 — Text */
+    --secondary-rgb: 41, 41, 88;
+    --secondary: rgb(var(--secondary-rgb));
+
+    /* #474B63 — Text dark */
+    --secondary-dark-rgb: 71, 75, 99;
+    --secondary-dark: rgb(var(--secondary-dark-rgb));
+
+    /* #D24D4D — Red / Error */
+    --red-rgb: 210, 77, 77;
+    --red: rgb(var(--red-rgb));
+
+    /* #CFB04E — Premium */
+    --premium-rgb: 207, 176, 78;
+    --premium: rgb(var(--premium-rgb));
+
+    /* #E0E1E4 — Border grey */
+    --border-rgb: 224, 225, 228;
+    --border: rgb(var(--border-rgb));
+
+    /* #9A9CA6 — Grey */
+    --grey-rgb: 154, 156, 166;
+    --grey: rgb(var(--grey-rgb));
+
+    /* #AFB0B8 — Grey light */
+    --grey-light-rgb: 175, 176, 184;
+    --grey-light: rgb(var(--grey-light-rgb));
+
+    /* #C2C4CA — Grey lighter */
+    --grey-lighter-rgb: 194, 196, 202;
+    --grey-lighter: rgb(var(--grey-lighter-rgb));
+
+    /* #F5F5F6 — Grey lighter */
+    --grey-lightest-rgb: 245, 245, 246;
+    --grey-lightest: rgb(var(--grey-lightest-rgb));
+
+    /* Social */
+    --facebook: #3b5999;
+    --whatsapp: #25d366;
+    --e-mail: var(--grey);
+
+
+    /* Fonts */
+    --font: 'Barlow Semi Condensed', -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica, arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+
+    /* Spacing */
+    --padding: 25px;
+    --max-width: max(600px, 50%);
+
+    /* Transitions */
+    --transition-duration: 250ms;
+    --transition-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+    --transition: var(--transition-duration) var(--transition-timing-function);
+}
