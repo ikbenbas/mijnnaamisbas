@@ -22,7 +22,60 @@
         <p class="subtitle">Powered by Mistral AI — European AI</p>
     </header>
 
+    <!-- Tidal Connection Status -->
+    <section class="tidal-connection">
+        {#if data.authenticated}
+            <div class="connection-status connected">
+                <div class="status-info">
+                    <span class="status-icon">✓</span>
+                    <div>
+                        <strong>Connected to Tidal</strong>
+                        {#if data.userTaste}
+                            <p class="user-stats">
+                                {data.userTaste.totalPlaylists} playlists · {data.userTaste.totalTracks} tracks
+                                {#if data.userTaste.topGenres.length > 0}
+                                    · {data.userTaste.topGenres.slice(0, 3).join(', ')}
+                                {/if}
+                            </p>
+                        {/if}
+                    </div>
+                </div>
+                <form method="POST" action="/tidal/logout">
+                    <button type="submit" class="disconnect-btn">Disconnect</button>
+                </form>
+            </div>
+            {#if data.justConnected}
+                <div class="success-message">
+                    🎉 Successfully connected! Your suggestions will now be personalized based on your Tidal library.
+                </div>
+            {/if}
+        {:else}
+            <div class="connection-status disconnected">
+                <div class="connection-prompt">
+                    <h3>Get Personalized Suggestions</h3>
+                    <p>Connect your Tidal account to receive AI-powered playlist recommendations based on your actual music taste.</p>
+                    <a href="/tidal/login" class="connect-btn">
+                        <span>🎵</span> Connect Tidal Account
+                    </a>
+                </div>
+            </div>
+        {/if}
+
+        {#if data.error}
+            <div class="error-message">
+                {#if data.error === 'auth_failed'}
+                    Failed to authorize with Tidal. Please try again.
+                {:else if data.error === 'login_failed'}
+                    Failed to complete login. Please try again.
+                {:else}
+                    An error occurred. Please try again.
+                {/if}
+            </div>
+        {/if}
+    </section>
+
     <section class="suggestion-form">
+        <h2>What are you in the mood for?</h2>
         <form
             method="POST"
             action="?/suggest"
@@ -42,6 +95,7 @@
                     type="text"
                     placeholder="e.g. relaxed, energetic, melancholic..."
                     class="form-input"
+                    required
                 />
             </div>
             <div class="form-group">
@@ -66,7 +120,12 @@
 
     {#if form?.suggestions && form.suggestions.length > 0}
         <section class="suggestions">
-            <h2>Your Playlist Suggestions</h2>
+            <div class="suggestions-header">
+                <h2>Your Playlist Suggestions</h2>
+                {#if form.personalized}
+                    <span class="personalized-badge">✨ Personalized for you</span>
+                {/if}
+            </div>
             <div class="playlist-grid">
                 {#each form.suggestions as playlist (playlist.name)}
                     <div class="playlist-card">
@@ -131,11 +190,135 @@ h1 {
     margin-top: 0.5rem;
 }
 
+/* Tidal Connection Status */
+.tidal-connection {
+    margin-bottom: 2rem;
+}
+
+.connection-status {
+    background: #fff;
+    border-radius: 8px;
+    border: 2px solid;
+    padding: 1.5rem;
+}
+
+.connection-status.connected {
+    border-color: var(--primary, #069842);
+    background: #f0fdf4;
+}
+
+.connection-status.connected .status-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    flex: 1;
+}
+
+.connection-status.connected .status-icon {
+    background: var(--primary, #069842);
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    height: 28px;
+    width: 28px;
+    flex-shrink: 0;
+}
+
+.connection-status.connected strong {
+    color: var(--secondary, #292958);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.user-stats {
+    color: var(--grey, #9a9ca6);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.connection-status.connected form {
+    margin-top: 1rem;
+}
+
+.disconnect-btn {
+    background: transparent;
+    border: 1px solid var(--border, #e0e1e4);
+    border-radius: 4px;
+    color: var(--grey, #9a9ca6);
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    transition: all 250ms ease;
+}
+
+.disconnect-btn:hover {
+    background: var(--grey-lightest, #f5f5f6);
+    border-color: var(--grey, #9a9ca6);
+}
+
+.connection-status.disconnected {
+    border-color: var(--border, #e0e1e4);
+}
+
+.connection-prompt {
+    text-align: center;
+}
+
+.connection-prompt h3 {
+    color: var(--secondary, #292958);
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem;
+}
+
+.connection-prompt p {
+    color: var(--grey, #9a9ca6);
+    margin: 0 0 1.5rem;
+}
+
+.connect-btn {
+    background: var(--primary, #069842);
+    border-radius: 4px;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    transition: opacity 250ms ease;
+}
+
+.connect-btn:hover {
+    opacity: 0.85;
+}
+
+.connect-btn span {
+    font-size: 1.25rem;
+}
+
+.success-message {
+    background: #f0fdf4;
+    border: 1px solid var(--primary, #069842);
+    border-radius: 4px;
+    color: var(--primary, #069842);
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
 .suggestion-form {
     background: var(--grey-lightest, #f5f5f6);
     border-radius: 8px;
     padding: 2rem;
     margin-bottom: 2rem;
+}
+
+.suggestion-form h2 {
+    color: var(--secondary, #292958);
+    font-size: 1.25rem;
+    margin: 0 0 1.5rem;
 }
 
 .form-group {
@@ -192,6 +375,30 @@ h1 {
     color: var(--red, #d24d4d);
     margin-bottom: 2rem;
     padding: 1rem;
+}
+
+.suggestions {
+    margin-top: 2rem;
+}
+
+.suggestions-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.suggestions-header h2 {
+    margin: 0;
+}
+
+.personalized-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
 }
 
 .suggestions h2 {

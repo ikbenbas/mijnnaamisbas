@@ -22,6 +22,8 @@
   "dependencies": {
     "@mistralai/mistralai": "2.1.2",
     "@sveltejs/kit": "2.55.0",
+    "@tidal-music/api": "^0.15.0",
+    "@tidal-music/auth": "^1.6.0",
     "graphql": "^16.13.2",
     "graphql-request": "^7.4.0",
     "svelte": "5.55.0"
