@@ -35,6 +35,7 @@ Prioritize giving accurate information over trying to provide a solution that do
 
 - **Clean Components**: No complex logic in UI components, making them easier to read and maintain.
 - **SOLID Principles**: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, Dependency Inversion
+- **Strategy Pattern**: Use strategy pattern for service layers to keep it modular and extensible
 - **DRY**: Logic written once, re-used everywhere
 - **Type Safe**: Full TypeScript support with proper interfaces
 - **Accessible**: Built-in WCAG 2.2 compliance
@@ -65,7 +66,7 @@ Prioritize giving accurate information over trying to provide a solution that do
 
 - `src/lib/services/api/pages.ts`: Page fetching from hygraph
 
-**Rule**: Never call APIs directly from components. Always use service functions.
+**Rule**: Never call APIs directly from components. Always use service functions. Preferably, use a strategy pattern to allow for easy swapping and extending implementations (e.g., REST vs GraphQL).
 
 ### 3. Constants & Configuration
 

@@ -3,14 +3,14 @@
 
 	/**
 	 * Modal component - A reusable modal dialog following WCAG 2.2 accessibility guidelines
-	 * 
+	 *
 	 * @param open - Controls modal visibility
 	 * @param onClose - Callback when user requests to close modal
 	 * @param title - Modal title (optional, can use title slot instead)
 	 * @param maxWidth - Maximum width in pixels (default: 600)
 	 * @param children - Modal content slot
 	 * @param actions - Optional actions/buttons slot
-	 * 
+	 *
 	 * @example
 	 * ```svelte
 	 * <Modal open={showModal} onClose={handleClose} title="Add Item">
@@ -74,6 +74,7 @@
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby={title ? 'modal-title' : undefined}
+		tabindex="-1"
 	>
 		<div class="modal" style="max-width: {maxWidth}px;">
 			<button

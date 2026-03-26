@@ -1,13 +1,10 @@
 import type { Actions, PageServerLoad } from './$types';
-import { getHygraphClient, getHygraphMutationClient, CREATE_NOTE, PUBLISH_NOTE, GET_METHOD_TYPES } from '$lib';
+import { espressoNoteService, validateRequired, validateRange } from '$lib/services';
 import { redirect, fail } from '@sveltejs/kit';
+import { CONSTANTS } from '$lib/config/Constants';
 
 export const load: PageServerLoad = async () => {
-	const client = getHygraphClient();
-	const result = await client.request<{ __type: { enumValues: { name: string }[] } }>(
-		GET_METHOD_TYPES
-	);
-	const methodTypes = result.__type?.enumValues?.map((v) => v.name) ?? [];
+	const methodTypes = await espressoNoteService.getMethodTypes();
 	return { methodTypes };
 };
 
@@ -29,17 +26,13 @@ export const actions: Actions = {
 		const rating = form.get('rating') ? Number(form.get('rating')) : undefined;
 		const methodType = form.get('methodType')?.toString();
 
+		// Validation: Required fields
 		if (!title || !date || !bean || !dosage || !yieldVal || !brewTime || !methodType) {
 			return fail(422, { error: 'Please fill in all required fields.' });
 		}
 
-		if (rating !== undefined && (rating < 1 || rating > 10)) {
-			return fail(422, { error: 'Rating must be between 1 and 10.' });
-		}
-
-		const client = getHygraphMutationClient();
-
-		const created = await client.request<{ createEspressoNote: { id: string } }>(CREATE_NOTE, {
+		// Create note using service
+		const result = await espressoNoteService.create({
 			title,
 			date,
 			bean,
@@ -55,11 +48,10 @@ export const actions: Actions = {
 			methodType
 		});
 
-		const id = created.createEspressoNote.id;
+		if (!result.success) {
+			return fail(422, { error: result.error });
+		}
 
-		// Auto-publish the new note so it is visible in the Content API
-		await client.request(PUBLISH_NOTE, { id });
-
-		redirect(303, `/espresso/notes/${id}`);
+		redirect(303, `/espresso/notes/${result.data?.id}`);
 	}
 };

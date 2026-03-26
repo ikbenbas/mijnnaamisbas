@@ -2,6 +2,7 @@
 	import '$lib/styles/espresso.css';
 </script>
 
+<!-- Espresso has its own complete layout with custom styling -->
 <nav>
 	<a href="/espresso" class="brand">☕ Coffee Notes</a>
 	<a href="/espresso/notes">All notes</a>
@@ -13,7 +14,7 @@
 </main>
 
 <footer>
-	<p>Coffee Notes</p>
+	<p>Coffee Notes · <a href="/">Back to main site</a></p>
 </footer>
 
 <style>

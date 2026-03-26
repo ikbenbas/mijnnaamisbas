@@ -92,7 +92,7 @@ Based on their existing music taste, suggest 5 new playlist ideas that:
 3. Introduce them to new artists similar to their favorites
 
 For each playlist, provide:
-- A creative playlist name
+- A creative playlist name in Dutch
 - A brief description (1-2 sentences)
 - 10-15 example artists that would fit (mix of familiar and new)
 
@@ -103,14 +103,14 @@ Only respond with the JSON array, no other text.`;
 			prompt = `You are a music expert. Suggest 5 Tidal playlist ideas for someone who is in the mood for: ${mood}${genre ? ` (genre: ${genre})` : ''}.
 
 For each playlist, provide:
-- A creative playlist name
+- A creative playlist name in Dutch
 - A brief description (1-2 sentences)
 - 10-15 example artists that would fit
 
 Format your response as a JSON array with objects containing: name, description, artists (array of strings).
 Only respond with the JSON array, no other text.`;
 		}
-
+console.log(prompt)
 		try {
 			const response = await client.chat.complete({
 				model: 'mistral-small-latest',

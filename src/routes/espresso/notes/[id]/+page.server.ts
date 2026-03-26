@@ -1,17 +1,13 @@
 import type { PageServerLoad } from './$types';
-import { getHygraphClient, GET_NOTE } from '$lib';
-import type { EspressoNote } from '$lib';
+import { espressoNoteService } from '$lib/services';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const client = getHygraphClient();
-	const data = await client.request<{ espressoNote: EspressoNote | null }>(GET_NOTE, {
-		id: params.id
-	});
+	const note = await espressoNoteService.getById(params.id);
 
-	if (!data.espressoNote) {
+	if (!note) {
 		throw error(404, 'Note not found');
 	}
 
-	return { note: data.espressoNote };
+	return { note };
 };
