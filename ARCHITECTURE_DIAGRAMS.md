@@ -2,161 +2,151 @@
 
 ## Layer Diagram
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      PRESENTATION LAYER                      │
-│                    (SvelteKit Routes)                        │
-├─────────────────────────────────────────────────────────────┤
-│  +page.server.ts  │  bookmarks/  │  espresso/  │  tidal/   │
-│                   │  +page.ts    │  +page.ts   │  +page.ts │
-└──────────────┬────────────────────────────────┬─────────────┘
-               │                                │
-               │ Uses Services                  │ Uses Services
-               ▼                                ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      SERVICE LAYER                           │
-│           (Business Logic - Strategy Pattern)                │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  ┌──────────────────────────────────────────────────┐       │
-│  │         Hygraph Core Utilities                   │       │
-│  │         (Pure Functions)                         │       │
-│  │                                                  │       │
-│  │  • getHygraphClients()                          │       │
-│  │  • executeQuery(client, query, vars)           │       │
-│  │  • executeMutation(client, mutation, vars)     │       │
-│  │  • publishContent(client, mutation, id)        │       │
-│  └──────────────────┬───────────────────────────────┘       │
-│                     │ Used by                                │
-│                     ▼                                        │
-│  ┌──────────────────────────┐  ┌────────────────────────┐  │
-│  │ BookmarkService          │  │ EspressoNoteService    │  │
-│  │ (Strategy Implementation)│  │ (Strategy Implementation)│ │
-│  │                          │  │                        │  │
-│  │ IBookmarkService         │  │ IEspressoNoteService   │  │
-│  │  • list()               │  │  • list()              │  │
-│  │  • create()             │  │  • getById()           │  │
-│  │  • getBySlug()          │  │  • create()            │  │
-│  │  • update()             │  │  • getMethodTypes()    │  │
-│  │  • delete()             │  │  • getStatistics()     │  │
-│  │  • existsBySlug()       │  │                        │  │
-│  │                          │  │                        │  │
-│  │ Factory:                 │  │ Factory:               │  │
-│  │ createHygraphBookmark    │  │ createHygraphEspresso  │  │
-│  │        Strategy()        │  │       NoteStrategy()   │  │
-│  └──────────────────────────┘  └────────────────────────┘  │
-│                                                               │
-│  Benefits: Easy to swap implementations (GraphQL ↔ REST)    │
-└───────────────────────┼─────────────────────────────────────┘
-                        │
-                        │ Uses
-                        ▼
-┌─────────────────────────────────────────────────────────────┐
-│                      DATA LAYER                              │
-│                   (External APIs)                            │
-├─────────────────────────────────────────────────────────────┤
-│              Hygraph CMS (GraphQL API)                       │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph Presentation["PRESENTATION LAYER<br/>(SvelteKit Routes)"]
+        Routes["+page.server.ts<br/>bookmarks/+page.ts<br/>espresso/+page.ts<br/>tidal/+page.ts"]
+    end
 
-┌─────────────────────────────────────────────────────────────┐
-│                   CROSS-CUTTING CONCERNS                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                               │
-│  Validation/          Utils/              Config/           │
-│  ├─ url.ts            ├─ slug.ts          └─ Constants.ts   │
-│  └─ form.ts                                                  │
-│                                                               │
-└─────────────────────────────────────────────────────────────┘
+    subgraph Service["SERVICE LAYER<br/>(Business Logic - Strategy Pattern)"]
+        subgraph Core["Hygraph Core Utilities (Pure Functions)"]
+            getClients["getHygraphClients()"]
+            execQuery["executeQuery(client, query, vars)"]
+            execMutation["executeMutation(client, mutation, vars)"]
+            publish["publishContent(client, mutation, id)"]
+        end
+
+        subgraph Bookmark["BookmarkService<br/>(Strategy Implementation)"]
+            BInterface["IBookmarkService"]
+            BList["• list()"]
+            BCreate["• create()"]
+            BGetBySlug["• getBySlug()"]
+            BUpdate["• update()"]
+            BDelete["• delete()"]
+            BExists["• existsBySlug()"]
+            BFactory["Factory: createHygraphBookmarkStrategy()"]
+        end
+
+        subgraph Espresso["EspressoNoteService<br/>(Strategy Implementation)"]
+            EInterface["IEspressoNoteService"]
+            EList["• list()"]
+            EGetById["• getById()"]
+            ECreate["• create()"]
+            ETypes["• getMethodTypes()"]
+            EStats["• getStatistics()"]
+            EFactory["Factory: createHygraphEspressoNoteStrategy()"]
+        end
+
+        Core --> Bookmark
+        Core --> Espresso
+    end
+
+    subgraph Data["DATA LAYER<br/>(External APIs)"]
+        Hygraph["Hygraph CMS (GraphQL API)"]
+    end
+
+    subgraph CrossCutting["CROSS-CUTTING CONCERNS"]
+        Validation["Validation/<br/>• url.ts<br/>• form.ts"]
+        Utils["Utils/<br/>• slug.ts"]
+        Config["Config/<br/>• Constants.ts"]
+    end
+
+    Routes -->|Uses Services| Bookmark
+    Routes -->|Uses Services| Espresso
+    Service -->|Uses| Hygraph
+    Routes --> CrossCutting
+    Service --> CrossCutting
+
+    style Presentation fill:#e1f5ff
+    style Service fill:#fff4e1
+    style Data fill:#ffe1e1
+    style CrossCutting fill:#e8f5e8
 ```
 
 ## Request Flow
 
 ### Creating a Bookmark
 
-```
-User Submits Form
-      ↓
-[Route Handler]
-src/routes/bookmarks/add/+page.server.ts
-      ↓
-[Validation]
-validateUrlField(url)  ← from validation/url.ts
-      ↓
-[Service Layer]
-bookmarkService.create({link, title, description})
-      ↓
-[Service Logic]
-1. extractTitleFromUrl() if needed  ← from validation/url.ts
-2. generateSlug(title)              ← from utils/slug.ts
-3. getHygraphClients()              ← from hygraph.ts
-4. executeMutation(client, CREATE_BOOKMARK, data)
-5. publishContent(client, PUBLISH_BOOKMARK, id)
-      ↓
-[External API]
-Hygraph CMS (GraphQL)
-      ↓
-[Response]
-Return BookmarkResult
-      ↓
-[Route Handler]
-Redirect to /bookmarks
+```mermaid
+flowchart TD
+    Start([User Submits Form]) --> RouteHandler1[Route Handler<br/>src/routes/bookmarks/add/+page.server.ts]
+    RouteHandler1 --> Validation[Validation<br/>validateUrlField url<br/>from validation/url.ts]
+    Validation --> ServiceCall[Service Layer<br/>bookmarkService.create link, title, description]
+    ServiceCall --> Logic[Service Logic]
+    Logic --> Step1["1. extractTitleFromUrl() if needed<br/>from validation/url.ts"]
+    Step1 --> Step2["2. generateSlug(title)<br/>from utils/slug.ts"]
+    Step2 --> Step3["3. getHygraphClients()<br/>from hygraph.ts"]
+    Step3 --> Step4["4. executeMutation(client, CREATE_BOOKMARK, data)"]
+    Step4 --> Step5["5. publishContent(client, PUBLISH_BOOKMARK, id)"]
+    Step5 --> API[External API<br/>Hygraph CMS GraphQL]
+    API --> Response[Response<br/>Return BookmarkResult]
+    Response --> Redirect[Route Handler<br/>Redirect to /bookmarks]
+    Redirect --> End([Complete])
+
+    style Start fill:#e1f5ff
+    style API fill:#ffe1e1
+    style End fill:#e8f5e8
 ```
 
 ### Fetching Bookmarks
 
-```
-Page Load
-      ↓
-[Route Handler]
-src/routes/bookmarks/+page.server.ts
-      ↓
-[Service Layer]
-bookmarkService.list(10)
-      ↓
-[Strategy Implementation]
-1. getHygraphClients()              ← Get configured clients
-2. executeQuery(client, GET_BOOKMARKS, {first: 10})
-      ↓
-[External API]
-Hygraph CMS (GraphQL)
-      ↓
-[Response]
-Return Bookmark[]
-      ↓
-[Route Handler]
-Return { bookmarks }
-      ↓
-[Component]
-Render bookmark list
+```mermaid
+flowchart TD
+    Start([Page Load]) --> RouteHandler1[Route Handler<br/>src/routes/bookmarks/+page.server.ts]
+    RouteHandler1 --> ServiceCall[Service Layer<br/>bookmarkService.list 10]
+    ServiceCall --> Strategy[Strategy Implementation]
+    Strategy --> Step1["1. getHygraphClients()<br/>Get configured clients"]
+    Step1 --> Step2["2. executeQuery(client, GET_BOOKMARKS, {first: 10})"]
+    Step2 --> API[External API<br/>Hygraph CMS GraphQL]
+    API --> Response[Response<br/>Return Bookmark array]
+    Response --> RouteHandler2[Route Handler<br/>Return bookmarks]
+    RouteHandler2 --> Component[Component<br/>Render bookmark list]
+    Component --> End([Display])
+
+    style Start fill:#e1f5ff
+    style API fill:#ffe1e1
+    style End fill:#e8f5e8
 ```
 
 ## Dependency Graph
 
-```
-Routes
-  │
-  ├─► BookmarkService ────────┐
-  │    (Strategy)             │
-  │                           │
-  ├─► EspressoNoteService ───┤
-  │    (Strategy)             │
-  │                           ├──► Hygraph Utils ──► Hygraph API
-  │                           │    (Pure Functions)
-  └─► Validation ─────────────┤
-      Utils ──────────────────┤
-      Constants ───────────────┘
+```mermaid
+graph LR
+    Routes[Routes] --> BS[BookmarkService<br/>Strategy]
+    Routes --> ES[EspressoNoteService<br/>Strategy]
+    Routes --> Val[Validation]
+    Routes --> Utils[Utils]
+    Routes --> Const[Constants]
+
+    BS --> HU[Hygraph Utils<br/>Pure Functions]
+    ES --> HU
+    Val --> HU
+    Utils --> HU
+    Const --> HU
+
+    HU --> API[Hygraph API]
+
+    style Routes fill:#e1f5ff
+    style HU fill:#fff4e1
+    style API fill:#ffe1e1
 ```
 
 ## Component Organization
 
-```
-src/lib/components/
-├── base/                    # Reusable UI primitives
-│   ├── Modal.svelte         # ✅ Accessible modal
-│   └── Form.svelte          # ✅ Base form component
-│
-└── app/                     # Domain-specific components
-    (Future: BookmarkCard, NoteCard, etc.)
+```mermaid
+graph TD
+    Root[src/lib/components/]
+    Root --> Base[base/<br/>Reusable UI primitives]
+    Root --> App[app/<br/>Domain-specific components]
+
+    Base --> Modal[Modal.svelte<br/>✅ Accessible modal]
+    Base --> Form[Form.svelte<br/>✅ Base form component]
+
+    App --> Future[Future:<br/>BookmarkCard, NoteCard, etc.]
+
+    style Root fill:#e1f5ff
+    style Base fill:#e8f5e8
+    style App fill:#fff4e1
 ```
 
 ## Service Exports
@@ -227,32 +217,21 @@ return { bookmarks };
 
 ## Error Handling Strategy
 
-```
-┌─────────────────────────────────────────┐
-│         Route Handler                    │
-│  (Receives result from service)         │
-└──────────────┬──────────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────────┐
-│    Service Strategy Implementation       │
-│  (Catches errors, returns Result type)  │
-│                                          │
-│  Success: { success: true, data }       │
-│  Error: { success: false, error }       │
-└──────────────┬──────────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────────┐
-│      Hygraph Utility Functions           │
-│  (Logs errors, handles retries)         │
-└──────────────┬──────────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────────┐
-│         External API                     │
-│  (Throws errors)                         │
-└─────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    RouteHandler[Route Handler<br/>Receives result from service]
+    Strategy[Service Strategy Implementation<br/>Catches errors, returns Result type<br/><br/>Success: success: true, data<br/>Error: success: false, error]
+    Utils[Hygraph Utility Functions<br/>Logs errors, handles retries]
+    API[External API<br/>Throws errors]
+
+    RouteHandler --> Strategy
+    Strategy --> Utils
+    Utils --> API
+
+    style RouteHandler fill:#e1f5ff
+    style Strategy fill:#fff4e1
+    style Utils fill:#e8f5e8
+    style API fill:#ffe1e1
 ```
 
 ## Type Safety Flow
@@ -276,60 +255,89 @@ PageData { bookmarks: Bookmark[] }
 
 ## Configuration Hierarchy
 
-```
-CONSTANTS (Constants.ts)
-    ├── API_ENDPOINTS
-    │   ├── HYGRAPH
-    │   └── TIDAL
-    ├── PAGINATION
-    │   ├── defaultPageSize: 10
-    │   ├── bookmarksPageSize: 10
-    │   └── notesPageSize: 20
-    ├── VALIDATION
-    │   ├── slug { maxLength: 100 }
-    │   ├── title { maxLength: 200 }
-    │   └── rating { min: 1, max: 10 }
-    ├── DESIGN
-    │   ├── colors
-    │   └── borderRadius
-    └── FEATURES
-        ├── enableTidal: true
-        └── enableEspresso: true
+```mermaid
+graph TD
+    Root[CONSTANTS<br/>Constants.ts]
+
+    Root --> API[API_ENDPOINTS]
+    API --> Hygraph[HYGRAPH]
+    API --> Tidal[TIDAL]
+
+    Root --> Pagination[PAGINATION]
+    Pagination --> Default[defaultPageSize: 10]
+    Pagination --> Bookmarks[bookmarksPageSize: 10]
+    Pagination --> Notes[notesPageSize: 20]
+
+    Root --> Validation[VALIDATION]
+    Validation --> Slug["slug { maxLength: 100 }"]
+    Validation --> Title["title { maxLength: 200 }"]
+    Validation --> Rating["rating { min: 1, max: 10 }"]
+
+    Root --> Design[DESIGN]
+    Design --> Colors[colors]
+    Design --> Border[borderRadius]
+
+    Root --> Features[FEATURES]
+    Features --> FTidal[enableTidal: true]
+    Features --> FEspresso[enableEspresso: true]
+
+    style Root fill:#e1f5ff
+    style API fill:#fff4e1
+    style Pagination fill:#e8f5e8
+    style Validation fill:#ffe1e1
+    style Design fill:#f5e1ff
+    style Features fill:#ffffcc
 ```
 
 ## Testing Structure
 
-```
-tests/
-├── unit/
-│   ├── services/
-│   │   ├── bookmarks.test.ts
-│   │   └── espresso.test.ts
-│   ├── validation/
-│   │   ├── url.test.ts
-│   │   └── form.test.ts
-│   └── utils/
-│       └── slug.test.ts
-│
-└── integration/
-    ├── routes/
-    │   ├── bookmarks.test.ts
-    │   └── espresso.test.ts
-    └── services/
-        └── hygraph.test.ts
+```mermaid
+graph TD
+    Root[tests/]
+
+    Root --> Unit[unit/]
+    Root --> Integration[integration/]
+
+    Unit --> UServices[services/]
+    UServices --> UBookmarks[bookmarks.test.ts]
+    UServices --> UEspresso[espresso.test.ts]
+
+    Unit --> UValidation[validation/]
+    UValidation --> UUrl[url.test.ts]
+    UValidation --> UForm[form.test.ts]
+
+    Unit --> UUtils[utils/]
+    UUtils --> USlug[slug.test.ts]
+
+    Integration --> IRoutes[routes/]
+    IRoutes --> IBookmarks[bookmarks.test.ts]
+    IRoutes --> IEspresso[espresso.test.ts]
+
+    Integration --> IServices[services/]
+    IServices --> IHygraph[hygraph.test.ts]
+
+    style Root fill:#e1f5ff
+    style Unit fill:#e8f5e8
+    style Integration fill:#fff4e1
 ```
 
 ## Performance Optimization
 
 ### Caching Strategy (Future)
-```
-Request
-    ↓
-Service Layer
-    ↓
-Check Cache (CONSTANTS.CACHE.bookmarks = 300s)
-    ├─ Hit → Return cached data
-    └─ Miss → Fetch from API → Cache → Return
+
+```mermaid
+flowchart TD
+    Request[Request] --> Service[Service Layer]
+    Service --> CheckCache{Check Cache<br/>CONSTANTS.CACHE.bookmarks = 300s}
+    CheckCache -->|Hit| ReturnCached[Return cached data]
+    CheckCache -->|Miss| FetchAPI[Fetch from API]
+    FetchAPI --> Cache[Cache]
+    Cache --> Return[Return]
+
+    style Request fill:#e1f5ff
+    style CheckCache fill:#fff4e1
+    style ReturnCached fill:#e8f5e8
+    style FetchAPI fill:#ffe1e1
 ```
 
 ### Pagination Strategy
