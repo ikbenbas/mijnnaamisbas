@@ -1,0 +1,102 @@
+:root {
+	--color-bg: #adffec;
+	--color-text: #1e0a35;
+	--color-accent: #8b2fc9;
+	--color-accent-mint: #2ecda7;
+	--color-accent-pink: #f0609e;
+	--color-muted: #b06ec4;
+	--color-border: #d49ef5;
+	--color-card: #adffec;
+	--color-white: #ffffff;
+	--color-error: #69002f;
+	--color-rating: #FBB13C;
+	--color-table-header: #f5ede4;
+	--color-table-row-hover: #f9f2eb;
+	--radius: 0.25rem;
+}
+
+a {
+	color: var(--color-accent);
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.2;
+    color: var(--color-accent);
+}
+
+button,
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.55rem 1.2rem;
+	border: none;
+	border-radius: var(--radius);
+	font-size: 0.95rem;
+	font-weight: 600;
+	cursor: pointer;
+	text-decoration: none;
+	transition: opacity 0.15s;
+}
+
+button:hover,
+.btn:hover {
+	opacity: 0.85;
+}
+
+.btn-primary {
+	background: linear-gradient(135deg, var(--color-accent), var(--color-accent-pink));
+	color: var(--color-white);
+}
+
+.btn-secondary {
+	background: transparent;
+	border: 2px solid var(--color-accent-mint);
+	color: var(--color-accent-mint);
+}
+
+input,
+select,
+textarea {
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	border: 1.5px solid var(--color-border);
+	border-radius: var(--radius);
+	font-size: 0.95rem;
+	background: var(--color-card);
+	color: var(--color-text);
+	transition: border-color 0.15s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+	outline: none;
+	border-color: var(--color-accent);
+}
+
+label {
+	display: block;
+	font-weight: 600;
+	font-size: 0.875rem;
+	margin-bottom: 0.35rem;
+	color: var(--color-text);
+}
+
+.field {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+}
+
+.hint {
+	font-size: 0.8rem;
+	color: var(--color-muted);
+}
+
+.error {
+	color: var(--color-error);
+	font-size: 0.85rem;
+}
