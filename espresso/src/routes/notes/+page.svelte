@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>All notes · Espresso Notes</title>
+	<title>All notes · Coffee Notes</title>
 </svelte:head>
 
 <div class="header-row">
@@ -74,11 +74,11 @@
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
 		color: var(--color-muted);
-		background: #f5ede4;
+		background: var(--color-table-header);
 	}
 
 	tbody tr:hover {
-		background: #f9f2eb;
+		background: var(--color-table-row-hover);
 	}
 
 	.empty {

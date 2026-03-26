@@ -17,6 +17,7 @@ export interface EspressoNote {
 	pressure: number | null;
 	notes: string | null;
 	rating: number | null;
+	methodType: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -34,4 +35,5 @@ export interface EspressoNoteInput {
 	pressure?: number;
 	notes?: string;
 	rating?: number;
+	methodType: string;
 }

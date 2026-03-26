@@ -20,6 +20,16 @@ export const GET_NOTES = gql`
 	}
 `;
 
+export const GET_METHOD_TYPES = gql`
+	query GetMethodTypes {
+		__type(name: "MethodType") {
+			enumValues {
+				name
+			}
+		}
+	}
+`;
+
 export const GET_NOTE = gql`
 	query GetNote($id: ID!) {
 		espressoNote(where: { id: $id }) {
@@ -47,15 +57,16 @@ export const CREATE_NOTE = gql`
 		$title: String!
 		$date: Date!
 		$bean: String!
-		$roaster: String
-		$grindSize: Float
+		$roaster: String!
+		$grindSize: Float!
 		$dosage: Float!
 		$yield: Float!
 		$brewTime: Int!
-		$temperature: Float
-		$pressure: Float
+		$temperature: Float!
+		$pressure: Float!
 		$notes: String
-		$rating: Int
+		$rating: Int!
+		$methodType: MethodType!
 	) {
 		createEspressoNote(
 			data: {
@@ -71,6 +82,7 @@ export const CREATE_NOTE = gql`
 				pressure: $pressure
 				notes: $notes
 				rating: $rating
+				methodType: $methodType
 			}
 		) {
 			id

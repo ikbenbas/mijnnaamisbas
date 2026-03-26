@@ -1,14 +1,23 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+	import type { ActionData, PageData } from './$types';
 
 	export let form: ActionData;
+	export let data: PageData;
 
 	const today = new Date().toISOString().slice(0, 10);
+	const methodType = 'espresso'; // Default method type for new notes
+
+	function formatMethodType(value: string): string {
+		return value
+			.toLowerCase()
+			.replace(/_/g, ' ')
+			.replace(/\b\w/g, (c) => c.toUpperCase());
+	}
 </script>
 
 <svelte:head>
-	<title>New note · Espresso Notes</title>
+	<title>New note · Coffee Notes</title>
 </svelte:head>
 
 <div class="back"><a href="/notes">← All notes</a></div>
@@ -44,6 +53,19 @@
 	</fieldset>
 
 	<fieldset>
+		<legend>Brew method</legend>
+		<div class="field">
+			<label for="methodType">Method type <span class="req">*</span></label>
+			<select id="methodType" name="methodType" required value={methodType}>
+				<option value="" disabled selected>Select a method…</option>
+				{#each data.methodTypes as method}
+					<option value={method}>{formatMethodType(method)}</option>
+				{/each}
+			</select>
+		</div>
+	</fieldset>
+
+	<fieldset>
 		<legend>Shot parameters</legend>
 		<div class="row row-4">
 			<div class="field">
@@ -55,12 +77,12 @@
 				<input id="yield" name="yield" type="number" step="0.1" min="0" required placeholder="36" />
 			</div>
 			<div class="field">
-				<label for="brewTime">Brew time (s) <span class="req">*</span></label>
+				<label for="brewTime">Brew time <span class="req">*</span></label>
 				<input id="brewTime" name="brewTime" type="number" min="0" required placeholder="28" />
 			</div>
 			<div class="field">
 				<label for="grindSize">Grind size</label>
-				<input id="grindSize" name="grindSize" type="number" step="0.1" min="0" placeholder="e.g. 18.0" />
+				<input id="grindSize" name="grindSize" type="number" step="0.1" min="0" placeholder="e.g. 2.0" />
 				<span class="hint">Machine-specific unit</span>
 			</div>
 		</div>
@@ -83,8 +105,8 @@
 			<textarea id="notes" name="notes" rows="5" placeholder="Describe taste, texture, extraction quality…"></textarea>
 		</div>
 		<div class="field rating-field">
-			<label for="rating">Rating (1–5)</label>
-			<input id="rating" name="rating" type="number" min="1" max="5" step="1" placeholder="4" />
+			<label for="rating">Rating (1–10)</label>
+			<input id="rating" name="rating" type="number" min="1" max="10" step="1" placeholder="8" />
 		</div>
 	</fieldset>
 
@@ -165,7 +187,7 @@
 	}
 
 	.req {
-		color: #c0392b;
+		color: var(--color-error);
 	}
 
 	.form-actions {

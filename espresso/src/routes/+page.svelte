@@ -5,12 +5,12 @@
 </script>
 
 <svelte:head>
-	<title>Espresso Notes</title>
+	<title>Coffee Notes</title>
 </svelte:head>
 
 <section class="hero">
-	<h1>☕ Espresso Notes</h1>
-	<p>Track your espresso experiments — dial in the perfect shot.</p>
+	<h1>☕ Coffee Notes</h1>
+	<p>Track your coffee experiments — dial in the perfect shot.</p>
 	<a href="/notes/new" class="btn btn-primary">Start a new note</a>
 </section>
 
@@ -105,7 +105,7 @@
 	}
 
 	.rating {
-		color: #c0851a;
+		color: var(--color-rating);
 		letter-spacing: 1px;
 	}
 

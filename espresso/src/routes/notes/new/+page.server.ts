@@ -1,6 +1,15 @@
-import type { Actions } from './$types';
-import { getClient, CREATE_NOTE, PUBLISH_NOTE } from '$lib';
+import type { Actions, PageServerLoad } from './$types';
+import { getClient, getMutationClient, CREATE_NOTE, PUBLISH_NOTE, GET_METHOD_TYPES } from '$lib';
 import { redirect, fail } from '@sveltejs/kit';
+
+export const load: PageServerLoad = async () => {
+	const client = getClient();
+	const result = await client.request<{ __type: { enumValues: { name: string }[] } }>(
+		GET_METHOD_TYPES
+	);
+	const methodTypes = result.__type?.enumValues?.map((v) => v.name) ?? [];
+	return { methodTypes };
+};
 
 export const actions: Actions = {
 	default: async ({ request }) => {
@@ -18,16 +27,17 @@ export const actions: Actions = {
 		const pressure = form.get('pressure') ? Number(form.get('pressure')) : undefined;
 		const notes = form.get('notes')?.toString().trim() || undefined;
 		const rating = form.get('rating') ? Number(form.get('rating')) : undefined;
+		const methodType = form.get('methodType')?.toString();
 
-		if (!title || !date || !bean || !dosage || !yieldVal || !brewTime) {
+		if (!title || !date || !bean || !dosage || !yieldVal || !brewTime || !methodType) {
 			return fail(422, { error: 'Please fill in all required fields.' });
 		}
 
-		if (rating !== undefined && (rating < 1 || rating > 5)) {
-			return fail(422, { error: 'Rating must be between 1 and 5.' });
+		if (rating !== undefined && (rating < 1 || rating > 10)) {
+			return fail(422, { error: 'Rating must be between 1 and 10.' });
 		}
 
-		const client = getClient();
+		const client = getMutationClient();
 
 		const created = await client.request<{ createEspressoNote: { id: string } }>(CREATE_NOTE, {
 			title,
@@ -41,7 +51,8 @@ export const actions: Actions = {
 			temperature,
 			pressure,
 			notes,
-			rating
+			rating,
+			methodType
 		});
 
 		const id = created.createEspressoNote.id;

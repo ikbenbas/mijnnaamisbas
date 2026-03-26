@@ -1,11 +1,18 @@
 :root {
-	--color-bg: #faf6f1;
-	--color-text: #2d1b0e;
-	--color-accent: #3b1f0a;
-	--color-muted: #7a5c3d;
-	--color-border: #e0cfc0;
-	--color-card: #ffffff;
-	--radius: 8px;
+	--color-bg: #adffec;
+	--color-text: #1e0a35;
+	--color-accent: #8b2fc9;
+	--color-accent-mint: #2ecda7;
+	--color-accent-pink: #f0609e;
+	--color-muted: #b06ec4;
+	--color-border: #d49ef5;
+	--color-card: #adffec;
+	--color-white: #ffffff;
+	--color-error: #69002f;
+	--color-rating: #FBB13C;
+	--color-table-header: #f5ede4;
+	--color-table-row-hover: #f9f2eb;
+	--radius: 0.25rem;
 }
 
 a {
@@ -16,6 +23,7 @@ h1,
 h2,
 h3 {
 	line-height: 1.2;
+    color: var(--color-accent);
 }
 
 button,
@@ -39,14 +47,14 @@ button:hover,
 }
 
 .btn-primary {
-	background: var(--color-accent);
-	color: #faf6f1;
+	background: linear-gradient(135deg, var(--color-accent), var(--color-accent-pink));
+	color: var(--color-white);
 }
 
 .btn-secondary {
 	background: transparent;
-	border: 2px solid var(--color-accent);
-	color: var(--color-accent);
+	border: 2px solid var(--color-accent-mint);
+	color: var(--color-accent-mint);
 }
 
 input,
@@ -89,6 +97,6 @@ label {
 }
 
 .error {
-	color: #c0392b;
+	color: var(--color-error);
 	font-size: 0.85rem;
 }

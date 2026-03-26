@@ -3,7 +3,7 @@
 </script>
 
 <nav>
-	<a href="/" class="brand">☕ Espresso Notes</a>
+	<a href="/" class="brand">☕ Coffee Notes</a>
 	<a href="/notes">All notes</a>
 	<a href="/notes/new">+ New note</a>
 </nav>
@@ -13,7 +13,7 @@
 </main>
 
 <footer>
-	<p>Espresso Notes — powered by <a href="https://hygraph.com" target="_blank" rel="noopener">Hygraph</a></p>
+	<p>Coffee Notes</p>
 </footer>
 
 <style>
@@ -25,8 +25,8 @@
 
 	:global(body) {
 		font-family: 'Segoe UI', system-ui, sans-serif;
-		background: #faf6f1;
-		color: #2d1b0e;
+		background: var(--color-bg);
+		color: var(--color-text);
 		min-height: 100vh;
 	}
 
@@ -35,12 +35,12 @@
 		align-items: center;
 		gap: 1.5rem;
 		padding: 1rem 2rem;
-		background: #3b1f0a;
-		color: #faf6f1;
+		background: var(--color-accent);
+		color: var(--color-bg);
 	}
 
 	nav a {
-		color: #faf6f1;
+		color: var(--color-bg);
 		text-decoration: none;
 		font-size: 0.95rem;
 	}
@@ -64,11 +64,11 @@
 	footer {
 		text-align: center;
 		padding: 2rem;
-		color: #7a5c3d;
+		color: var(--color-muted);
 		font-size: 0.85rem;
 	}
 
 	footer a {
-		color: #7a5c3d;
+		color: var(--color-muted);
 	}
 </style>

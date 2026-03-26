@@ -8,7 +8,7 @@
 </script>
 
 <svelte:head>
-	<title>{note.title} · Espresso Notes</title>
+	<title>{note.title} · Coffee Notes</title>
 </svelte:head>
 
 <div class="back"><a href="/notes">← All notes</a></div>
@@ -18,7 +18,7 @@
 		<div class="title-row">
 			<h1>{note.title}</h1>
 			{#if note.rating}
-				<span class="rating">{'★'.repeat(note.rating)}{'☆'.repeat(5 - note.rating)}</span>
+				<span class="rating">{'★'.repeat(note.rating)}{'☆'.repeat(10 - note.rating)}</span>
 			{/if}
 		</div>
 		<p class="date">{new Date(note.date).toLocaleDateString('nl-NL', { dateStyle: 'long' })}</p>
@@ -123,7 +123,7 @@
 
 	.rating {
 		font-size: 1.2rem;
-		color: #c0851a;
+		color: var(--color-rating);
 		letter-spacing: 2px;
 	}
 
