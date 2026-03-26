@@ -4,82 +4,50 @@
 	import '../lib/styles/styles.css';
 
 	let { children } = $props();
-
-	// Check if we're in the espresso section
-	const isEspressoRoute = $derived($page.url.pathname.startsWith('/espresso'));
 </script>
 
 <svelte:head>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </svelte:head>
 
-{#if !isEspressoRoute}
-	<nav class="main-nav">
-		<div class="nav-container">
-			<a href={resolve('/')} class="nav-brand">mijnnaamisbas</a>
-			<div class="nav-links">
-				<a
-					href={resolve('/bookmarks')}
-					class:active={$page.url.pathname.startsWith('/bookmarks')}
-				>
-					📚 Bookmarks
-				</a>
-				<a
-					href={resolve('/tidal')}
-					class:active={$page.url.pathname.startsWith('/tidal')}
-				>
-					🎵 Tidal
-				</a>
-				<a
-					href={resolve('/espresso')}
-					class:active={$page.url.pathname.startsWith('/espresso')}
-				>
-					☕ Coffee Notes
-				</a>
-			</div>
+<nav class="main-nav">
+	<div class="nav-container">
+		<a href={resolve('/')} class="nav-brand">mijnnaamisbas</a>
+		<div class="nav-links">
+			<a href={resolve('/bookmarks')} class:active={$page.url.pathname.startsWith('/bookmarks')}>
+				📚 Bookmarks
+			</a>
+			<a href={resolve('/tidal')} class:active={$page.url.pathname.startsWith('/tidal')}>
+				🎵 Tidal
+			</a>
+			<a href={resolve('/espresso')} class:active={$page.url.pathname.startsWith('/espresso')}>
+				☕ Coffee Notes
+			</a>
 		</div>
-	</nav>
+	</div>
+</nav>
 
-	<main class="main-content">
-		{@render children()}
-	</main>
-
-	<footer class="main-footer">
-		<p>&copy; 2026 Bas van Wouwen · Built with SvelteKit 2 & Svelte 5</p>
-	</footer>
-{:else}
-	<!-- Espresso section has its own layout -->
+<main class="main-content">
 	{@render children()}
-{/if}
+</main>
+
+<footer class="main-footer">
+	<p>&copy; 2026 Bas van Wouwen · Built with SvelteKit 2 & Svelte 5</p>
+</footer>
 
 <style>
-	:global(*) {
-		box-sizing: border-box;
-	}
-
-	:global(body) {
-		margin: 0;
-		padding: 0;
-		font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-		background-color: #f9f9f9;
-		color: #35495e;
-		min-height: 100vh;
-		display: flex;
-		flex-direction: column;
-	}
-
 	.main-nav {
-		background: linear-gradient(135deg, #3b8070 0%, #2d6559 100%);
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+		background: var(--gradient-primary);
+		box-shadow: var(--shadow-md);
 		position: sticky;
 		top: 0;
-		z-index: 100;
+		z-index: var(--z-sticky);
 	}
 
 	.nav-container {
-		max-width: 1200px;
+		max-width: var(--max-width-xl);
 		margin: 0 auto;
-		padding: 0 2rem;
+		padding: 0 var(--space-xl);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -87,82 +55,93 @@
 	}
 
 	.nav-brand {
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: white;
+		font-size: var(--font-size-xl);
+		font-weight: var(--font-weight-bold);
+		color: var(--color-text-inverse);
 		text-decoration: none;
-		transition: opacity 0.2s;
+		transition: opacity var(--transition-fast);
 	}
 
 	.nav-brand:hover {
 		opacity: 0.85;
 	}
 
+	.nav-brand:focus-visible {
+		outline: 2px solid var(--color-text-inverse);
+		outline-offset: 2px;
+		border-radius: var(--radius-xs);
+	}
+
 	.nav-links {
 		display: flex;
-		gap: 0.5rem;
+		gap: var(--space-sm);
 		align-items: center;
 	}
 
 	.nav-links a {
-		padding: 0.5rem 1rem;
-		color: rgba(255, 255, 255, 0.9);
+		padding: var(--space-sm) var(--space-md);
+		color: var(--color-text-inverse);
+		opacity: 0.9;
 		text-decoration: none;
-		border-radius: 6px;
-		transition: all 0.2s;
-		font-weight: 500;
-		font-size: 0.95rem;
+		border-radius: var(--radius-md);
+		transition: all var(--transition-fast);
+		font-weight: var(--font-weight-medium);
+		font-size: var(--font-size-sm);
 	}
 
 	.nav-links a:hover {
-		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
+		background-color: oklch(1 0 0 / 0.1);
+		opacity: 1;
 	}
 
 	.nav-links a.active {
-		background-color: rgba(255, 255, 255, 0.2);
-		color: white;
+		background-color: oklch(1 0 0 / 0.2);
+		opacity: 1;
+		font-weight: var(--font-weight-semibold);
 	}
 
-	.nav-links a:focus {
-		outline: 2px solid rgba(255, 255, 255, 0.5);
+	.nav-links a:focus-visible {
+		outline: 2px solid var(--color-text-inverse);
 		outline-offset: 2px;
 	}
 
 	.main-content {
 		flex: 1;
 		width: 100%;
+		min-height: calc(100vh - 60px - 80px); /* viewport - nav - footer */
 	}
 
 	.main-footer {
-		background-color: #35495e;
-		color: rgba(255, 255, 255, 0.7);
+		background-color: var(--color-text-primary);
+		color: var(--color-text-inverse);
+		opacity: 0.7;
 		text-align: center;
-		padding: 2rem;
-		margin-top: 4rem;
+		padding: var(--space-xl);
+		margin-top: var(--space-3xl);
 	}
 
 	.main-footer p {
 		margin: 0;
-		font-size: 0.9rem;
+		font-size: var(--font-size-sm);
 	}
 
+	/* Responsive Design */
 	@media (max-width: 768px) {
 		.nav-container {
-			padding: 0 1rem;
+			padding: 0 var(--space-md);
 		}
 
 		.nav-brand {
-			font-size: 1.1rem;
+			font-size: var(--font-size-lg);
 		}
 
 		.nav-links {
-			gap: 0.25rem;
+			gap: var(--space-xs);
 		}
 
 		.nav-links a {
-			padding: 0.4rem 0.75rem;
-			font-size: 0.85rem;
+			padding: var(--space-xs) var(--space-sm);
+			font-size: var(--font-size-xs);
 		}
 	}
 </style>

@@ -62,18 +62,22 @@ export const CONSTANTS = {
 
 	/**
 	 * Design tokens
+	 * Reference: All design tokens are defined in src/lib/styles/base/variables.css using OKLCH color space
+	 *
+	 * Brand Colors:
+	 * - Primary: #17ffbe (oklch(0.89 0.18 166)) - Mint
+	 * - Secondary: #ef729e (oklch(0.70 0.16 350)) - Pink
 	 */
 	DESIGN: {
-		colors: {
-			primary: '#3b8070',
-			secondary: '#35495e',
-			text: '#666',
-			border: '#e0e0e0'
-		},
-		borderRadius: {
-			small: '4px',
-			medium: '8px',
-			large: '12px'
+		/**
+		 * Responsive breakpoints (synced with CSS variables)
+		 * Use these for JavaScript-based responsive behavior
+		 */
+		breakpoints: {
+			mobile: 480,
+			tablet: 768,
+			desktop: 1024,
+			wide: 1280
 		}
 	},
 

@@ -106,12 +106,12 @@
 
 <style>
 	.error-message {
-		background-color: #fee;
-		border: 1px solid #fcc;
-		border-radius: 4px;
-		color: #c00;
-		padding: 0.75rem;
-		margin-bottom: 1rem;
+		background-color: oklch(0.95 0.05 25);
+		border: var(--border-width) solid oklch(0.85 0.10 25);
+		border-radius: var(--radius-sm);
+		color: var(--color-error);
+		padding: var(--space-md);
+		margin-bottom: var(--space-md);
 	}
 
 	.form-group {
@@ -124,32 +124,32 @@
 
 	label {
 		display: block;
-		font-weight: 600;
-		font-size: 0.9rem;
-		margin-bottom: 0.5rem;
-		color: #35495e;
+		font-weight: var(--font-weight-semibold);
+		font-size: var(--font-size-sm);
+		margin-bottom: var(--space-sm);
+		color: var(--color-text-primary);
 	}
 
 	.required {
-		color: #c00;
+		color: var(--color-error);
 	}
 
 	input,
 	textarea {
 		width: 100%;
-		padding: 0.625rem 0.75rem;
-		border: 1px solid #ddd;
-		border-radius: 4px;
-		font-size: 1rem;
+		padding: var(--space-sm) var(--space-md);
+		border: var(--border-width) solid var(--color-border-primary);
+		border-radius: var(--radius-sm);
+		font-size: var(--font-size-base);
 		font-family: inherit;
-		transition: border-color 0.15s;
+		transition: border-color var(--transition-fast);
 	}
 
 	input:focus,
 	textarea:focus {
 		outline: none;
-		border-color: #3b8070;
-		box-shadow: 0 0 0 3px rgba(59, 128, 112, 0.1);
+		border-color: var(--color-border-focus);
+		box-shadow: var(--shadow-focus);
 	}
 
 	textarea {
@@ -159,19 +159,19 @@
 
 	.hint {
 		display: block;
-		font-size: 0.8rem;
-		color: #666;
-		margin-top: 0.25rem;
+		font-size: var(--font-size-xs);
+		color: var(--color-text-secondary);
+		margin-top: var(--space-xs);
 	}
 
 	.btn {
-		padding: 0.625rem 1.25rem;
+		padding: var(--space-sm) var(--space-lg);
 		border: none;
-		border-radius: 4px;
-		font-size: 0.95rem;
-		font-weight: 600;
+		border-radius: var(--radius-md);
+		font-size: var(--font-size-base);
+		font-weight: var(--font-weight-semibold);
 		cursor: pointer;
-		transition: all 0.15s;
+		transition: all var(--transition-fast);
 	}
 
 	.btn:disabled {
@@ -180,31 +180,31 @@
 	}
 
 	.btn-primary {
-		background-color: #3b8070;
-		color: white;
+		background: var(--gradient-primary);
+		color: var(--color-text-inverse);
 	}
 
 	.btn-primary:hover:not(:disabled) {
-		background-color: #2d6559;
+		background: var(--gradient-primary-hover);
 	}
 
 	.btn-primary:focus {
-		outline: 2px solid #3b8070;
+		outline: 2px solid var(--color-border-focus);
 		outline-offset: 2px;
 	}
 
 	.btn-secondary {
 		background-color: transparent;
-		border: 1px solid #ddd;
-		color: #35495e;
+		border: var(--border-width) solid var(--color-border-primary);
+		color: var(--color-text-primary);
 	}
 
 	.btn-secondary:hover:not(:disabled) {
-		background-color: #f5f5f5;
+		background-color: var(--color-bg-secondary);
 	}
 
 	.btn-secondary:focus {
-		outline: 2px solid #35495e;
+		outline: 2px solid var(--color-text-primary);
 		outline-offset: 2px;
 	}
 </style>

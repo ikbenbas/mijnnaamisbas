@@ -168,14 +168,14 @@
 }
 
 .page-header h1 {
-    font-size: 2rem;
-    color: #35495e;
-    margin: 0 0 0.5rem 0;
+    font-size: var(--font-size-4xl);
+    color: var(--color-text-primary);
+    margin: 0 0 var(--space-sm) 0;
 }
 
 .subtitle {
-    color: #666;
-    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
     margin: 0;
 }
 
@@ -185,15 +185,15 @@
 }
 
 .connection-status {
-    background: white;
-    border-radius: 8px;
-    border: 2px solid #e0e0e0;
-    padding: 1.5rem;
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    border: var(--border-width-thick) solid var(--color-border-primary);
+    padding: var(--space-lg);
 }
 
 .connection-status.connected {
-    border-color: #3b8070;
-    background: #f0fdf4;
+    border-color: var(--color-primary);
+    background: var(--color-primary-light);
 }
 
 .connection-status.connected .status-info {
@@ -204,27 +204,27 @@
 }
 
 .connection-status.connected .status-icon {
-    background: #3b8070;
-    border-radius: 50%;
-    color: white;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    color: var(--color-text-inverse);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
+    font-weight: var(--font-weight-bold);
     height: 28px;
     width: 28px;
     flex-shrink: 0;
 }
 
 .connection-status.connected strong {
-    color: #35495e;
+    color: var(--color-text-primary);
     display: block;
-    margin-bottom: 0.25rem;
+    margin-bottom: var(--space-xs);
 }
 
 .user-stats {
-    color: #666;
-    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
     margin: 0;
 }
 
@@ -234,22 +234,22 @@
 
 .disconnect-btn {
     background: transparent;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    color: #666;
+    border: var(--border-width) solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
     cursor: pointer;
-    font-size: 0.875rem;
-    padding: 0.5rem 1rem;
-    transition: all 0.2s;
+    font-size: var(--font-size-sm);
+    padding: var(--space-sm) var(--space-md);
+    transition: all var(--transition-fast);
 }
 
 .disconnect-btn:hover {
-    background: #f5f5f5;
-    border-color: #999;
+    background: var(--color-bg-secondary);
+    border-color: var(--color-text-tertiary);
 }
 
 .connection-status.disconnected {
-    border-color: #e0e0e0;
+    border-color: var(--color-border-primary);
 }
 
 .connection-prompt {
@@ -257,32 +257,32 @@
 }
 
 .connection-prompt h3 {
-    color: #35495e;
-    font-size: 1.25rem;
-    margin: 0 0 0.5rem;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    margin: 0 0 var(--space-sm);
 }
 
 .connection-prompt p {
-    color: #666;
-    margin: 0 0 1.5rem;
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-lg);
 }
 
 .connect-btn {
-    background: #3b8070;
-    border-radius: 4px;
-    color: white;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-inverse);
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
+    gap: var(--space-sm);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-md) var(--space-lg);
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .connect-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 128, 112, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .connect-btn span {
@@ -290,26 +290,26 @@
 }
 
 .success-message {
-    background: #f0fdf4;
-    border: 1px solid #3b8070;
-    border-radius: 4px;
-    color: #3b8070;
-    margin-top: 1rem;
-    padding: 1rem;
+    background: var(--color-primary-light);
+    border: var(--border-width) solid var(--color-primary);
+    border-radius: var(--radius-sm);
+    color: var(--color-primary-dark);
+    margin-top: var(--space-md);
+    padding: var(--space-md);
 }
 
 .suggestion-form {
-    background: white;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    padding: 2rem;
-    margin-bottom: 2rem;
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    border: var(--border-width) solid var(--color-border-primary);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
 }
 
 .suggestion-form h2 {
-    color: #35495e;
-    font-size: 1.25rem;
-    margin: 0 0 1.5rem;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-xl);
+    margin: 0 0 var(--space-lg);
 }
 
 .form-group {
@@ -318,47 +318,47 @@
 
 .form-group label {
     display: block;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: #35495e;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-sm);
+    color: var(--color-text-primary);
 }
 
 .form-input {
     width: 100%;
-    padding: 0.75rem 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+    padding: var(--space-md) var(--space-md);
+    border: var(--border-width) solid var(--color-border-primary);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    transition: border-color var(--transition-fast);
     box-sizing: border-box;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: #3b8070;
-    box-shadow: 0 0 0 3px rgba(59, 128, 112, 0.1);
+    border-color: var(--color-border-focus);
+    box-shadow: var(--shadow-focus);
 }
 
 .submit-btn {
-    background-color: #3b8070;
+    background: var(--gradient-primary);
     border: none;
-    border-radius: 4px;
-    color: white;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-inverse);
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.75rem 2rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    padding: var(--space-md) var(--space-xl);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 128, 112, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .submit-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(59, 128, 112, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
 .submit-btn:disabled {
@@ -367,10 +367,10 @@
 }
 
 .error-message {
-    background: #fde8e8;
-    border: 1px solid #d24d4d;
+    background: var(--color-error-light);
+    border: 1px solid var(--color-error);
     border-radius: 4px;
-    color: #d24d4d;
+    color: var(--color-error);
     margin-bottom: 2rem;
     padding: 1rem;
 }
@@ -391,9 +391,9 @@
 }
 
 .personalized-badge {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-primary);
     border-radius: 16px;
-    color: white;
+    color: var(--color-text-inverse);
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.25rem 0.75rem;
@@ -410,8 +410,8 @@
 }
 
 .playlist-card {
-    background: white;
-    border: 1px solid #e0e0e0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-primary);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
@@ -422,17 +422,17 @@
 
 .playlist-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
 }
 
 .playlist-name {
-    color: #35495e;
+    color: var(--color-text-primary);
     font-size: 1.1rem;
     margin: 0;
 }
 
 .playlist-description {
-    color: #555;
+    color: var(--color-text-secondary);
     font-size: 0.9rem;
     margin: 0;
 }
@@ -442,7 +442,7 @@
 }
 
 .artists-label {
-    color: #666;
+    color: var(--color-text-secondary);
     font-weight: 600;
 }
 
@@ -456,15 +456,15 @@
 }
 
 .artists-list li {
-    background: #f5f5f5;
+    background: var(--color-background-secondary);
     border-radius: 4px;
     padding: 0.2rem 0.5rem;
 }
 
 .tidal-link {
-    background: #000;
+    background: var(--color-text-primary);
     border-radius: 4px;
-    color: white;
+    color: var(--color-text-inverse);
     display: inline-block;
     font-weight: 600;
     margin-top: auto;
@@ -476,6 +476,6 @@
 
 .tidal-link:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-md);
 }
 </style>

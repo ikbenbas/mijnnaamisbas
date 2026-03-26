@@ -87,7 +87,7 @@ ${genres ? `- Top genres: ${genres}` : ''}
 REQUEST: The user wants artist and song suggestions for: ${mood}${genre ? ` (genre: ${genre})` : ''}
 
 Based on their existing music taste, suggest 5 new playlist ideas that:
-1. Complement (try not to duplicate) their current collection
+1. Complement (no duplicates) their current collection
 2. Match the requested mood/genre
 3. Introduce them to new artists similar to their favorites
 

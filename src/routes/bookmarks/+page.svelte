@@ -68,61 +68,61 @@
 
 	.page-header h1 {
 		margin: 0;
-		color: #35495e;
-		font-size: 2rem;
+		color: var(--color-text-primary);
+		font-size: var(--font-size-4xl);
 	}
 
 	.btn-primary {
-		background: #3b8070;
-		color: white;
-		padding: 0.625rem 1.25rem;
-		border-radius: 6px;
+		background: var(--gradient-primary);
+		color: var(--color-text-inverse);
+		padding: var(--space-sm) var(--space-lg);
+		border-radius: var(--radius-md);
 		text-decoration: none;
-		font-weight: 600;
-		transition: all 0.2s;
+		font-weight: var(--font-weight-semibold);
+		transition: all var(--transition-fast);
 		display: inline-block;
 	}
 
 	.btn-primary:hover {
-		background: #2d6559;
+		background: var(--gradient-primary-hover);
 		transform: translateY(-1px);
-		box-shadow: 0 4px 12px rgba(59, 128, 112, 0.3);
+		box-shadow: var(--shadow-md);
 	}
 
 	.keyboard-hint {
-		background: #f0f9f7;
-		border-left: 3px solid #3b8070;
-		padding: 0.75rem 1rem;
-		margin-bottom: 2rem;
-		border-radius: 4px;
+		background: var(--color-primary-light);
+		border-left: 3px solid var(--color-primary);
+		padding: var(--space-md) var(--space-md);
+		margin-bottom: var(--space-xl);
+		border-radius: var(--radius-sm);
 	}
 
 	.keyboard-hint span {
-		color: #2d6559;
-		font-size: 0.9rem;
+		color: var(--color-text-primary);
+		font-size: var(--font-size-sm);
 	}
 
 	kbd {
-		background: white;
-		border: 1px solid #ddd;
-		border-radius: 3px;
+		background: var(--color-bg-primary);
+		border: var(--border-width) solid var(--color-border-primary);
+		border-radius: var(--radius-xs);
 		padding: 0.125rem 0.375rem;
-		font-family: monospace;
+		font-family: var(--font-mono);
 		font-size: 0.85em;
 	}
 
 	.empty-state {
 		text-align: center;
-		padding: 4rem 2rem;
-		background: white;
-		border-radius: 12px;
-		border: 2px dashed #e0e0e0;
+		padding: var(--space-3xl) var(--space-xl);
+		background: var(--color-bg-primary);
+		border-radius: var(--radius-xl);
+		border: var(--border-width-thick) dashed var(--color-border-secondary);
 	}
 
 	.empty-state p {
-		color: #666;
-		margin: 0 0 1.5rem 0;
-		font-size: 1.1rem;
+		color: var(--color-text-secondary);
+		margin: 0 0 var(--space-lg) 0;
+		font-size: var(--font-size-lg);
 	}
 
 	.bookmark-grid {
@@ -135,16 +135,16 @@
 	}
 
 	.bookmark-card {
-		background: white;
-		border: 1px solid #e0e0e0;
-		border-radius: 8px;
-		transition: all 0.2s;
+		background: var(--color-bg-primary);
+		border: var(--border-width) solid var(--color-border-primary);
+		border-radius: var(--radius-lg);
+		transition: all var(--transition-fast);
 		overflow: hidden;
 	}
 
 	.bookmark-card:hover {
-		border-color: #3b8070;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+		border-color: var(--color-primary);
+		box-shadow: var(--shadow-md);
 		transform: translateY(-2px);
 	}
 
@@ -156,23 +156,23 @@
 	}
 
 	.bookmark-card h3 {
-		margin: 0 0 0.5rem 0;
-		color: #35495e;
-		font-size: 1.1rem;
+		margin: 0 0 var(--space-sm) 0;
+		color: var(--color-text-primary);
+		font-size: var(--font-size-lg);
 	}
 
 	.bookmark-card .description {
-		margin: 0 0 0.75rem 0;
-		color: #666;
-		font-size: 0.9rem;
-		line-height: 1.5;
+		margin: 0 0 var(--space-md) 0;
+		color: var(--color-text-secondary);
+		font-size: var(--font-size-sm);
+		line-height: var(--line-height-normal);
 	}
 
 	.bookmark-card .link-url {
 		display: block;
-		color: #3b8070;
-		font-size: 0.85rem;
-		margin-top: 0.5rem;
+		color: var(--color-primary);
+		font-size: var(--font-size-xs);
+		margin-top: var(--space-sm);
 	}
 
 	@media (max-width: 768px) {

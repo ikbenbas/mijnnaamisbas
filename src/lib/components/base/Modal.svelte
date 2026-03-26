@@ -83,7 +83,20 @@
 				aria-label="Close modal"
 				type="button"
 			>
-				✕
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<line x1="18" y1="6" x2="6" y2="18"></line>
+					<line x1="6" y1="6" x2="18" y2="18"></line>
+				</svg>
 			</button>
 
 			{#if title}
@@ -108,15 +121,15 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(255, 255, 255, 0.7);
-		backdrop-filter: blur(3px);
+		right: 0;
+		bottom: 0;
+		background: oklch(0 0 0 / 0.5);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		z-index: 999;
-		animation: fadeIn 0.15s ease-out;
+		padding: var(--space-lg);
+		z-index: var(--z-modal);
+		animation: fadeIn var(--transition-fast);
 	}
 
 	@keyframes fadeIn {
@@ -129,81 +142,72 @@
 	}
 
 	.modal {
-		background-color: #fff;
-		box-shadow:
-			0 4px 8px 0 rgba(0, 0, 0, 0.2),
-			0 6px 20px 0 rgba(0, 0, 0, 0.2);
-		box-sizing: border-box;
-		padding: 1.5rem;
-		width: 90vw;
+		background: var(--color-bg-primary);
+		border-radius: var(--radius-xl);
+		box-shadow: var(--shadow-xl);
+		width: 100%;
 		max-height: 90vh;
 		overflow-y: auto;
-		border-radius: 8px;
-		animation: slideIn 0.2s ease-out;
 		position: relative;
+		padding: var(--space-xl);
+		animation: slideUp var(--transition-base);
 	}
 
-	@keyframes slideIn {
+	@keyframes slideUp {
 		from {
-			transform: translateY(-20px);
 			opacity: 0;
+			transform: translateY(20px);
 		}
 		to {
-			transform: translateY(0);
 			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 
 	.modal__close {
-		background: none;
-		border: none;
-		cursor: pointer;
 		position: absolute;
-		right: 1.5rem;
-		top: 1.5rem;
-		font-size: 1.5rem;
-		color: #666;
-		width: 2rem;
-		height: 2rem;
+		top: var(--space-lg);
+		right: var(--space-lg);
+		background: transparent;
+		border: none;
+		padding: var(--space-xs);
+		cursor: pointer;
+		color: var(--color-text-secondary);
+		border-radius: var(--radius-sm);
+		transition: all var(--transition-fast);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border-radius: 4px;
-		transition: all 0.15s;
 	}
 
 	.modal__close:hover {
-		background-color: rgba(0, 0, 0, 0.05);
-		color: #000;
+		background: var(--color-bg-secondary);
+		color: var(--color-text-primary);
 	}
 
-	.modal__close:focus {
-		outline: 2px solid #3b8070;
+	.modal__close:focus-visible {
+		outline: 2px solid var(--color-border-focus);
 		outline-offset: 2px;
 	}
 
 	.modal__title {
-		margin: 0 0 1.5rem 0;
-		padding-right: 2rem;
-		font-size: 1.5rem;
-		color: #35495e;
+		font-size: var(--font-size-2xl);
+		font-weight: var(--font-weight-bold);
+		color: var(--color-text-primary);
+		margin: 0 0 var(--space-lg) 0;
+		padding-right: var(--space-2xl);
 	}
 
 	.modal__content {
-		margin-bottom: 1rem;
+		color: var(--color-text-primary);
 	}
 
 	.modal__actions {
 		display: flex;
+		gap: var(--space-md);
 		justify-content: flex-end;
-		gap: 0.75rem;
-		margin-top: 1.5rem;
-		padding-top: 1rem;
-		border-top: 1px solid #e0e0e0;
-	}
-
-	/* Ensure body doesn't scroll when modal is open */
-	:global(body:has(.modal-overlay)) {
-		overflow: hidden;
+		margin-top: var(--space-xl);
+		padding-top: var(--space-lg);
+		border-top: var(--border-width) solid var(--color-border-secondary);
 	}
 </style>
