@@ -10,3 +10,6 @@ export * from './queries/espresso';
 // Types
 export * from './types/bookmark';
 export * from './types/espresso-note';
+
+// Base components
+export { default as Modal } from './components/base/Modal.svelte';

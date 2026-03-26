@@ -84,17 +84,17 @@ ${artistNames ? `- Favorite artists: ${artistNames}` : ''}
 ${playlistNames ? `- Playlist examples: ${playlistNames}` : ''}
 ${genres ? `- Top genres: ${genres}` : ''}
 
-REQUEST: The user wants playlist suggestions for: ${mood}${genre ? ` (genre: ${genre})` : ''}
+REQUEST: The user wants artist and song suggestions for: ${mood}${genre ? ` (genre: ${genre})` : ''}
 
 Based on their existing music taste, suggest 5 new playlist ideas that:
-1. Complement (not duplicate) their current collection
+1. Complement (try not to duplicate) their current collection
 2. Match the requested mood/genre
 3. Introduce them to new artists similar to their favorites
 
 For each playlist, provide:
 - A creative playlist name
 - A brief description (1-2 sentences)
-- 3-5 example artists that would fit (mix of familiar and new)
+- 10-15 example artists that would fit (mix of familiar and new)
 
 Format your response as a JSON array with objects containing: name, description, artists (array of strings).
 Only respond with the JSON array, no other text.`;
@@ -105,7 +105,7 @@ Only respond with the JSON array, no other text.`;
 For each playlist, provide:
 - A creative playlist name
 - A brief description (1-2 sentences)
-- 3-5 example artists that would fit
+- 10-15 example artists that would fit
 
 Format your response as a JSON array with objects containing: name, description, artists (array of strings).
 Only respond with the JSON array, no other text.`;
