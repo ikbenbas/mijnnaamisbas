@@ -57,10 +57,10 @@ graph TB
     Routes --> CrossCutting
     Service --> CrossCutting
 
-    style Presentation fill:#e1f5ff
-    style Service fill:#fff4e1
-    style Data fill:#ffe1e1
-    style CrossCutting fill:#e8f5e8
+    style Presentation fill:#2252e4
+    style Service fill:#dd784b
+    style Data fill:#db1f35
+    style CrossCutting fill:#00af81
 ```
 
 ## Request Flow
@@ -83,9 +83,9 @@ flowchart TD
     Response --> Redirect[Route Handler<br/>Redirect to /bookmarks]
     Redirect --> End([Complete])
 
-    style Start fill:#e1f5ff
-    style API fill:#ffe1e1
-    style End fill:#e8f5e8
+    style Start fill:#2252e4
+    style API fill:#db1f35
+    style End fill:#00af81
 ```
 
 ### Fetching Bookmarks
@@ -103,9 +103,9 @@ flowchart TD
     RouteHandler2 --> Component[Component<br/>Render bookmark list]
     Component --> End([Display])
 
-    style Start fill:#e1f5ff
-    style API fill:#ffe1e1
-    style End fill:#e8f5e8
+    style Start fill:#2252e4
+    style API fill:#db1f35
+    style End fill:#00af81
 ```
 
 ## Dependency Graph
@@ -126,9 +126,9 @@ graph LR
 
     HU --> API[Hygraph API]
 
-    style Routes fill:#e1f5ff
-    style HU fill:#fff4e1
-    style API fill:#ffe1e1
+    style Routes fill:#2252e4
+    style HU fill:#dd784b
+    style API fill:#db1f35
 ```
 
 ## Component Organization
@@ -144,9 +144,9 @@ graph TD
 
     App --> Future[Future:<br/>BookmarkCard, NoteCard, etc.]
 
-    style Root fill:#e1f5ff
-    style Base fill:#e8f5e8
-    style App fill:#fff4e1
+    style Root fill:#2252e4
+    style Base fill:#00af81
+    style App fill:#dd784b
 ```
 
 ## Service Exports
@@ -228,10 +228,10 @@ flowchart TD
     Strategy --> Utils
     Utils --> API
 
-    style RouteHandler fill:#e1f5ff
-    style Strategy fill:#fff4e1
-    style Utils fill:#e8f5e8
-    style API fill:#ffe1e1
+    style RouteHandler fill:#2252e4
+    style Strategy fill:#dd784b
+    style Utils fill:#00af81
+    style API fill:#db1f35
 ```
 
 ## Type Safety Flow
@@ -281,12 +281,12 @@ graph TD
     Features --> FTidal[enableTidal: true]
     Features --> FEspresso[enableEspresso: true]
 
-    style Root fill:#e1f5ff
-    style API fill:#fff4e1
-    style Pagination fill:#e8f5e8
-    style Validation fill:#ffe1e1
-    style Design fill:#f5e1ff
-    style Features fill:#ffffcc
+    style Root fill:#2252e4
+    style API fill:#dd784b
+    style Pagination fill:#00af81
+    style Validation fill:#db1f35
+    style Design fill:#2d2d2d
+    style Features fill:#f4d74b
 ```
 
 ## Testing Structure
@@ -316,9 +316,9 @@ graph TD
     Integration --> IServices[services/]
     IServices --> IHygraph[hygraph.test.ts]
 
-    style Root fill:#e1f5ff
-    style Unit fill:#e8f5e8
-    style Integration fill:#fff4e1
+    style Root fill:#2252e4
+    style Unit fill:#00af81
+    style Integration fill:#dd784b
 ```
 
 ## Performance Optimization
@@ -334,10 +334,10 @@ flowchart TD
     FetchAPI --> Cache[Cache]
     Cache --> Return[Return]
 
-    style Request fill:#e1f5ff
-    style CheckCache fill:#fff4e1
-    style ReturnCached fill:#e8f5e8
-    style FetchAPI fill:#ffe1e1
+    style Request fill:#2252e4
+    style CheckCache fill:#dd784b
+    style ReturnCached fill:#00af81
+    style FetchAPI fill:#db1f35
 ```
 
 ### Pagination Strategy
