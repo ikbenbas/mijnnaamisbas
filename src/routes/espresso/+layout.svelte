@@ -1,11 +1,11 @@
 <script lang="ts">
-	import '../app.css';
+	import '$lib/styles/espresso.css';
 </script>
 
 <nav>
-	<a href="/" class="brand">☕ Coffee Notes</a>
-	<a href="/notes">All notes</a>
-	<a href="/notes/new">+ New note</a>
+	<a href="/espresso" class="brand">☕ Coffee Notes</a>
+	<a href="/espresso/notes">All notes</a>
+	<a href="/espresso/notes/new">+ New note</a>
 </nav>
 
 <main>
@@ -66,9 +66,5 @@
 		padding: 2rem;
 		color: var(--color-muted);
 		font-size: 0.85rem;
-	}
-
-	footer a {
-		color: var(--color-muted);
 	}
 </style>

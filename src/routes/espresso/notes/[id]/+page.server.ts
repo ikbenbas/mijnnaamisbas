@@ -1,10 +1,10 @@
 import type { PageServerLoad } from './$types';
-import { getClient, GET_NOTE } from '$lib';
+import { getHygraphClient, GET_NOTE } from '$lib';
 import type { EspressoNote } from '$lib';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const client = getClient();
+	const client = getHygraphClient();
 	const data = await client.request<{ espressoNote: EspressoNote | null }>(GET_NOTE, {
 		id: params.id
 	});

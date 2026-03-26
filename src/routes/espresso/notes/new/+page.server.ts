@@ -1,9 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
-import { getClient, getMutationClient, CREATE_NOTE, PUBLISH_NOTE, GET_METHOD_TYPES } from '$lib';
+import { getHygraphClient, getHygraphMutationClient, CREATE_NOTE, PUBLISH_NOTE, GET_METHOD_TYPES } from '$lib';
 import { redirect, fail } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async () => {
-	const client = getClient();
+	const client = getHygraphClient();
 	const result = await client.request<{ __type: { enumValues: { name: string }[] } }>(
 		GET_METHOD_TYPES
 	);
@@ -37,7 +37,7 @@ export const actions: Actions = {
 			return fail(422, { error: 'Rating must be between 1 and 10.' });
 		}
 
-		const client = getMutationClient();
+		const client = getHygraphMutationClient();
 
 		const created = await client.request<{ createEspressoNote: { id: string } }>(CREATE_NOTE, {
 			title,
@@ -60,6 +60,6 @@ export const actions: Actions = {
 		// Auto-publish the new note so it is visible in the Content API
 		await client.request(PUBLISH_NOTE, { id });
 
-		redirect(303, `/notes/${id}`);
+		redirect(303, `/espresso/notes/${id}`);
 	}
 };

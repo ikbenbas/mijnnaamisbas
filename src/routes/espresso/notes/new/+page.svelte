@@ -2,8 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData, PageData } from './$types';
 
-	export let form: ActionData;
-	export let data: PageData;
+	let { data, form }: { data: PageData; form?: ActionData } = $props();
 
 	const today = new Date().toISOString().slice(0, 10);
 	const methodType = 'espresso'; // Default method type for new notes
@@ -20,7 +19,7 @@
 	<title>New note · Coffee Notes</title>
 </svelte:head>
 
-<div class="back"><a href="/notes">← All notes</a></div>
+<div class="back"><a href="/espresso/notes">← All notes</a></div>
 <h1>New experiment</h1>
 
 {#if form?.error}
@@ -58,7 +57,7 @@
 			<label for="methodType">Method type <span class="req">*</span></label>
 			<select id="methodType" name="methodType" required value={methodType}>
 				<option value="" disabled selected>Select a method…</option>
-				{#each data.methodTypes as method}
+				{#each data.methodTypes as method (method)}
 					<option value={method}>{formatMethodType(method)}</option>
 				{/each}
 			</select>
@@ -111,7 +110,7 @@
 	</fieldset>
 
 	<div class="form-actions">
-		<a href="/notes" class="btn btn-secondary">Cancel</a>
+		<a href="/espresso/notes" class="btn btn-secondary">Cancel</a>
 		<button type="submit" class="btn btn-primary">Save note</button>
 	</div>
 </form>

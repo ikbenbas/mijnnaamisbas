@@ -1,17 +1,17 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 
-	const { note } = data;
-	const ratio = note.yield && note.dosage ? (note.yield / note.dosage).toFixed(1) : null;
+	const note = $derived(data.note);
+	const ratio = $derived(note.yield && note.dosage ? (note.yield / note.dosage).toFixed(1) : null);
 </script>
 
 <svelte:head>
 	<title>{note.title} · Coffee Notes</title>
 </svelte:head>
 
-<div class="back"><a href="/notes">← All notes</a></div>
+<div class="back"><a href="/espresso/notes">← All notes</a></div>
 
 <article class="note">
 	<header>

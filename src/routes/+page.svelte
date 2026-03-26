@@ -27,6 +27,9 @@
             <a href={resolve('/tidal')} class="button--green">
                 🎵 Tidal Playlist Suggestions
             </a>
+            <a href={resolve('/espresso')} class="button--green">
+                ☕ Coffee Notes
+            </a>
         </div>
     </div>
 </div>

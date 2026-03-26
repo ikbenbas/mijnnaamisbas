@@ -8,6 +8,7 @@ Personal website for Bas, built with SvelteKit 2 and Svelte 5.
 - Bookmarks management pages
 - Auth/login page
 - 🎵 Tidal Playlist Suggestions powered by Mistral AI (European AI)
+- ☕ Coffee Notes tracker - track your espresso brewing experiments
 
 ## Setup
 

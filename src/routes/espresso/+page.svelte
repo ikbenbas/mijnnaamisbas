@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 
-	export let data: PageData;
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -11,18 +11,18 @@
 <section class="hero">
 	<h1>☕ Coffee Notes</h1>
 	<p>Track your coffee experiments — dial in the perfect shot.</p>
-	<a href="/notes/new" class="btn btn-primary">Start a new note</a>
+	<a href="/espresso/notes/new" class="btn btn-primary">Start a new note</a>
 </section>
 
 <section class="recent">
 	<h2>Recent experiments</h2>
 	{#if data.notes.length === 0}
-		<p class="empty">No notes yet. <a href="/notes/new">Add your first experiment!</a></p>
+		<p class="empty">No notes yet. <a href="/espresso/notes/new">Add your first experiment!</a></p>
 	{:else}
 		<ul class="note-list">
-			{#each data.notes as note}
+			{#each data.notes as note (note.id)}
 				<li class="note-card">
-					<a href="/notes/{note.id}">
+					<a href="/espresso/notes/{note.id}">
 						<div class="note-header">
 							<span class="note-title">{note.title}</span>
 							{#if note.rating}
@@ -38,7 +38,7 @@
 				</li>
 			{/each}
 		</ul>
-		<a href="/notes" class="btn btn-secondary" style="margin-top:1.5rem">View all notes</a>
+		<a href="/espresso/notes" class="btn btn-secondary" style="margin-top:1.5rem">View all notes</a>
 	{/if}
 </section>
 
