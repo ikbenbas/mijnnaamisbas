@@ -109,20 +109,22 @@
 <style>
 	.card {
 		background: var(--color-bg-primary);
-		border-radius: var(--radius-lg);
-		transition: all var(--transition-fast);
+		border-radius: 0;
+		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 	}
 
 	/* Variants */
 	.card--default {
 		background: var(--color-bg-primary);
+		border: var(--border-width-thick) solid var(--color-border-primary);
 	}
 
 	.card--bordered {
-		border: var(--border-width) solid var(--color-border-primary);
+		border: var(--border-width-thick) solid var(--color-border-primary);
 	}
 
 	.card--elevated {
+		border: var(--border-width-thick) solid var(--color-border-primary);
 		box-shadow: var(--shadow-md);
 	}
 
@@ -146,7 +148,7 @@
 	/* Interactive states */
 	.card--hoverable:hover {
 		box-shadow: var(--shadow-lg);
-		transform: translateY(-2px);
+		transform: translate(-2px, -2px);
 	}
 
 	.card--clickable {

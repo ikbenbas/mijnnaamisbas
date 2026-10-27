@@ -17,6 +17,12 @@ export const CONSTANTS = {
 		HYGRAPH: env.PUBLIC_HYGRAPH_ENDPOINT || '',
 		TIDAL: 'https://api.tidal.com'
 	},
+	/**
+	 * APP URL configuration
+	 */
+	APP_BASE: {
+		TIDAL: 'https://tidal.com'
+	},
 
 	/**
 	 * Responsive breakpoints (synced with TailwindCSS)

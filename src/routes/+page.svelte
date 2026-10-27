@@ -9,35 +9,42 @@
 	<title>mijnnaamisbas</title>
 </svelte:head>
 
-<div class="home-container">
-	<section class="hero">
-		<h1 class="hero-title">Welcome</h1>
-		<p class="hero-subtitle">Personal dashboard for Bas van Wouwen</p>
+<div class="home">
+	<section class="hero" aria-label="Intro">
+		<div class="hero__plane">
+			<div class="hero__grain" aria-hidden="true"></div>
+			<div class="hero__copy">
+				<p class="hero__eyebrow">Personal dashboard</p>
+				<h1 class="hero__brand">Mijnnaamisbas</h1>
+				<p class="hero__lede">Bookmarks, playlists, and coffee notes — dialed in.</p>
+			</div>
+			<a href={resolve('/espresso')} class="hero__cta">View coffee notes</a>
+		</div>
 	</section>
 
-	<section class="features">
-		<a href={resolve('/bookmarks')} class="feature-card">
-			<div class="feature-icon">📚</div>
+	<div class="section-bar">Featured</div>
+
+	<section class="features" aria-label="Sections">
+		<a href={resolve('/bookmarks')} class="feature">
+			<span class="feature__label">01</span>
 			<h2>Bookmarks</h2>
-			<p>Manage your saved links and resources</p>
+			<p>Saved links and resources</p>
 		</a>
-
-		<a href={resolve('/tidal')} class="feature-card">
-			<div class="feature-icon">🎵</div>
-			<h2>Tidal Playlists</h2>
-			<p>AI-powered music suggestions using Mistral AI</p>
+		<a href={resolve('/tidal')} class="feature">
+			<span class="feature__label">02</span>
+			<h2>Tidal</h2>
+			<p>AI playlist suggestions</p>
 		</a>
-
-		<a href={resolve('/espresso')} class="feature-card">
-			<div class="feature-icon">☕</div>
-			<h2>Coffee Notes</h2>
-			<p>Track your espresso brewing experiments</p>
+		<a href={resolve('/espresso')} class="feature">
+			<span class="feature__label">03</span>
+			<h2>Coffee notes</h2>
+			<p>Espresso dial-in log</p>
 		</a>
 	</section>
 
 	{#if data.bookmarks && data.bookmarks.length > 0}
-		<section class="recent-bookmarks">
-			<h2>Recent Bookmarks</h2>
+		<div class="section-bar">Recent bookmarks</div>
+		<section class="recent">
 			<ul class="bookmark-list">
 				{#each data.bookmarks.slice(0, 5) as bookmark (bookmark.id)}
 					<li class="bookmark-item">
@@ -56,102 +63,182 @@
 </div>
 
 <style>
-	.home-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 3rem 2rem;
+	.home {
+		width: 100%;
 	}
 
 	.hero {
-		text-align: center;
-		margin-bottom: 4rem;
-		padding: 2rem 0;
+		border-bottom: var(--border-width-thick) solid var(--color-black);
 	}
 
-	.hero-title {
-		font-size: 3rem;
-		font-weight: 700;
-		color: var(--color-text-primary);
-		margin: 0 0 1rem 0;
-		letter-spacing: -0.02em;
+	.hero__plane {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		gap: var(--space-xl);
+		min-height: min(72vh, 640px);
+		padding: clamp(2rem, 6vw, 4rem);
+		background:
+			linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.72) 100%),
+			linear-gradient(125deg, #1a1a1a 0%, #3d3d3d 40%, #0a0a0a 100%);
+		color: var(--color-offwhite);
+		overflow: hidden;
 	}
 
-	.hero-subtitle {
-		font-size: 1.25rem;
-		color: var(--color-text-secondary);
+	.hero__grain {
+		position: absolute;
+		inset: 0;
+		opacity: 0.18;
+		background-image: var(--pattern-dots);
+		background-size: 4px 4px;
+		pointer-events: none;
+		mix-blend-mode: soft-light;
+		animation: grain-shift 8s steps(4) infinite;
+	}
+
+	@keyframes grain-shift {
+		0%,
+		100% {
+			transform: translate(0, 0);
+		}
+		25% {
+			transform: translate(-2px, 1px);
+		}
+		50% {
+			transform: translate(1px, -2px);
+		}
+		75% {
+			transform: translate(-1px, -1px);
+		}
+	}
+
+	.hero__copy {
+		position: relative;
+		z-index: 1;
+		max-width: 36rem;
+	}
+
+	.hero__eyebrow {
+		margin: 0 0 0.75rem;
+		font-family: var(--font-handjet);
+		font-size: var(--font-size-lg);
+		letter-spacing: var(--letter-spacing-marquee);
+		text-transform: uppercase;
+		opacity: 0.85;
+	}
+
+	.hero__brand {
+		margin: 0 0 0.75rem;
+		font-family: var(--font-display);
+		font-size: clamp(2.75rem, 10vw, 5.5rem);
+		line-height: 0.95;
+		letter-spacing: -0.03em;
+		text-transform: uppercase;
+		color: var(--color-offwhite);
+	}
+
+	.hero__lede {
 		margin: 0;
+		font-size: var(--font-size-lg);
+		max-width: 28rem;
+		opacity: 0.9;
+	}
+
+	.hero__cta {
+		position: relative;
+		z-index: 1;
+		align-self: flex-start;
+		display: inline-flex;
+		align-items: center;
+		padding: 0.85rem 1.5rem;
+		background: var(--color-offwhite);
+		color: var(--color-ink);
+		font-family: var(--font-display);
+		font-size: clamp(0.95rem, 2vw, 1.15rem);
+		text-transform: uppercase;
+		text-decoration: none;
+		letter-spacing: 0.03em;
+		border: var(--border-width-thick) solid var(--color-black);
+		box-shadow: var(--shadow-md);
+		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+		opacity: 1;
+	}
+
+	.hero__cta:hover {
+		transform: translate(-2px, -2px);
+		box-shadow: 5px 5px 0 var(--color-black);
+		opacity: 1;
 	}
 
 	.features {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-		gap: 2rem;
-		margin-bottom: 4rem;
+		grid-template-columns: repeat(3, 1fr);
+		border-bottom: var(--border-width-thick) solid var(--color-black);
 	}
 
-	.feature-card {
-		background: var(--color-surface);
-		border: 2px solid var(--color-border-primary);
-		border-radius: 12px;
-		padding: 2rem;
-		text-align: center;
-		text-decoration: none;
-		color: inherit;
-		transition: all 0.3s;
+	.feature {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
+		gap: 0.5rem;
+		padding: clamp(1.25rem, 3vw, 2rem);
+		background: var(--color-offwhite);
+		border-right: var(--border-width-thick) solid var(--color-black);
+		text-decoration: none;
+		color: inherit;
+		opacity: 1;
+		transition: background var(--transition-fast);
 	}
 
-	.feature-card:hover {
-		border-color: var(--color-primary);
-		box-shadow: 0 8px 24px oklch(0.89 0.18 166 / 0.15);
-		transform: translateY(-4px);
+	.feature:last-child {
+		border-right: none;
 	}
 
-	.feature-card:focus {
-		outline: 2px solid var(--color-primary);
-		outline-offset: 2px;
+	.feature:hover {
+		background: var(--color-white);
+		opacity: 1;
 	}
 
-	.feature-icon {
-		font-size: 3rem;
-		margin-bottom: 1rem;
+	.feature:focus-visible {
+		outline: 2px solid var(--color-secondary);
+		outline-offset: -2px;
 	}
 
-	.feature-card h2 {
-		font-size: 1.5rem;
-		margin: 0 0 0.5rem 0;
-		color: var(--color-text-primary);
+	.feature__label {
+		font-family: var(--font-handjet);
+		font-size: var(--font-size-lg);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--color-text-tertiary);
 	}
 
-	.feature-card p {
+	.feature h2 {
+		margin: 0;
+		font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+	}
+
+	.feature p {
 		margin: 0;
 		color: var(--color-text-secondary);
-		font-size: 0.95rem;
+		font-size: var(--font-size-sm);
 	}
 
-	.recent-bookmarks {
-		background: white;
-		border-radius: 12px;
-		padding: 2rem;
-		border: 1px solid #e0e0e0;
-	}
-
-	.recent-bookmarks h2 {
-		margin: 0 0 1.5rem 0;
-		color: var(--color-text-primary);
-		font-size: 1.5rem;
+	.recent {
+		padding: clamp(1.5rem, 4vw, 2.5rem);
+		background: var(--color-offwhite);
+		border-bottom: var(--border-width-thick) solid var(--color-black);
 	}
 
 	.bookmark-list {
 		list-style: none;
 		margin: 0;
 		padding: 0;
+		border: var(--border-width-thick) solid var(--color-black);
+		background: var(--color-white);
 	}
 
 	.bookmark-item {
-		border-bottom: 1px solid #f0f0f0;
+		border-bottom: var(--border-width) solid var(--color-black);
 	}
 
 	.bookmark-item:last-child {
@@ -161,60 +248,68 @@
 	.bookmark-item a {
 		display: flex;
 		flex-direction: column;
-		padding: 1rem 0;
+		gap: 0.25rem;
+		padding: 1rem 1.15rem;
 		text-decoration: none;
 		color: inherit;
-		transition: background-color 0.2s;
+		opacity: 1;
+		transition: background var(--transition-fast);
 	}
 
 	.bookmark-item a:hover {
-		background-color: var(--color-background-secondary);
+		background: var(--color-paper);
+		opacity: 1;
 	}
 
 	.bookmark-title {
-		font-weight: 600;
-		color: var(--color-primary);
-		margin-bottom: 0.25rem;
+		font-family: var(--font-display);
+		font-size: var(--font-size-base);
+		text-transform: uppercase;
 	}
 
 	.bookmark-description {
-		font-size: 0.9rem;
+		font-size: var(--font-size-sm);
 		color: var(--color-text-secondary);
 	}
 
 	.view-all {
 		display: inline-block;
-		margin-top: 1rem;
-		color: var(--color-primary);
+		margin-top: 1.25rem;
+		font-family: var(--font-display);
+		font-size: var(--font-size-sm);
+		text-transform: uppercase;
 		text-decoration: none;
-		font-weight: 600;
-		transition: color 0.2s;
+		letter-spacing: 0.04em;
+		border-bottom: var(--border-width-thick) solid var(--color-black);
+		opacity: 1;
 	}
 
 	.view-all:hover {
-		color: var(--color-primary-dark);
-		text-decoration: underline;
+		opacity: 0.65;
 	}
 
 	@media (max-width: 768px) {
-		.home-container {
-			padding: 2rem 1rem;
-		}
-
-		.hero {
-			margin-bottom: 2rem;
-		}
-
-		.hero-title {
-			font-size: 2rem;
-		}
-
-		.hero-subtitle {
-			font-size: 1rem;
+		.hero__plane {
+			min-height: 58vh;
 		}
 
 		.features {
-			gap: 1rem;
+			grid-template-columns: 1fr;
+		}
+
+		.feature {
+			border-right: none;
+			border-bottom: var(--border-width-thick) solid var(--color-black);
+		}
+
+		.feature:last-child {
+			border-bottom: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero__grain {
+			animation: none;
 		}
 	}
 </style>

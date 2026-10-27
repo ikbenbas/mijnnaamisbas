@@ -1,9 +1,11 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import type { EspressoSuggestionsResponse } from '$lib/types/espresso-suggestions';
 
-	let { data }: { data: PageData } = $props();
+	let { data }: { data: PageData & { suggestions: EspressoSuggestionsResponse | null } } = $props();
 
 	const note = $derived(data.note);
+	const suggestions = $derived(data.suggestions);
 	const ratio = $derived(note.yield && note.dosage ? (note.yield / note.dosage).toFixed(1) : null);
 </script>
 
@@ -76,12 +78,62 @@
 		</div>
 	</section>
 
+
 	{#if note.notes}
 		<section class="tasting">
 			<h2>Tasting notes & observations</h2>
 			<p>{note.notes}</p>
 		</section>
 	{/if}
+
+	<section class="suggestions">
+		<h2>AI Suggestions</h2>
+		{#if suggestions}
+			<div class="suggestions-content">
+				{#if suggestions.suggestions && suggestions.suggestions.length > 0}
+					<div class="suggestion-item">
+						<h3>Parameter Adjustments</h3>
+						<ul class="parameters-list">
+							{#each suggestions.suggestions as suggestion}
+								<li class="parameter-suggestion">
+									<div class="param-header">
+										<strong>{suggestion.parameter.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</strong>
+										<span class="current-value">Current: {suggestion.current ?? 'N/A'}</span>
+									</div>
+									<div class="param-body">
+										<p class="recommendation">💡 {suggestion.recommendation}</p>
+										<p class="reason">{suggestion.reason}</p>
+									</div>
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+
+				{#if suggestions.additional_tips && Object.keys(suggestions.additional_tips).length > 0}
+					<div class="suggestion-item">
+						<h3>Additional Tips</h3>
+						<ul>
+							{#each Object.entries(suggestions.additional_tips) as [key, value]}
+								<li>
+									<strong>{key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}:</strong> {value}
+								</li>
+							{/each}
+						</ul>
+					</div>
+				{/if}
+
+				{#if suggestions.expected_outcome}
+					<div class="suggestion-item expected-outcome">
+						<h3>Expected Outcome</h3>
+						<p>{suggestions.expected_outcome}</p>
+					</div>
+				{/if}
+			</div>
+		{:else}
+			<p>No suggestions available.</p>
+		{/if}
+	</section>
 </article>
 
 <style>
@@ -132,12 +184,17 @@
 		font-size: 0.9rem;
 	}
 
-	.params {
+	.params, .tasting {
 		margin-bottom: 1.75rem;
+        margin-top: 1.75rem;
+        padding: 1.75rem;
+        background-color: var( --color-primary-light);
+        box-shadow: var(--shadow-xl);
 	}
 
 	.params h2,
-	.tasting h2 {
+	.tasting h2,
+	.suggestions h2 {
 		font-size: 1rem;
 		text-transform: uppercase;
 		letter-spacing: 0.07em;
@@ -174,5 +231,111 @@
 	.tasting p {
 		line-height: 1.6;
 		white-space: pre-wrap;
+	}
+
+	.suggestions {
+		margin-top: 1.75rem;
+        padding: 1.75rem;
+        background-color: var( --color-secondary-light);
+        box-shadow: var(--shadow-xl);
+        /* color: var(--color-text-inverse);
+        font-size: 1.125rem; */
+	}
+
+	.suggestions-content {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+
+	.suggestion-item h3 {
+		font-size: 1.1rem;
+		margin-bottom: 0.75rem;
+		color: var(--color-text);
+	}
+
+	.suggestion-item p {
+		line-height: 1.6;
+		color: var(--color-text);
+	}
+
+	.suggestion-item ul {
+		list-style: none;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.suggestion-item li {
+		line-height: 1.6;
+		padding-left: 1rem;
+		position: relative;
+	}
+
+	.suggestion-item li::before {
+		content: '•';
+		position: absolute;
+		left: 0;
+		color: var(--color-muted);
+	}
+
+	.suggestion-item strong {
+		color: var(--color-text);
+		font-weight: 600;
+	}
+
+	.parameters-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.parameter-suggestion {
+		margin-bottom: 1rem;
+	}
+
+	.parameter-suggestion::before {
+		content: none;
+	}
+
+	.param-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 0.5rem;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.current-value {
+		font-size: 0.85rem;
+		color: var(--color-muted);
+		font-weight: normal;
+	}
+
+	.param-body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding-left: 0;
+	}
+
+	.recommendation {
+		font-weight: 500;
+		color: var(--color-text);
+		margin: 0;
+	}
+
+	.reason {
+		font-size: 0.9rem;
+		color: var(--color-muted);
+		margin: 0;
+		font-style: italic;
+	}
+
+	.error {
+		color: #ef4444;
+		font-style: italic;
 	}
 </style>

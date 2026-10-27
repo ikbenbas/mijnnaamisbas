@@ -103,8 +103,8 @@
 		line-height: var(--line-height-normal);
 		color: var(--color-text-primary);
 		background: var(--color-bg-primary);
-		border: var(--border-width) solid var(--color-border-primary);
-		border-radius: var(--radius-md);
+		border: var(--border-width-thick) solid var(--color-border-primary);
+		border-radius: 0;
 		transition: all var(--transition-fast);
 		resize: vertical;
 	}

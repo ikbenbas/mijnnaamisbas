@@ -1,14 +1,12 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
-    import { resolve } from '$app/paths';
+    import { CONSTANTS } from '$lib/config/Constants';
     import type { ActionData, PageData } from './$types';
 
     let { data, form }: { data: PageData; form: ActionData } = $props();
     let loading = $state(false);
 
-    function tidalSearchUrl(playlistName: string): string {
-        return `https://tidal.com/search?q=${encodeURIComponent(playlistName)}`;
-    }
+    const tidalSearchUrl = (playlistName: string): string => `${CONSTANTS.APP_BASE.TIDAL}/search?q=${encodeURIComponent(playlistName)}`;
 </script>
 
 <svelte:head>
@@ -17,7 +15,7 @@
 
 <div class="page-container">
     <header class="page-header">
-        <h1>🎵 Tidal Playlist Suggestions</h1>
+        <h1>Tidal playlist suggestions</h1>
         <p class="subtitle">Powered by Mistral AI — European AI</p>
     </header>
 
@@ -186,14 +184,13 @@
 
 .connection-status {
     background: var(--color-bg-primary);
-    border-radius: var(--radius-lg);
     border: var(--border-width-thick) solid var(--color-border-primary);
+    box-shadow: var(--shadow-sm);
     padding: var(--space-lg);
 }
 
 .connection-status.connected {
-    border-color: var(--color-primary);
-    background: var(--color-primary-light);
+    background: var(--color-offwhite);
 }
 
 .connection-status.connected .status-info {
@@ -204,9 +201,8 @@
 }
 
 .connection-status.connected .status-icon {
-    background: var(--gradient-primary);
-    border-radius: var(--radius-full);
-    color: var(--color-text-inverse);
+    background: var(--color-black);
+    color: var(--color-offwhite);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -214,6 +210,7 @@
     height: 28px;
     width: 28px;
     flex-shrink: 0;
+    border: var(--border-width) solid var(--color-black);
 }
 
 .connection-status.connected strong {
@@ -233,14 +230,17 @@
 }
 
 .disconnect-btn {
-    background: transparent;
-    border: var(--border-width) solid var(--color-border-primary);
-    border-radius: var(--radius-sm);
-    color: var(--color-text-secondary);
+    background: var(--color-offwhite);
+    border: var(--border-width-thick) solid var(--color-border-primary);
+    color: var(--color-text-primary);
     cursor: pointer;
-    font-size: var(--font-size-sm);
+    font-family: var(--font-display);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     padding: var(--space-sm) var(--space-md);
-    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .disconnect-btn:hover {
@@ -268,21 +268,27 @@
 }
 
 .connect-btn {
-    background: var(--gradient-primary);
-    border-radius: var(--radius-sm);
-    color: var(--color-text-inverse);
+    background: var(--color-black);
+    border: var(--border-width-thick) solid var(--color-black);
+    color: var(--color-offwhite);
     display: inline-flex;
     align-items: center;
     gap: var(--space-sm);
-    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-display);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     padding: var(--space-md) var(--space-lg);
     text-decoration: none;
+    box-shadow: var(--shadow-sm);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    opacity: 1;
 }
 
 .connect-btn:hover {
-    transform: translateY(-2px);
+    transform: translate(-1px, -1px);
     box-shadow: var(--shadow-md);
+    opacity: 1;
 }
 
 .connect-btn span {
@@ -290,18 +296,18 @@
 }
 
 .success-message {
-    background: var(--color-primary-light);
-    border: var(--border-width) solid var(--color-primary);
-    border-radius: var(--radius-sm);
-    color: var(--color-primary-dark);
+    background: var(--color-offwhite);
+    border: var(--border-width-thick) solid var(--color-black);
+    color: var(--color-text-primary);
     margin-top: var(--space-md);
     padding: var(--space-md);
+    box-shadow: var(--shadow-sm);
 }
 
 .suggestion-form {
     background: var(--color-bg-primary);
-    border-radius: var(--radius-lg);
-    border: var(--border-width) solid var(--color-border-primary);
+    border: var(--border-width-thick) solid var(--color-border-primary);
+    box-shadow: var(--shadow-sm);
     padding: var(--space-xl);
     margin-bottom: var(--space-xl);
 }
@@ -326,9 +332,11 @@
 .form-input {
     width: 100%;
     padding: var(--space-md) var(--space-md);
-    border: var(--border-width) solid var(--color-border-primary);
-    border-radius: var(--radius-sm);
+    border: var(--border-width-thick) solid var(--color-border-primary);
+    border-radius: 0;
+    font-family: var(--font-primary);
     font-size: var(--font-size-base);
+    background: var(--color-offwhite);
     transition: border-color var(--transition-fast);
     box-sizing: border-box;
 }
@@ -340,24 +348,26 @@
 }
 
 .submit-btn {
-    background: var(--gradient-primary);
-    border: none;
-    border-radius: var(--radius-sm);
-    color: var(--color-text-inverse);
+    background: var(--color-black);
+    border: var(--border-width-thick) solid var(--color-black);
+    color: var(--color-offwhite);
     cursor: pointer;
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-display);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     padding: var(--space-md) var(--space-xl);
+    box-shadow: var(--shadow-sm);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .submit-btn:hover {
-    transform: translateY(-2px);
+    transform: translate(-1px, -1px);
     box-shadow: var(--shadow-md);
 }
 
 .submit-btn:hover:not(:disabled) {
-    transform: translateY(-2px);
+    transform: translate(-1px, -1px);
     box-shadow: var(--shadow-md);
 }
 
@@ -368,8 +378,7 @@
 
 .error-message {
     background: var(--color-error-light);
-    border: 1px solid var(--color-error);
-    border-radius: 4px;
+    border: var(--border-width-thick) solid var(--color-black);
     color: var(--color-error);
     margin-bottom: 2rem;
     padding: 1rem;
@@ -391,12 +400,14 @@
 }
 
 .personalized-badge {
-    background: var(--gradient-primary);
-    border-radius: 16px;
-    color: var(--color-text-inverse);
-    font-size: 0.75rem;
-    font-weight: 600;
+    background: var(--color-black);
+    color: var(--color-offwhite);
+    font-family: var(--font-handjet);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     padding: 0.25rem 0.75rem;
+    border: var(--border-width) solid var(--color-black);
 }
 
 .suggestions h2 {
@@ -411,17 +422,17 @@
 
 .playlist-card {
     background: var(--color-surface);
-    border: 1px solid var(--color-border-primary);
-    border-radius: 8px;
+    border: var(--border-width-thick) solid var(--color-border-primary);
+    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     padding: 1.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .playlist-card:hover {
-    transform: translateY(-2px);
+    transform: translate(-2px, -2px);
     box-shadow: var(--shadow-md);
 }
 
@@ -457,25 +468,31 @@
 
 .artists-list li {
     background: var(--color-background-secondary);
-    border-radius: 4px;
+    border: var(--border-width) solid var(--color-black);
     padding: 0.2rem 0.5rem;
 }
 
 .tidal-link {
-    background: var(--color-text-primary);
-    border-radius: 4px;
-    color: var(--color-text-inverse);
+    background: var(--color-black);
+    border: var(--border-width-thick) solid var(--color-black);
+    color: var(--color-offwhite);
     display: inline-block;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
     margin-top: auto;
     padding: 0.5rem 1rem;
     text-align: center;
     text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    opacity: 1;
 }
 
 .tidal-link:hover {
-    transform: translateY(-2px);
+    transform: translate(-1px, -1px);
     box-shadow: var(--shadow-md);
+    opacity: 1;
 }
 </style>

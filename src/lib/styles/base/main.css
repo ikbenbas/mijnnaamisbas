@@ -8,8 +8,14 @@
     box-sizing: border-box;
 }
 
+html {
+    background: var(--color-offwhite);
+}
+
 body {
-    background-color: var(--color-bg-primary);
+    background-color: var(--color-offwhite);
+    background-image: var(--pattern-dots);
+    background-size: var(--pattern-dots-size);
     color: var(--color-text-primary);
     font-family: var(--font-primary);
     font-size: var(--font-size-base);
@@ -21,25 +27,26 @@ body {
     -webkit-tap-highlight-color: transparent;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
 
 /* =====================================================
    GLOBAL LINK STYLES
    ===================================================== */
 a {
-    color: var(--color-primary);
-    text-decoration: none;
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
     transition: opacity var(--transition-fast);
 }
 
 a:hover {
-    opacity: 0.8;
+    opacity: 0.7;
 }
 
 a:focus-visible {
     outline: 2px solid var(--color-border-focus);
     outline-offset: 2px;
-    border-radius: var(--radius-xs);
 }
 
 /* =====================================================
@@ -47,37 +54,38 @@ a:focus-visible {
    ===================================================== */
 h1, h2, h3, h4, h5, h6 {
     color: var(--color-text-primary);
-    font-weight: var(--font-weight-bold);
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-normal);
     line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
     margin: 0;
+    text-wrap: balance;
 }
 
 h1 {
-    font-size: var(--font-size-4xl);
+    font-size: clamp(2rem, 5vw, var(--font-size-5xl));
+    text-transform: uppercase;
     margin-bottom: var(--space-lg);
 }
 
 h2 {
-    font-size: var(--font-size-3xl);
+    font-size: var(--font-size-2xl);
+    text-transform: uppercase;
     margin-bottom: var(--space-md);
 }
 
 h3 {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
+    text-transform: uppercase;
     margin-bottom: var(--space-md);
 }
 
 h4 {
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--space-sm);
-}
-
-h5 {
     font-size: var(--font-size-lg);
     margin-bottom: var(--space-sm);
 }
 
-h6 {
+h5, h6 {
     font-size: var(--font-size-base);
     margin-bottom: var(--space-sm);
 }
@@ -104,17 +112,47 @@ small {
 code {
     font-family: var(--font-mono);
     font-size: 0.9em;
-    padding: 0.125rem 0.25rem;
+    padding: 0.125rem 0.35rem;
     background: var(--color-bg-tertiary);
-    border-radius: var(--radius-xs);
+    border: var(--border-width) solid var(--color-border-primary);
 }
 
 pre {
     font-family: var(--font-mono);
     background: var(--color-bg-tertiary);
     padding: var(--space-md);
-    border-radius: var(--radius-md);
+    border: var(--border-width) solid var(--color-border-primary);
     overflow-x: auto;
+}
+
+kbd {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.1rem 0.35rem;
+    border: var(--border-width) solid var(--color-border-primary);
+    background: var(--color-white);
+    box-shadow: 1px 1px 0 var(--color-black);
+}
+
+/* =====================================================
+   SECTION LABEL (black bar, white type)
+   ===================================================== */
+.section-bar {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 1.25rem;
+    background: var(--color-black);
+    color: var(--color-text-inverse);
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.section-bar a {
+    color: inherit;
+    text-decoration: none;
 }
 
 /* =====================================================
@@ -136,4 +174,11 @@ pre {
     max-width: var(--max-width-xl);
     margin: 0 auto;
     padding: 0 var(--container-padding);
+}
+
+/* Hard-edge panel used across pages */
+.fh-panel {
+    background: var(--color-offwhite);
+    border: var(--border-width-thick) solid var(--color-black);
+    box-shadow: var(--shadow-sm);
 }

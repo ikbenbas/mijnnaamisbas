@@ -105,9 +105,9 @@
 		line-height: var(--line-height-normal);
 		color: var(--color-text-primary);
 		background: var(--color-bg-primary);
-		border: var(--border-width) solid var(--color-border-primary);
-		border-radius: var(--radius-md);
-		transition: all var(--transition-fast);
+		border: var(--border-width-thick) solid var(--color-border-primary);
+		border-radius: 0;
+		transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 	}
 
 	.input:hover:not(:disabled) {

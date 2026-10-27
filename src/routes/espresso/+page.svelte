@@ -9,13 +9,13 @@
 </svelte:head>
 
 <section class="hero">
-	<h1>☕ Coffee Notes</h1>
+	<h1>Coffee notes</h1>
 	<p>Track your coffee experiments — dial in the perfect shot.</p>
 	<a href="/espresso/notes/new" class="btn btn-primary">Start a new note</a>
 </section>
 
+<div class="section-bar">Recent experiments</div>
 <section class="recent">
-	<h2>Recent experiments</h2>
 	{#if data.notes.length === 0}
 		<p class="empty">No notes yet. <a href="/espresso/notes/new">Add your first experiment!</a></p>
 	{:else}
@@ -48,41 +48,77 @@
 		flex-direction: column;
 		align-items: flex-start;
 		gap: 1rem;
-		padding: 2.5rem 0 2rem;
+		padding: 1.5rem 0 2rem;
 	}
 
 	.hero h1 {
-		font-size: 2rem;
+		margin: 0;
 	}
 
 	.hero p {
 		color: var(--color-muted);
 		font-size: 1.05rem;
+		margin: 0;
 	}
 
-	.recent h2 {
-		font-size: 1.3rem;
-		margin-bottom: 1.25rem;
-		border-bottom: 2px solid var(--color-border);
-		padding-bottom: 0.5rem;
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.7rem 1.15rem;
+		font-family: var(--font-display);
+		font-size: var(--font-size-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		text-decoration: none;
+		border: var(--border-width-thick) solid var(--color-black);
+		box-shadow: var(--shadow-sm);
+		opacity: 1;
+		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+	}
+
+	.btn-primary {
+		background: var(--color-black);
+		color: var(--color-offwhite);
+	}
+
+	.btn-secondary {
+		background: var(--color-offwhite);
+		color: var(--color-ink);
+	}
+
+	.btn:hover {
+		transform: translate(-1px, -1px);
+		box-shadow: var(--shadow-md);
+		opacity: 1;
+	}
+
+	.recent {
+		padding-top: 1.25rem;
 	}
 
 	.note-list {
 		list-style: none;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		gap: 0;
+		border: var(--border-width-thick) solid var(--color-black);
+		padding: 0;
+		margin: 0;
+		background: var(--color-offwhite);
 	}
 
 	.note-card {
 		background: var(--color-card);
-		border: 1.5px solid var(--color-border);
-		border-radius: var(--radius);
-		transition: border-color 0.15s;
+		border-bottom: var(--border-width) solid var(--color-border);
+		transition: background var(--transition-fast);
+	}
+
+	.note-card:last-child {
+		border-bottom: none;
 	}
 
 	.note-card:hover {
-		border-color: var(--color-accent);
+		background: var(--color-white);
 	}
 
 	.note-card a {
@@ -90,6 +126,7 @@
 		padding: 1rem 1.25rem;
 		text-decoration: none;
 		color: inherit;
+		opacity: 1;
 	}
 
 	.note-header {

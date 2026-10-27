@@ -110,8 +110,8 @@ For each playlist, provide:
 Format your response as a JSON array with objects containing: name, description, artists (array of strings).
 Only respond with the JSON array, no other text.`;
 		}
-console.log(prompt)
-		try {
+
+        try {
 			const response = await client.chat.complete({
 				model: 'mistral-small-latest',
 				messages: [{ role: 'user', content: prompt }],

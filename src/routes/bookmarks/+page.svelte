@@ -20,12 +20,12 @@
 
 <div class="page-container">
 	<header class="page-header">
-		<h1>📚 Bookmarks</h1>
-		<a href={resolve('/bookmarks/add')} class="btn-primary">+ Add Bookmark</a>
+		<h1>Bookmarks</h1>
+		<a href={resolve('/bookmarks/add')} class="btn-primary">+ Add bookmark</a>
 	</header>
 
 	<div class="keyboard-hint">
-		<span>💡 Tip: Press <kbd>Cmd + Ctrl + N</kbd> to quickly add a bookmark</span>
+		<span>Tip: Press <kbd>Cmd + Ctrl + N</kbd> to quickly add a bookmark</span>
 	</div>
 
 	{#if data.bookmarks.length === 0}
@@ -73,28 +73,34 @@
 	}
 
 	.btn-primary {
-		background: var(--gradient-primary);
-		color: var(--color-text-inverse);
-		padding: var(--space-sm) var(--space-lg);
-		border-radius: var(--radius-md);
+		background: var(--color-black);
+		color: var(--color-offwhite);
+		padding: 0.7rem 1.15rem;
+		border: var(--border-width-thick) solid var(--color-black);
+		border-radius: 0;
 		text-decoration: none;
-		font-weight: var(--font-weight-semibold);
-		transition: all var(--transition-fast);
+		font-family: var(--font-display);
+		font-size: var(--font-size-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		box-shadow: var(--shadow-sm);
+		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 		display: inline-block;
+		opacity: 1;
 	}
 
 	.btn-primary:hover {
-		background: var(--gradient-primary-hover);
-		transform: translateY(-1px);
+		transform: translate(-1px, -1px);
 		box-shadow: var(--shadow-md);
+		opacity: 1;
 	}
 
 	.keyboard-hint {
-		background: var(--color-primary-light);
-		border-left: 3px solid var(--color-primary);
-		padding: var(--space-md) var(--space-md);
+		background: var(--color-offwhite);
+		border: var(--border-width-thick) solid var(--color-black);
+		padding: var(--space-md);
 		margin-bottom: var(--space-xl);
-		border-radius: var(--radius-sm);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.keyboard-hint span {
@@ -115,8 +121,8 @@
 		text-align: center;
 		padding: var(--space-3xl) var(--space-xl);
 		background: var(--color-bg-primary);
-		border-radius: var(--radius-xl);
-		border: var(--border-width-thick) dashed var(--color-border-secondary);
+		border: var(--border-width-thick) solid var(--color-black);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.empty-state p {
@@ -136,16 +142,15 @@
 
 	.bookmark-card {
 		background: var(--color-bg-primary);
-		border: var(--border-width) solid var(--color-border-primary);
-		border-radius: var(--radius-lg);
-		transition: all var(--transition-fast);
+		border: var(--border-width-thick) solid var(--color-border-primary);
+		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 		overflow: hidden;
+		box-shadow: var(--shadow-sm);
 	}
 
 	.bookmark-card:hover {
-		border-color: var(--color-primary);
 		box-shadow: var(--shadow-md);
-		transform: translateY(-2px);
+		transform: translate(-2px, -2px);
 	}
 
 	.bookmark-card a {
@@ -153,6 +158,7 @@
 		padding: 1.5rem;
 		text-decoration: none;
 		color: inherit;
+		opacity: 1;
 	}
 
 	.bookmark-card h3 {
@@ -170,9 +176,11 @@
 
 	.bookmark-card .link-url {
 		display: block;
-		color: var(--color-primary);
+		color: var(--color-text-secondary);
 		font-size: var(--font-size-xs);
 		margin-top: var(--space-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
 	}
 
 	@media (max-width: 768px) {

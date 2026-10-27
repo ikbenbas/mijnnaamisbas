@@ -4,7 +4,7 @@
 </script>
 
 <div class="espresso-layout">
-	<nav class="espresso-nav">
+	<nav class="espresso-nav" aria-label="Coffee notes">
 		<a href="/espresso">Overview</a>
 		<a href="/espresso/notes">All notes</a>
 		<a href="/espresso/notes/new">+ New note</a>
@@ -24,33 +24,41 @@
 
 	.espresso-nav {
 		display: flex;
-		gap: var(--space-md);
-		padding: var(--space-md) 0;
-		border-bottom: var(--border-width) solid var(--color-border-primary);
+		gap: 0;
 		margin-bottom: var(--space-xl);
+		border: var(--border-width-thick) solid var(--color-black);
+		background: var(--color-black);
 	}
 
 	.espresso-nav a {
-		color: var(--color-text-primary);
+		flex: 1;
+		text-align: center;
+		color: #fff;
 		text-decoration: none;
-		font-weight: var(--font-weight-medium);
-		padding: var(--space-sm) var(--space-md);
-		border-radius: var(--radius-md);
-		transition: all var(--transition-fast);
+		font-family: var(--font-primary);
+		font-weight: var(--font-weight-bold);
+		font-size: var(--font-size-sm);
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		padding: 0.7rem var(--space-md);
+		border-right: var(--border-width) solid #fff;
+		opacity: 1;
+		transition: background var(--transition-fast), color var(--transition-fast);
+	}
+
+	.espresso-nav a:last-child {
+		border-right: none;
 	}
 
 	.espresso-nav a:hover {
-		background: var(--color-bg-secondary);
-		color: var(--color-primary);
+		background: var(--color-offwhite);
+		color: var(--color-ink);
+		opacity: 1;
 	}
 
 	.espresso-nav a:focus-visible {
-		outline: 2px solid var(--color-border-focus);
-		outline-offset: 2px;
-	}
-
-	.espresso-content {
-		/* Content container */
+		outline: 2px solid var(--color-secondary);
+		outline-offset: -2px;
 	}
 
 	@media (max-width: 768px) {
@@ -60,12 +68,12 @@
 
 		.espresso-nav {
 			flex-wrap: wrap;
-			gap: var(--space-sm);
 		}
 
 		.espresso-nav a {
-			padding: var(--space-xs) var(--space-sm);
-			font-size: var(--font-size-sm);
+			flex: 1 1 33%;
+			padding: var(--space-sm);
+			font-size: var(--font-size-xs);
 		}
 	}
 </style>
