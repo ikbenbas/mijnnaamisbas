@@ -1,0 +1,58 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--mnb-font-display);
+    line-height: 1.1;
+
+    &:not(:first-child) {
+        margin-top: 0.35em;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 0.75em;
+    }
+
+    a {
+        text-decoration: none;
+    }
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 48px);
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+h2,
+.h2 {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.18;
+    text-transform: uppercase;
+}
+
+h3 {
+    font-size: 18px;
+    line-height: 1.22;
+    text-transform: uppercase;
+}
+
+h4 {
+    font-size: 14px;
+    line-height: 1.57;
+}
+
+p {
+    font-family: var(--mnb-font-primary);
+
+    &:not(:first-child) {
+        margin-top: 20px;
+    }
+
+    &:not(:last-child) {
+        margin-bottom: 20px;
+    }
+}

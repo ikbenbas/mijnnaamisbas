@@ -1,0 +1,7 @@
+{
+	"extends": "../../packages/typescript-config/base.json",
+	"compilerOptions": {
+		"verbatimModuleSyntax": true
+	},
+	"include": ["src/**/*.ts", "src/**/*.svelte", ".storybook/**/*.ts"]
+}

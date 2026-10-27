@@ -1,0 +1,13 @@
+{
+	"name": "@mnb/hygraph",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"graphql": "^16.13.2",
+		"graphql-request": "^7.4.0"
+	}
+}

@@ -93,3 +93,6 @@ sw.*
 *.swp
 .svelte-kit
 .turbo
+
+# pnpm
+.pnpm-store

@@ -1,0 +1,135 @@
+:root {
+    /* =====================================================
+       FRIEDHATS-INSPIRED TOKENS
+       Brutalist mono site language: ink, off-white, hard borders.
+       Pop accent reserved for rare emphasis (not the page chrome).
+       ===================================================== */
+
+    /* Core ink / paper */
+    --mnb-color-ink: #020817;
+    --mnb-color-black: #000000;
+    --mnb-color-white: #ffffff;
+    --mnb-color-offwhite: #fffff7;
+    --mnb-color-paper: #f5f5f0;
+
+    /* Darker greys that are not black */
+    --mnb-color-primary-light: #2a2a2a;
+    --mnb-color-primary-hover: #1a1a1a;
+
+    /* Single pop accent (Lichtenstein blue nod — sparingly) */
+    --mnb-color-secondary: #1e6bff;
+    --mnb-color-secondary-light: #5a93ff;
+    --mnb-color-secondary-dark: #0d4fd6;
+    --mnb-color-secondary-hover: #1557e0;
+
+    /* Text. Ink and off-white cover the other text colors. */
+    --mnb-color-text-secondary: #3f3f46;
+    --mnb-color-text-tertiary: #71717a;
+
+    /* Wash between paper and white */
+    --mnb-color-bg-tertiary: #ebebe4;
+
+    /* UI states */
+    --mnb-color-success: #15803d;
+    --mnb-color-error: #dc2626;
+    --mnb-color-error-light: #fee2e2;
+    --mnb-color-rating: #ca8a04;
+
+    /* Grey border. Black borders use --mnb-color-black. */
+    --mnb-color-border-secondary: #a1a1aa;
+
+    /* Shadows — hard offset, print-shop feel */
+    --mnb-shadow-sm: 2px 2px 0 var(--mnb-color-black);
+    --mnb-shadow-md: 3px 3px 0 var(--mnb-color-black);
+    --mnb-shadow-lg: 4px 4px 0 var(--mnb-color-black);
+    --mnb-shadow-xl: 6px 6px 0 var(--mnb-color-black);
+    --mnb-shadow-focus: 0 0 0 3px color-mix(in srgb, var(--mnb-color-black) 25%, transparent);
+    --mnb-shadow-error: 0 0 0 3px color-mix(in srgb, var(--mnb-color-error) 35%, transparent);
+
+    /* Dark hero stops. Components reference these instead of raw hex. */
+    --mnb-color-hero-mid: #3d3d3d;
+    --mnb-color-hero-end: #0a0a0a;
+
+    /* Dot pattern (halftone paper) */
+    --mnb-pattern-dots: radial-gradient(circle, #000 0.65px, transparent 0.7px);
+    --mnb-pattern-dots-size: 6px 6px;
+
+    /* =====================================================
+       SPACING (8px base)
+       ===================================================== */
+    --mnb-space-xs: 0.25rem;
+    --mnb-space-sm: 0.5rem;
+    --mnb-space-md: 1rem;
+    --mnb-space-lg: 1.5rem;
+    --mnb-space-xl: 2rem;
+    --mnb-space-2xl: 3rem;
+    --mnb-space-3xl: 4rem;
+
+    /* =====================================================
+       TYPOGRAPHY
+       ===================================================== */
+    --mnb-font-display: 'Archivo Black', 'Arial Black', Impact, sans-serif;
+    --mnb-font-primary: 'Ubuntu Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --mnb-font-handjet: 'Handjet', 'Ubuntu Mono', monospace;
+
+    --mnb-font-size-xs: 0.75rem;
+    --mnb-font-size-sm: 0.875rem;
+    --mnb-font-size-base: 1rem;
+    --mnb-font-size-lg: 1.125rem;
+    --mnb-font-size-xl: 1.25rem;
+    --mnb-font-size-2xl: 1.5rem;
+    --mnb-font-size-3xl: 1.875rem;
+    --mnb-font-size-4xl: 2.25rem;
+    --mnb-font-size-5xl: 3rem;
+
+    --mnb-font-weight-normal: 400;
+    --mnb-font-weight-medium: 500;
+    --mnb-font-weight-bold: 700;
+
+    --mnb-line-height-tight: 1.1;
+    --mnb-line-height-normal: 1.45;
+    --mnb-line-height-relaxed: 1.7;
+
+    --mnb-letter-spacing-tight: -0.02em;
+    --mnb-letter-spacing-normal: 0;
+    --mnb-letter-spacing-wide: 0.04em;
+    --mnb-letter-spacing-marquee: 0.06em;
+
+    /* =====================================================
+       BORDERS & RADIUS — sharp by default
+       ===================================================== */
+    --mnb-border-width: 1.5px;
+    --mnb-border-width-thick: 2px;
+
+    --mnb-radius: 0;
+
+    /* =====================================================
+       MOTION
+       ===================================================== */
+    --mnb-transition-fast: 120ms steps(2, end);
+    --mnb-transition-base: 180ms ease;
+    --mnb-transition-slow: 320ms ease;
+
+    /* =====================================================
+       LAYOUT
+       ===================================================== */
+    --mnb-max-width-sm: 640px;
+    --mnb-max-width-md: 768px;
+    --mnb-max-width-lg: 1024px;
+    --mnb-max-width-xl: 1280px;
+    --mnb-max-width-2xl: 1536px;
+
+    --mnb-container-padding: var(--mnb-space-lg);
+    --mnb-nav-height: 45px;
+
+    /* =====================================================
+       Z-INDEX
+       ===================================================== */
+    --mnb-z-dropdown: 1000;
+    --mnb-z-sticky: 1020;
+    --mnb-z-fixed: 1030;
+    --mnb-z-modal-backdrop: 1040;
+    --mnb-z-modal: 1050;
+    --mnb-z-popover: 1060;
+    --mnb-z-tooltip: 1070;
+}
