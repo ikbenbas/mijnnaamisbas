@@ -1,0 +1,27 @@
+import CJS_COMPAT_NODE_URL_62udyhdbo7l from 'node:url';
+import CJS_COMPAT_NODE_PATH_62udyhdbo7l from 'node:path';
+import CJS_COMPAT_NODE_MODULE_62udyhdbo7l from "node:module";
+
+var __filename = CJS_COMPAT_NODE_URL_62udyhdbo7l.fileURLToPath(import.meta.url);
+var __dirname = CJS_COMPAT_NODE_PATH_62udyhdbo7l.dirname(__filename);
+var require = CJS_COMPAT_NODE_MODULE_62udyhdbo7l.createRequire(import.meta.url);
+
+// ------------------------------------------------------------
+// end of CJS compatibility banner, injected by Storybook's esbuild configuration
+// ------------------------------------------------------------
+
+// src/preset.ts
+import { fileURLToPath } from "node:url";
+var previewAnnotations = async (input = [], options) => {
+  let docsEnabled = Object.keys(await options.presets.apply("docs", {}, options)).length > 0;
+  return [].concat(input).concat([fileURLToPath(import.meta.resolve("@storybook/svelte/entry-preview"))]).concat(
+    docsEnabled ? [fileURLToPath(import.meta.resolve("@storybook/svelte/entry-preview-docs"))] : []
+  );
+}, experimental_importParsers = async (input = []) => {
+  let { svelteImportParser } = await import("./_node-chunks/parsers-IUX5RNII.js");
+  return [...input, svelteImportParser];
+};
+export {
+  experimental_importParsers,
+  previewAnnotations
+};

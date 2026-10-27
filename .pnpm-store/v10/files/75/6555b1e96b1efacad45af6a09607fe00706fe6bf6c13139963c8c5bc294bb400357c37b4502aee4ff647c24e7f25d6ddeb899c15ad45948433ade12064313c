@@ -1,0 +1,49 @@
+{
+  "name": "@tidal-music/api",
+  "version": "0.15.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:tidal-music/tidal-sdk-web.git"
+  },
+  "license": "Apache-2.0",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.js",
+    "default": "./dist/index.js"
+  },
+  "dependencies": {
+    "openapi-fetch": "0.17.0",
+    "@tidal-music/api": "0.15.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "4.1.0",
+    "@vitest/ui": "4.1.0",
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3",
+    "vite": "8.0.1",
+    "vite-plugin-dts": "4.5.4",
+    "vitest": "4.1.0",
+    "@tidal-music/common": "^0.2.0",
+    "@tidal-music/auth": "^1.5.0"
+  },
+  "scripts": {
+    "build": "vite build",
+    "build:dev": "vite build -m development",
+    "clean": "rm -rf coverage dist .eslintcache",
+    "dev": "vite --debug --cors -c=./vite.config.ts",
+    "lint": "eslint . --cache --cache-strategy content",
+    "lint:ci": "eslint . --quiet",
+    "lint:fix": "pnpm run lint --fix",
+    "preview": "vite preview",
+    "generateTypes": "openapi-typescript",
+    "test": "vitest",
+    "test:coverage": "pnpm run test --coverage",
+    "test:ui": "pnpm run test:coverage --ui",
+    "typecheck": "tsc"
+  }
+}

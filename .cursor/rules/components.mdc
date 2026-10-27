@@ -1,33 +1,36 @@
 ---
-description: Svelte 5 component patterns — runes, BEM, tokens, accessibility
-globs: src/**/*.svelte
+description: Svelte 5 component patterns — runes, MNB classes, tokens, accessibility
+globs: "{apps,packages}/**/*.svelte"
 alwaysApply: false
 ---
 
 # Components
 
-Shared controls live in `src/lib/components/base/` and are exported from `src/lib/index.ts` and `base/index.ts`. Pages import them from `$lib`.
+Shared controls live in `packages/ui/src/components/MNBName/` and are exported from `packages/ui/src/index.ts`. Apps import `MNBName` from `@mnb/ui`. Read `packages/ui/.instructions.md` before adding one.
 
 ```svelte
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import type { HTMLButtonAttributes } from 'svelte/elements';
+	import type { MNBButtonProps } from './MNBButton.type.ts';
+	import { MNBButtonVariantEnum } from './MNBButton.enum.ts';
 
-	interface Props extends HTMLButtonAttributes {
-		variant?: 'default' | 'primary' | 'secondary' | 'ghost' | 'danger';
-		children: Snippet;
-	}
+	let {
+		variant = MNBButtonVariantEnum.DEFAULT,
+		children,
+		class: classes = '',
+		...props
+	}: MNBButtonProps = $props();
 
-	let { variant = 'default', children, class: className = '', ...rest }: Props = $props();
+	const baseClasses = $derived(['mnb-button', variant, classes].filter(Boolean).join(' '));
 </script>
 ```
 
-- Props interface in the component file. Rename `class` to `className` and pass it through
-- Build the class string with `$derived`. Modifiers are `block--modifier`, parts are `block__element`
-- Snippets for optional regions (`header`, `footer`, `actions`), as `Card` and `Modal` do
-- Styles stay in the component `<style>` block and use tokens: `var(--space-sm)`, `var(--color-text-primary)`, `var(--shadow-sm)`
+- Props live in `MNBName.type.ts`. Rename `class` to `classes`
+- Root class is `mnb-*`. Parts are short names (`label`, `header`). Variants are separate classes (`primary`). No BEM
+- Snippets for optional regions (`header`, `footer`, `actions`), as `MNBCard` and `MNBModal` do
+- Styles use tokens: `var(--mnb-space-sm)`, `var(--mnb-color-ink)`, `var(--mnb-shadow-sm)`
 - No new hex colors, no raw box-shadows, no `font-family` outside the token set
 - Interactive elements are real `<button>`, `<a>`, and `<input>` elements. Focus uses `:focus-visible`. Loading sets `aria-busy`. Errors use `role="alert"`
 - Do not put Hygraph, Mistral, or TIDAL calls in a component. Receive data through props or page `data`
+- Do not import `$env` in a package. Apps pass values in
 
-Page-only markup can stay in the route. Promote it to `base/` when a second page needs the same control.
+Page-only markup can stay in the route. Promote it to `packages/ui` when a second page needs the same control.

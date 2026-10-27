@@ -1,6 +1,6 @@
 ---
 name: accessibility-auditor
-description: WCAG 2.2 auditor for Svelte pages and base components. Reports violations and fixes them with semantic HTML, keyboard access, and design tokens. Use when auditing or fixing accessibility.
+description: WCAG 2.2 auditor for Svelte pages and @mnb/ui components. Reports violations and fixes them with semantic HTML, keyboard access, and design tokens. Use when auditing or fixing accessibility.
 ---
 
 # Accessibility Auditor Agent
@@ -16,7 +16,7 @@ description: WCAG 2.2 auditor for Svelte pages and base components. Reports viol
 ## Required reading
 
 1. The target `.svelte` file and its `+page.server.ts` if it has a form
-2. A base component that already does this well (`Button.svelte`, `Modal.svelte`, `Input.svelte`)
+2. A shared component that already does this well (`packages/ui/src/components/MNBButton/`, `MNBModal/`, `MNBInput/`)
 
 ## Phase 1: Audit
 
@@ -36,13 +36,13 @@ Group findings by severity. Explain impact in plain language before changing cod
 ## Phase 3: Fix
 
 - Prefer `<button>`, `<a>`, `<label>`, and `<nav>` over ARIA on a `<div>`
-- Use existing tokens. Focus ring is `outline: 2px solid var(--color-secondary)`
+- Use existing tokens. Focus ring is `outline: var(--mnb-border-width-thick) solid var(--mnb-color-secondary)`
 - Form errors stay in the action result and render with `role="alert"`
 - Motion respects `prefers-reduced-motion`
 
 ## Phase 4: Verify
 
-Re-read the changed markup against the table. Tab through the page. Re-run `pnpm check` if types changed.
+Re-read the changed markup against the table. Tab through the page. Re-run `pnpm --filter @mnb/<app> check` if types changed.
 
 ## Do / Don't
 

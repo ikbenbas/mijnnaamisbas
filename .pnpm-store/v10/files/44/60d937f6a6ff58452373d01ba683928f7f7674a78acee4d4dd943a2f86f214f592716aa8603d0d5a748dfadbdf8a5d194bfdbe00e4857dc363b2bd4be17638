@@ -1,0 +1,772 @@
+//#region ../common/dist/index.js
+function e$1(e, t) {
+	Error.captureStackTrace && Error.captureStackTrace(e, t);
+}
+var t$1 = { credentialsUpdated: "CredentialsUpdatedMessage" }, n = class t extends Error {
+	errorCode;
+	constructor(n, r) {
+		super(n, r), Object.setPrototypeOf(this, t.prototype), e$1(this, t), this.name = "TidalError", this.errorCode = n;
+	}
+}, r = class t extends n {
+	constructor(n, r) {
+		super(n, r), Object.setPrototypeOf(this, t.prototype), e$1(this, t), this.name = "IllegalArgumentError";
+	}
+}, i = class t extends n {
+	constructor(n, r) {
+		super(n, r), Object.setPrototypeOf(this, t.prototype), e$1(this, t), this.name = "NetworkError";
+	}
+}, a = class t extends n {
+	constructor(n, r) {
+		super(n, r), Object.setPrototypeOf(this, t.prototype), e$1(this, t), this.name = "RetryableError";
+	}
+};
+//#endregion
+//#region ../true-time/dist/index.js
+var e = class {
+	#e;
+	#t = !1;
+	#n;
+	#r;
+	constructor(e) {
+		this.#r = new URL(e), this.synchronize();
+	}
+	now(e = Date.now()) {
+		return !this.#n || !this.#e ? (console.warn("TrueTime is not yet synchronized"), e) : this.#n + (e - this.#e);
+	}
+	async synchronize() {
+		if (!(this.#e && Math.abs(Date.now() - this.#e) < 36e5 || this.#t)) {
+			this.#t = !0;
+			try {
+				let e = await fetch(this.#r);
+				e.ok && e.headers.has("date") && (this.#n = new Date(e.headers.get("date")).getTime(), this.#e = Date.now());
+			} catch (e) {
+				console.error(e);
+			}
+			this.#t = !1;
+		}
+	}
+	timestamp(e, t) {
+		let n;
+		if (t) {
+			if (n = performance.getEntriesByName(e).find((e) => "detail" in e && e.detail === t), !n) throw ReferenceError(`There is no performance entry named "${e}" with detail "${t}"`);
+		} else n = performance.getEntriesByName(e).pop();
+		return n ? n.startTime : void 0;
+	}
+}, t = new e("https://api.tidal.com/v1/ping");
+//#endregion
+//#region src/errors/authenticationError.ts
+/**
+* Used to indicate that an access token could not be retrieved.
+*
+* @extends TidalError
+*/
+var AuthenticationError = class AuthenticationError extends n {
+	constructor(errorCode, options) {
+		super(errorCode, options);
+		Object.setPrototypeOf(this, AuthenticationError.prototype);
+		e$1(this, AuthenticationError);
+		this.name = "AuthenticationError";
+	}
+};
+//#endregion
+//#region src/errors/tokenResponseError.ts
+/**
+* Used to indicate that an access token could not be retrieved.
+*
+* @extends TidalError
+*/
+var TokenResponseError = class TokenResponseError extends n {
+	constructor(errorCode, options) {
+		super(errorCode, options);
+		Object.setPrototypeOf(this, TokenResponseError.prototype);
+		e$1(this, TokenResponseError);
+		this.name = "TokenResponseError";
+	}
+};
+//#endregion
+//#region src/errors/unexpectedError.ts
+/**
+* Used to indicate that an access token could not be retrieved.
+*
+* @extends TidalError
+*/
+var UnexpectedError = class UnexpectedError extends n {
+	constructor(errorCode, options) {
+		super(errorCode, options);
+		Object.setPrototypeOf(this, UnexpectedError.prototype);
+		e$1(this, UnexpectedError);
+		this.name = "UnexpectedError";
+	}
+};
+//#endregion
+//#region src/errors/index.ts
+var authErrorCodeMap = {
+	authenticationError: "A0000",
+	illegalArgumentError: "A0007",
+	initError: "A0001",
+	networkError: "A0002",
+	retryableError: "A0003",
+	storageError: "A0004",
+	tokenResponseError: "A0005",
+	unexpectedError: "A0006"
+};
+//#endregion
+//#region src/storage/database.ts
+var prefix = "AuthDB";
+function bufferToString(buf) {
+	return String.fromCharCode(...new Uint8Array(buf));
+}
+function stringToUint8Array(str) {
+	const buf = new ArrayBuffer(str.length);
+	const bufView = new Uint8Array(buf);
+	for (let i = 0, strLen = str.length; i < strLen; i++) bufView[i] = str.charCodeAt(i);
+	return bufView;
+}
+var database = {
+	getItem: (key) => {
+		const result = globalThis.localStorage.getItem(`${prefix}/${key}`);
+		return result ? stringToUint8Array(result) : void 0;
+	},
+	removeItem: (key) => {
+		globalThis.localStorage.removeItem(`${prefix}/${key}`);
+	},
+	setItem: (key, data) => {
+		globalThis.localStorage.setItem(`${prefix}/${key}`, bufferToString(data));
+	}
+};
+//#endregion
+//#region src/storage/storageUtils.ts
+var getKeyMaterial = (password) => {
+	const enc = new TextEncoder();
+	return globalThis.crypto.subtle.importKey("raw", enc.encode(password), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]);
+};
+var getWrappingKey = (keyMaterial, salt) => {
+	return globalThis.crypto.subtle.deriveKey({
+		hash: "SHA-256",
+		iterations: 1e5,
+		name: "PBKDF2",
+		salt
+	}, keyMaterial, {
+		length: 256,
+		name: "AES-KW"
+	}, true, ["wrapKey", "unwrapKey"]);
+};
+var getUnwrappingKey = async (salt, password) => {
+	return getWrappingKey(await getKeyMaterial(password), salt);
+};
+var encodeCredentials = (credentials) => {
+	return new TextEncoder().encode(credentials);
+};
+var decodeCredentials = (credentials) => {
+	return new TextDecoder().decode(credentials);
+};
+var wrapCryptoKey = async ({ keyToWrap, password, salt }) => {
+	const wrappingKey = await getWrappingKey(await getKeyMaterial(password), salt);
+	return globalThis.crypto.subtle.wrapKey("raw", keyToWrap, wrappingKey, "AES-KW");
+};
+var unwrapCryptoKey = async ({ password, salt, wrappedKeyBuffer }) => {
+	const unwrappingKey = await getUnwrappingKey(salt, password);
+	return globalThis.crypto.subtle.unwrapKey("raw", wrappedKeyBuffer, unwrappingKey, "AES-KW", "AES-CTR", true, ["encrypt", "decrypt"]);
+};
+var encryptCredentials = ({ content, counter, key }) => {
+	return globalThis.crypto.subtle.encrypt({
+		counter,
+		length: 64,
+		name: "AES-CTR"
+	}, key, content);
+};
+var decryptCredentials = ({ counter, encryptedCredentials, key }) => {
+	return globalThis.crypto.subtle.decrypt({
+		counter,
+		length: 64,
+		name: "AES-CTR"
+	}, key, encryptedCredentials);
+};
+var getEncryptionKey = () => {
+	return globalThis.crypto.subtle.generateKey({
+		length: 256,
+		name: "AES-CTR"
+	}, true, ["encrypt", "decrypt"]);
+};
+//#endregion
+//#region src/storage/storage.ts
+var customStorage;
+var setStorageAdapter = (adapter) => {
+	customStorage = adapter;
+};
+var handleNewCryptoKey = async ({ password, storageKey }) => {
+	const key = await getEncryptionKey();
+	const counter = globalThis.crypto.getRandomValues(new Uint8Array(16));
+	const salt = globalThis.crypto.getRandomValues(new Uint8Array(16));
+	const wrappedKey = await wrapCryptoKey({
+		keyToWrap: key,
+		password,
+		salt
+	});
+	try {
+		database.setItem(`${storageKey}Counter`, counter);
+		database.setItem(`${storageKey}Salt`, salt);
+		database.setItem(`${storageKey}Key`, wrappedKey);
+	} catch (error) {
+		throw new n(authErrorCodeMap.storageError, { cause: error });
+	}
+};
+var getStorageItems = (credentialsStorageKey) => {
+	return {
+		counter: database.getItem(`${credentialsStorageKey}Counter`),
+		encryptedCredentials: database.getItem(`${credentialsStorageKey}Data`),
+		salt: database.getItem(`${credentialsStorageKey}Salt`),
+		wrappedKey: database.getItem(`${credentialsStorageKey}Key`)
+	};
+};
+var loadCredentialsEncrypted = async (credentialsStorageKey) => {
+	const { counter, encryptedCredentials, salt, wrappedKey } = getStorageItems(credentialsStorageKey);
+	if (encryptedCredentials && counter && wrappedKey && salt) try {
+		const credentials = await decryptCredentials({
+			counter,
+			encryptedCredentials,
+			key: await unwrapCryptoKey({
+				password: credentialsStorageKey,
+				salt,
+				wrappedKeyBuffer: wrappedKey
+			})
+		});
+		return JSON.parse(decodeCredentials(credentials));
+	} catch {
+		throw new n(authErrorCodeMap.storageError);
+	}
+	else return handleNewCryptoKey({
+		password: credentialsStorageKey,
+		storageKey: credentialsStorageKey
+	});
+};
+var saveCredentialsEncrypted = async (credentials) => {
+	const mergedCredentials = {
+		...await loadCredentialsEncrypted(credentials.credentialsStorageKey),
+		...credentials
+	};
+	const { counter, salt, wrappedKey } = getStorageItems(credentials.credentialsStorageKey);
+	if (!wrappedKey || !counter || !salt) throw new n(authErrorCodeMap.storageError);
+	try {
+		const secretKey = await unwrapCryptoKey({
+			password: mergedCredentials.credentialsStorageKey,
+			salt,
+			wrappedKeyBuffer: wrappedKey
+		});
+		const encryptedCredentials = await encryptCredentials({
+			content: encodeCredentials(JSON.stringify(mergedCredentials)),
+			counter,
+			key: secretKey
+		});
+		database.setItem(`${mergedCredentials.credentialsStorageKey}Data`, encryptedCredentials);
+	} catch (error) {
+		throw new n(authErrorCodeMap.storageError, { cause: error });
+	}
+};
+var deleteCredentialsEncrypted = (credentialsStorageKey) => {
+	database.removeItem(`${credentialsStorageKey}Data`);
+	database.removeItem(`${credentialsStorageKey}Counter`);
+	database.removeItem(`${credentialsStorageKey}Salt`);
+	database.removeItem(`${credentialsStorageKey}Key`);
+};
+var loadCredentials = async (credentialsStorageKey) => {
+	if (customStorage) {
+		const json = await customStorage.load(credentialsStorageKey);
+		return json ? JSON.parse(json) : void 0;
+	}
+	return await loadCredentialsEncrypted(credentialsStorageKey) ?? void 0;
+};
+var saveCredentialsToStorage = async (credentials) => {
+	if (customStorage) {
+		const merged = {
+			...await loadCredentials(credentials.credentialsStorageKey),
+			...credentials
+		};
+		await customStorage.save(credentials.credentialsStorageKey, JSON.stringify(merged));
+		return;
+	}
+	return saveCredentialsEncrypted(credentials);
+};
+var deleteCredentials = (credentialsStorageKey) => {
+	if (customStorage) {
+		customStorage.remove(credentialsStorageKey);
+		return;
+	}
+	deleteCredentialsEncrypted(credentialsStorageKey);
+};
+//#endregion
+//#region src/utils/fetchHandling.ts
+var handleErrorResponse = async (response) => {
+	if (response.status === 0) return new i(authErrorCodeMap.networkError);
+	if (response.status >= 400 && response.status < 500) return new UnexpectedError(authErrorCodeMap.unexpectedError);
+	if (response.status >= 500 && response.status < 600) return new a(authErrorCodeMap.retryableError);
+	const { error } = await response.json();
+	return new TokenResponseError(authErrorCodeMap.tokenResponseError, { cause: error });
+};
+var handleTokenFetch = async ({ body, credentials }) => {
+	const { options, url } = prepareFetch({
+		body,
+		credentials,
+		path: "oauth2/token"
+	});
+	const response = await exponentialBackoff({
+		request: () => globalThis.fetch(url, options),
+		retry: (res) => res.status >= 500 && res.status < 600
+	});
+	if (!response.ok) return await handleErrorResponse(response);
+	return response;
+};
+var prepareFetch = ({ body, credentials, path }) => {
+	const url = `${credentials.tidalAuthServiceBaseUri}${path}`;
+	return {
+		options: {
+			body: new URLSearchParams(body).toString(),
+			headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+			method: "POST"
+		},
+		url
+	};
+};
+var exponentialBackoff = async ({ delayInMs = 500, request, retry }) => {
+	let base = 1;
+	const limitReached = () => base > 32;
+	while (!limitReached()) {
+		await new Promise((resolve) => setTimeout(resolve, base * delayInMs));
+		const result = await request();
+		base *= 2;
+		if (!retry(result) || limitReached()) return result;
+	}
+	throw new UnexpectedError(authErrorCodeMap.unexpectedError);
+};
+//#endregion
+//#region src/utils/utils.ts
+var cryptoAdapter;
+var setCryptoAdapter = (adapter) => {
+	cryptoAdapter = adapter;
+};
+var getRandomValues = (array) => {
+	if (cryptoAdapter) return cryptoAdapter.getRandomValues(array);
+	return globalThis.crypto.getRandomValues(array);
+};
+var digest = (algorithm, data) => {
+	if (cryptoAdapter) return cryptoAdapter.digest(algorithm, data);
+	return globalThis.crypto.subtle.digest(algorithm, data);
+};
+/**
+* Generates a SHA256 hash of the content.
+*/
+var sha256 = async (message) => {
+	const hashBuffer = await digest("SHA-256", new TextEncoder().encode(message));
+	const bytes = new Uint8Array(hashBuffer);
+	const len = bytes.byteLength;
+	let binary = "";
+	for (let i = 0; i < len; i += 1) binary += String.fromCharCode(bytes[i]);
+	return globalThis.btoa(binary);
+};
+/**
+* Converts a Base64 value to "Base64 URL compatible" value.
+*
+* @see https://tools.ietf.org/html/draft-ietf-oauth-spop-15#appendix-A
+*/
+var base64URLEncode = (value) => value.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+/**
+* Generates a code challenge value which is used to verify the authorization request.
+*
+* @see https://tools.ietf.org/html/draft-ietf-oauth-spop-15#section-4.1
+*/
+var generateOAuthCodeChallenge = () => {
+	return base64URLEncode(btoa(getRandomValues(new Uint8Array(100)).toString())).slice(0, 128);
+};
+//#endregion
+//#region src/auth/auth.ts
+var state = {
+	pending: false,
+	pendingPromises: []
+};
+var TIDAL_LOGIN_SERVICE_BASE_URI = "https://login.tidal.com/";
+var TIDAL_AUTH_SERVICE_BASE_URI = "https://auth.tidal.com/v1/";
+var knownSubStatus = [
+	"11003",
+	"6001",
+	"11001",
+	"11002",
+	"11101"
+];
+var listeners = [];
+/**
+* Use this function to e.g. get notified when the credentials have been updated.
+*
+*/
+var bus = (callbackFn) => {
+	listeners.push(callbackFn);
+};
+var dispatchEvent = (detail) => {
+	const event = { detail };
+	for (const fn of listeners) fn(event);
+};
+var dispatchCredentialsUpdated = (credentials) => {
+	dispatchEvent({
+		payload: credentials,
+		type: t$1.credentialsUpdated
+	});
+};
+/**
+* Initialize the auth library, this needs to be called before any other auth methods.
+*
+* @param {InitArgs} initArgs - setup auth with clientId, scope, etc.
+*/
+var init = async ({ clientId, clientSecret, clientUniqueKey, credentialsStorageKey, crypto, scopes, storage, tidalAuthServiceBaseUri, tidalLoginServiceBaseUri }) => {
+	if (crypto) setCryptoAdapter(crypto);
+	if (storage) setStorageAdapter(storage);
+	const persistedCredentials = await loadCredentials(credentialsStorageKey);
+	await persistCredentials({
+		...persistedCredentials,
+		clientId,
+		...clientSecret && { clientSecret },
+		clientUniqueKey,
+		credentialsStorageKey,
+		previousClientSecret: persistedCredentials?.clientSecret,
+		scopes: scopes ?? [],
+		tidalAuthServiceBaseUri: tidalAuthServiceBaseUri ?? persistedCredentials?.tidalAuthServiceBaseUri ?? TIDAL_AUTH_SERVICE_BASE_URI,
+		tidalLoginServiceBaseUri: tidalLoginServiceBaseUri ?? persistedCredentials?.tidalLoginServiceBaseUri ?? TIDAL_LOGIN_SERVICE_BASE_URI
+	});
+	await t.synchronize();
+};
+/**
+* To login your user, you need to open the url returned from this method.
+* It will have all necessary parameters to start the login flow.
+*
+* @param {Object} args
+* @param {string} args.redirectUri - the redirectUri you have registered with TIDAL
+* @param {LoginConfig} args.loginConfig - optional parameters to customize the login flow
+*
+* @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
+*/
+var initializeLogin = async ({ loginConfig, redirectUri }) => {
+	if (!state.credentials) throw new n(authErrorCodeMap.initError);
+	const codeChallenge = generateOAuthCodeChallenge();
+	const codeChallengeSha256 = await sha256(codeChallenge);
+	await persistCredentials({
+		...state.credentials,
+		codeChallenge,
+		redirectUri
+	});
+	const queryData = {
+		...loginConfig,
+		client_id: state.credentials.clientId,
+		...state.credentials.clientUniqueKey && { client_unique_key: state.credentials.clientUniqueKey },
+		code_challenge: base64URLEncode(codeChallengeSha256),
+		code_challenge_method: "S256",
+		redirect_uri: redirectUri,
+		response_type: "code",
+		scope: state.credentials.scopes.join(" ")
+	};
+	const queryParameters = new URLSearchParams(queryData).toString();
+	return `${state.credentials.tidalLoginServiceBaseUri}authorize?${queryParameters}`;
+};
+/**
+* In case you have a limited input device, e.g. a TV, you can use this method to start the login flow.
+* The method will return a response including a code you need to show to the user along with a url.
+*
+* @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
+* @throws {@link UnexpectedError} - if the credentials are not valid (e.g. status 401)
+* @throws {@link @tidal-music/common!RetryableError} - if the server is not reachable (e.g. status 500)
+* @throws {@link @tidal-music/common!NetworkError} - if the client appears to be offline
+*/
+var initializeDeviceLogin = async () => {
+	if (!state.credentials) throw new n(authErrorCodeMap.initError);
+	const { options, url } = prepareFetch({
+		body: {
+			client_id: state.credentials.clientId,
+			...state.credentials.clientSecret && { client_secret: state.credentials.clientSecret },
+			scope: state.credentials.scopes.join(" ")
+		},
+		credentials: state.credentials,
+		path: "oauth2/device_authorization"
+	});
+	const response = await exponentialBackoff({
+		request: () => globalThis.fetch(url, options),
+		retry: (res) => res.status >= 500 && res.status < 600
+	});
+	if (!response.ok) throw await handleErrorResponse(response);
+	const jsonResponse = await response.json();
+	state.limitedDeviceResponse = jsonResponse;
+	return jsonResponse;
+};
+/**
+* After the user has been redirected back to your app, you need to call this method to finalize the login flow.
+* It will exchange the code for an access token and store it in the secure storage.
+*
+* @param {string} loginResponseQuery - make sure to pass the whole query string, not just the code
+*
+* @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized (`init` and `initializeLogin` are prerequisites)
+* @throws {@link AuthenticationError} - if there is no code in `loginResponseQuery`, normally happens when something with the login went wrong
+* @throws {@link UnexpectedError} - if the credentials are not valid (e.g. status 401)
+* @throws {@link @tidal-music/common!RetryableError} - if the server is not reachable (e.g. status 500)
+* @throws {@link @tidal-music/common!NetworkError} - if the client appears to be offline
+*/
+var finalizeLogin = async (loginResponseQuery) => {
+	if (!state.credentials?.credentialsStorageKey || !state.credentials?.codeChallenge || !state.credentials?.redirectUri) throw new n(authErrorCodeMap.initError);
+	const { clientId, clientSecret, clientUniqueKey, codeChallenge, redirectUri, scopes } = state.credentials;
+	const params = Object.fromEntries(new URLSearchParams(loginResponseQuery));
+	if (!params.code) throw new AuthenticationError(authErrorCodeMap.authenticationError);
+	const response = await handleTokenFetch({
+		body: {
+			client_id: clientId,
+			...clientUniqueKey && { client_unique_key: clientUniqueKey },
+			...clientSecret && { client_secret: clientSecret },
+			code: params.code,
+			code_verifier: codeChallenge,
+			grant_type: "authorization_code",
+			redirect_uri: redirectUri,
+			scope: scopes.join(" ")
+		},
+		credentials: state.credentials
+	});
+	if (response instanceof Error) throw response;
+	await persistToken(await response.json());
+};
+/**
+* After displaying the code to the user, you need to call this method to finalize the login flow.
+* This method will poll until the user has logged in on another device.
+* Once the user has logged in, the access token will be stored in the secure storage.
+*
+* @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
+* @throws {@link TokenResponseError} - if no token could be fetched in the time limit
+* @throws {@link UnexpectedError} - if the credentials are not valid (e.g. status 401)
+* @throws {@link @tidal-music/common!RetryableError} - if the server is not reachable (e.g. status 500)
+* @throws {@link @tidal-music/common!NetworkError} - if the client appears to be offline
+*/
+var finalizeDeviceLogin = async () => {
+	if (!state.credentials || !state.limitedDeviceResponse) throw new n(authErrorCodeMap.initError);
+	const { clientId, clientSecret, clientUniqueKey, scopes } = state.credentials;
+	const { deviceCode, expiresIn, interval } = state.limitedDeviceResponse;
+	const { options, url } = prepareFetch({
+		body: {
+			client_id: clientId,
+			...clientSecret && { client_secret: clientSecret },
+			...clientUniqueKey && { client_unique_key: clientUniqueKey },
+			device_code: deviceCode,
+			grant_type: "urn:ietf:params:oauth:grant-type:device_code",
+			scope: scopes.join(" ")
+		},
+		credentials: state.credentials,
+		path: "oauth2/token"
+	});
+	const expiresTimestamp = new Date(t.now() + expiresIn * 1e3).getTime();
+	const limitReached = () => expiresTimestamp < t.now();
+	while (!limitReached()) {
+		await new Promise((resolve) => setTimeout(resolve, interval * 1e3));
+		const response = await globalThis.fetch(url, options);
+		if (response.ok) {
+			await persistToken(await response.json());
+			return;
+		}
+		if (response.status >= 500 && response.status < 600) {
+			const retriedResponse = await exponentialBackoff({
+				request: () => globalThis.fetch(url, options),
+				retry: (res) => res.status >= 500 && res.status < 600
+			});
+			if (retriedResponse.ok) {
+				await persistToken(await retriedResponse.json());
+				return;
+			}
+			if (retriedResponse.status >= 500 && retriedResponse.status < 600) throw await handleErrorResponse(retriedResponse);
+		}
+		if (limitReached()) throw new TokenResponseError(authErrorCodeMap.tokenResponseError, { cause: "Request limit reached" });
+	}
+};
+/**
+* Log the user out and clear all local state and the secure storage.
+* Call this method only when the user actively want to log out.
+*/
+var logout = () => {
+	dispatchEvent({ type: t$1.credentialsUpdated });
+	if (state.credentials?.credentialsStorageKey) deleteCredentials(state.credentials.credentialsStorageKey);
+	delete state.credentials;
+	delete state.limitedDeviceResponse;
+};
+var refreshAccessToken = async () => {
+	if (state.credentials?.refreshToken) {
+		const response = await handleTokenFetch({
+			body: {
+				...state.credentials.clientSecret && { client_secret: state.credentials.clientSecret },
+				client_id: state.credentials.clientId,
+				grant_type: "refresh_token",
+				refresh_token: state.credentials.refreshToken,
+				scope: state.credentials.scopes.join(" ")
+			},
+			credentials: state.credentials
+		});
+		if (response instanceof Error) return response;
+		return persistToken(await response.json());
+	} else return getTokenThroughClientCredentials();
+};
+var upgradeToken = async () => {
+	if (state.credentials?.refreshToken) {
+		const { options, url } = prepareFetch({
+			body: {
+				...state.credentials.clientSecret && { client_secret: state.credentials.clientSecret },
+				client_id: state.credentials.clientId,
+				grant_type: "update_client",
+				refresh_token: state.credentials.refreshToken,
+				scope: state.credentials.scopes.join(" ")
+			},
+			credentials: state.credentials,
+			path: "oauth2/token"
+		});
+		const response = await exponentialBackoff({
+			request: () => globalThis.fetch(url, options),
+			retry: (res) => res.status >= 400 && res.status < 600
+		});
+		if (!response.ok) {
+			if (response.status === 0) throw new i(authErrorCodeMap.networkError);
+			throw new a(authErrorCodeMap.retryableError);
+		}
+		return persistToken(await response.json());
+	} else {
+		if (state.credentials) {
+			const accessTokenResponse = await getTokenThroughClientCredentials();
+			if (accessTokenResponse && "token" in accessTokenResponse) {
+				state.credentials.previousClientSecret = state.credentials.clientSecret;
+				return accessTokenResponse;
+			} else throw new a(authErrorCodeMap.retryableError);
+		}
+		throw new n(authErrorCodeMap.unexpectedError);
+	}
+};
+var getTokenThroughClientCredentials = async () => {
+	if (state.credentials?.clientSecret) {
+		const response = await handleTokenFetch({
+			body: {
+				client_id: state.credentials.clientId,
+				client_secret: state.credentials.clientSecret,
+				grant_type: "client_credentials"
+			},
+			credentials: state.credentials
+		});
+		if (response instanceof Error) return response;
+		return persistToken(await response.json());
+	}
+};
+/**
+* This is the heart of the auth module. Make sure to always call this method when in need of a token.
+* It will return a valid access token and also refresh or upgrade the token if necessary.
+* Please note: the method will return an accessToken without a `token` property if no credentials are found.
+*
+* @param {string} apiErrorSubStatus - pass `apiErrorSubStatus` when you get an authentication error from the API.
+* In some cases the auth module needs trigger a hard refresh then. (even if the token is still valid)
+* For example on status `401` with a subStatus of `11003` a refresh will be triggered.
+*
+* @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
+* @throws {@link @tidal-music/common!IllegalArgumentError} - if the scopes have changed or the clientUniqueKey is not the same
+* @throws {@link UnexpectedError} - if the credentials are not valid (e.g. status 401)
+* @throws {@link @tidal-music/common!RetryableError} - if the server is not reachable (e.g. status 500)
+* @throws {@link @tidal-music/common!NetworkError} - if the client appears to be offline
+*/
+var getCredentials = async (apiErrorSubStatus) => {
+	if (state.pending) await new Promise((resolve) => {
+		state.pendingPromises.push(resolve);
+	});
+	return getCredentialsInternal(apiErrorSubStatus).finally(() => {
+		const resolve = state.pendingPromises.shift();
+		if (resolve) resolve();
+		state.pending = false;
+	});
+};
+var getCredentialsInternal = async (apiErrorSubStatus) => {
+	if (state.credentials) {
+		state.pending = true;
+		const { accessToken } = state.credentials;
+		const oneMinute = 60 * 1e3;
+		if (accessToken) {
+			const newScopeIsSameOrSubset = state.credentials.scopes.every((scope) => accessToken.grantedScopes?.includes(scope));
+			if (state.credentials.clientUniqueKey !== accessToken.clientUniqueKey || accessToken.userId && newScopeIsSameOrSubset === false) {
+				logout();
+				throw new r(authErrorCodeMap.illegalArgumentError);
+			}
+			if (state.credentials.clientId !== accessToken?.clientId || Boolean(state.credentials.previousClientSecret && state.credentials.previousClientSecret !== state.credentials.clientSecret)) {
+				const upgradeTokenResponse = await upgradeToken();
+				if (upgradeTokenResponse && "token" in upgradeTokenResponse) return upgradeTokenResponse;
+				else throw new a(authErrorCodeMap.retryableError);
+			}
+			if (!Boolean(apiErrorSubStatus && knownSubStatus.includes(apiErrorSubStatus)) && accessToken.expires && accessToken.expires > t.now() + oneMinute) return accessToken;
+			const accessTokenResponse = await refreshAccessToken();
+			if (accessTokenResponse && "token" in accessTokenResponse) return accessTokenResponse;
+			if (accessTokenResponse instanceof UnexpectedError) {
+				logout();
+				throw accessTokenResponse;
+			}
+			if (accessTokenResponse instanceof a) throw accessTokenResponse;
+		} else if (state.credentials.clientSecret) {
+			const accessTokenResponse = await getTokenThroughClientCredentials();
+			if (accessTokenResponse && "token" in accessTokenResponse) return accessTokenResponse;
+			else if (accessTokenResponse instanceof Error) throw accessTokenResponse;
+		} else return {
+			clientId: state.credentials.clientId,
+			requestedScopes: state.credentials.scopes
+		};
+	}
+	throw new n(authErrorCodeMap.initError);
+};
+/**
+* This method should only be used to migrate old credentials to the auth module.
+* In case you don't wan't to log all users out, but have access and refresh tokens stored somewhere else, you can use this method.
+* Please be aware there is no server checks here, we trust the input and store the credentials in the secure storage.
+*
+* @param {Object} args
+* @param {Credentials} args.accessToken - the access token to set
+* @param {string} args.refreshToken - the refresh token to set
+*
+* @throws {@link @tidal-music/common!TidalError} - if the auth module has not been initialized
+* @throws {@link @tidal-music/common!IllegalArgumentError} - if the scopes have changed, the clientUniqueKey is not the same or the accessToken is invalid
+*/
+var setCredentials = async ({ accessToken, refreshToken }) => {
+	if (!state.credentials) throw new n(authErrorCodeMap.initError);
+	const newScopeIsSubset = state.credentials.scopes.every((scope) => accessToken.grantedScopes?.includes(scope));
+	if (state.credentials.clientUniqueKey !== accessToken.clientUniqueKey || state.credentials.clientId !== accessToken.clientId || newScopeIsSubset === false || !accessToken.expires || !accessToken.token) throw new r(authErrorCodeMap.illegalArgumentError);
+	await persistCredentials({
+		...state.credentials,
+		accessToken,
+		...refreshToken && { refreshToken }
+	});
+};
+var persistCredentials = (updatedCredentials) => {
+	state.credentials = updatedCredentials;
+	dispatchCredentialsUpdated({
+		...state.credentials.accessToken,
+		clientId: state.credentials.clientId,
+		requestedScopes: state.credentials.scopes
+	});
+	return saveCredentialsToStorage(state.credentials);
+};
+var persistToken = async (jsonResponse) => {
+	if (!state.credentials) throw new n(authErrorCodeMap.initError);
+	const { clientId, clientUniqueKey, scopes } = state.credentials;
+	const grantedScopes = jsonResponse.scope?.length ? jsonResponse.scope?.split(" ") : [];
+	const accessToken = {
+		clientId,
+		clientUniqueKey,
+		expires: t.now() + jsonResponse.expires_in * 1e3,
+		grantedScopes,
+		requestedScopes: scopes,
+		token: jsonResponse.access_token,
+		...jsonResponse.user_id && { userId: jsonResponse.user_id.toString() }
+	};
+	await persistCredentials({
+		...state.credentials,
+		accessToken,
+		...jsonResponse.refresh_token && { refreshToken: jsonResponse.refresh_token }
+	});
+	return accessToken;
+};
+//#endregion
+//#region src/index.ts
+var credentialsProvider = {
+	bus,
+	getCredentials
+};
+//#endregion
+export { authErrorCodeMap, credentialsProvider, finalizeDeviceLogin, finalizeLogin, init, initializeDeviceLogin, initializeLogin, logout, setCredentials };
+
+//# sourceMappingURL=index.js.map

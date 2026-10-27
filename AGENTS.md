@@ -1,6 +1,6 @@
 # mijnnaamisbas — Agent Instructions
 
-Personal SvelteKit site. One app, not a monorepo.
+Personal site as a Turborepo. Three SvelteKit apps, a Storybook app, and shared packages under `@mnb`.
 
 ## How context loads
 
@@ -8,6 +8,7 @@ Personal SvelteKit site. One app, not a monorepo.
 | --- | --- | --- |
 | Global rules | `.cursor/rules/00-project.mdc` | Every conversation |
 | Scoped rules | `.cursor/rules/*.mdc` | When editing matching files |
+| Package notes | `**/.instructions.md` | Before changing that app or package |
 | Workflow agents | `.agents/*.agent.md` | When the task matches the table below |
 | Skills | `.cursor/skills/*/SKILL.md` | When the task matches the skill description |
 
@@ -15,20 +16,22 @@ Personal SvelteKit site. One app, not a monorepo.
 
 Follow the code and these rules. These docs are stale and disagree with the app:
 
-- `DESIGN_SYSTEM.md` and `src/lib/components/base/README.md` still describe a mint/pink OKLCH theme. The live tokens are brutalist mono in `src/lib/styles/base/variables.css`.
+- `DESIGN_SYSTEM.md` still describes a mint/pink OKLCH theme. The live tokens are brutalist mono in `packages/tokens/src/variables.css`.
 - `.github/copilot-instructions.md` still mentions Tailwind, a blocks system, and Yup. None of those are in the project.
+- `TIDAL_*.md` still mentions `/tidal/callback` on port 5173. The Tidal app callback is `http://localhost:5175/callback`.
 
 ## Before coding
 
-1. Read the scoped rule for the files you will touch.
-2. Read one similar route and, for UI, one component in `src/lib/components/base/`.
-3. For an end-to-end workflow, read the matching agent and follow its phases.
+1. Read the `.instructions.md` in the app or package you will change.
+2. Read the scoped rule for those files.
+3. Read one similar route in that app, and for UI one component in `packages/ui/src/components/`.
+4. For an end-to-end workflow, read the matching agent and follow its phases.
 
 ## Before finishing code changes
 
 ```bash
 pnpm exec eslint --fix <changed-files...>
-pnpm check
+pnpm --filter @mnb/<app> check
 ```
 
 ## Workflow agents
@@ -41,13 +44,18 @@ pnpm check
 
 ## Layout
 
-| Path | What belongs there |
-| --- | --- |
-| `src/routes/` | Pages, `load`, and form actions |
-| `src/lib/components/base/` | Shared UI. Export new components from `$lib` and `base/index.ts` |
-| `src/lib/queries/` | GraphQL documents |
-| `src/lib/services/` | Hygraph strategies, validation, slug helpers |
-| `src/lib/types/` | Domain types |
-| `src/lib/styles/` | Tokens and global CSS |
-| `src/lib/config/Constants.ts` | Limits, pagination, feature flags, breakpoints |
-| `src/lib/tidal/` | TIDAL client, kept on the server |
+| Path | What belongs there | Notes |
+| --- | --- | --- |
+| `apps/bookmarks` | Homepage (`/`), list (`/list`), add (`/add`), login. Port 5173 | `.instructions.md` |
+| `apps/espresso` | Coffee notes. `/`, `/notes`, `/notes/new`, `/notes/[id]`. Port 5174 | `.instructions.md` |
+| `apps/tidal` | Suggestions and OAuth (`/login`, `/callback`, `/logout`). Port 5175 | `.instructions.md` |
+| `apps/storybook` | Component and token stories. Port 6006 | `.instructions.md` |
+| `packages/ui` | `MNB*` components and `MNBSiteFrame`. Import from `@mnb/ui` | `.instructions.md` |
+| `packages/tokens` | CSS variables and global CSS | `.instructions.md` |
+| `packages/auth` | Login form, `@mnb/auth/login`, `@mnb/auth/handle` | `.instructions.md` |
+| `packages/hygraph` | `createHygraphClients(env)` | `.instructions.md` |
+| `packages/mistral` | `completeJson(prompt, apiKey)` | `.instructions.md` |
+| `packages/eslint-config` | `@mnb/eslint-config` base, svelte, storybook, prettier, and turbo configs | |
+| `packages/typescript-config` | Shared `base.json` for non-SvelteKit packages | |
+
+Domain services stay in the app that owns the data (`apps/<app>/src/lib/services`). Do not import `$env` inside a package.

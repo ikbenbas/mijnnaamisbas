@@ -1,6 +1,15 @@
 # mijnnaamisbas
 
-Personal website for Bas, built with SvelteKit 2 and Svelte 5.
+Personal site for Bas. Turborepo with three SvelteKit apps, Storybook, and shared packages.
+
+| App | Package | Dev URL | What it is |
+| --- | --- | --- | --- |
+| Bookmarks | `@mnb/bookmarks` | http://localhost:5173 | Homepage, bookmark list, login |
+| Espresso | `@mnb/espresso` | http://localhost:5174 | Coffee notes |
+| Tidal | `@mnb/tidal` | http://localhost:5175 | Playlist suggestions |
+| Storybook | `@mnb/storybook` | http://localhost:6006 | UI components and design tokens |
+
+Shared packages: `@mnb/ui` (components and site frame), `@mnb/tokens`, `@mnb/auth`, `@mnb/hygraph`, `@mnb/mistral`, `@mnb/eslint-config`, `@mnb/typescript-config`.
 
 ## Features
 
@@ -46,6 +55,8 @@ MISTRAL_API_KEY=your_mistral_api_key
 pnpm dev
 ```
 
+That starts the apps, including Storybook on port 6006. One app only: `pnpm --filter @mnb/espresso dev`.
+
 ## Build
 
 ```bash
@@ -55,4 +66,4 @@ pnpm preview
 
 ## Tidal Playlist Suggestions
 
-Visit `/tidal` to get AI-powered playlist suggestions using Mistral AI, the European AI alternative to OpenAI.
+Open http://localhost:5175 for AI-powered playlist suggestions using Mistral AI. The Tidal OAuth redirect in development is `http://localhost:5175/callback`.

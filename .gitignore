@@ -71,6 +71,9 @@ typings/
 # Nuxt generate
 dist
 
+# Storybook
+storybook-static
+
 # vuepress build output
 .vuepress/dist
 
@@ -89,3 +92,4 @@ sw.*
 # Vim swap files
 *.swp
 .svelte-kit
+.turbo

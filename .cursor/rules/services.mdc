@@ -1,34 +1,23 @@
 ---
 description: Service and GraphQL patterns — strategy objects, queries, validation
-globs: src/lib/**/*.ts
+globs: "{apps/*/src/lib,packages/hygraph,packages/mistral,packages/auth}/**/*.ts"
 alwaysApply: false
 ---
 
 # Services and data
 
-GraphQL documents live in `src/lib/queries/<domain>.ts`. Domain logic lives in `src/lib/services/api/<domain>.ts`. Routes call the service, never `getHygraphClient()` directly.
+GraphQL documents live in `apps/<app>/src/lib/queries/<domain>.ts`. Domain logic lives in `apps/<app>/src/lib/services/api/<domain>.ts`. Routes call the service, never `createHygraphClients()` directly. Read `packages/hygraph/.instructions.md` or `packages/mistral/.instructions.md` when the change touches those packages.
 
 ## Shape
 
 - Export a strategy factory and a default instance: `createHygraphBookmarkStrategy()` and `bookmarkService`
+- The factory calls `createHygraphClients(env)` with `$env/dynamic/private`
 - The interface lists every operation (`list`, `getById`, `create`, `update`, `delete`)
 - Queries go through `executeQuery` (returns `null` on failure, caller returns an empty list). Mutations go through `executeMutation` and `publishContent`
 - Inputs and results are exported types. Results use `{ success, data?, error? }`
-- Limits and field bounds come from `CONSTANTS` in `src/lib/config/Constants.ts`, not magic numbers
-- Shared checks go in `src/lib/services/validation/`. Slugs go through `generateSlug`
+- Limits and field bounds come from `CONSTANTS` in that app's `$lib/config/Constants.ts`, not magic numbers
+- Shared checks go in `$lib/services/validation/`. Slugs go through `generateSlug`
 
-```ts
-list: async (limit = CONSTANTS.PAGINATION.bookmarksPageSize): Promise<Bookmark[]> => {
-	const data = await executeQuery<{ bookmarks: Bookmark[] }>(
-		client,
-		GET_BOOKMARKS,
-		{ first: limit },
-		'Fetch bookmarks'
-	);
-	return data?.bookmarks || [];
-}
-```
+Add a new Hygraph field to the query and to `$lib/types` together. Re-export the service from `$lib/services/index.ts`.
 
-Add a new Hygraph field to the query and to `$lib/types` together. Re-export the service from `src/lib/services/index.ts`.
-
-`$lib/hygraph.ts` and `$lib/tidal/` read private env vars. Import them only from server code.
+`@mnb/hygraph`, `@mnb/mistral`, and `apps/tidal/src/lib/tidal/` are server-only. Do not import them from a `.svelte` file. Mistral's `completeJson` takes the API key as an argument.

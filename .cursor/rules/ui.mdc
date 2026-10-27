@@ -1,0 +1,14 @@
+---
+description: Shared UI package — MNB prefix, mnb- tokens, no secrets
+globs: packages/ui/**
+alwaysApply: false
+---
+
+# @mnb/ui
+
+Read `packages/ui/.instructions.md` before adding or changing a component.
+
+- One directory per component: `MNBName.svelte`, `MNBName.type.ts`, `MIGRATION.md`, and `MNBName.enum.ts` when a prop is a closed set.
+- Export `MNBName` from `src/index.ts`. Root class is `mnb-name`. No BEM.
+- Tokens only, and every custom property is `--mnb-…`. No `$env`, Hygraph, Mistral, or TIDAL imports.
+- `href` values are passed in already resolved. `resolve()` does not exist in this package.

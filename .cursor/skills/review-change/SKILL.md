@@ -10,12 +10,13 @@ Read the diff and the scoped rules in `.cursor/rules/`. Report only issues that 
 ## Look for
 
 - Data fetching or secrets inside a `.svelte` file, or a route calling Hygraph directly instead of a service
-- `export let`, missing `$props()`, or client code importing `$lib/hygraph` or `$lib/tidal`
-- Hex colors, soft shadows, or Tailwind classes. Tokens live in `src/lib/styles/base/variables.css`
-- A new control under `src/lib/components/ui/` instead of `base/`
-- Links that skip `resolve()`, or a form that drops submitted values on `fail()`
+- `export let`, missing `$props()`, or a `.svelte` file importing `@mnb/hygraph`, `@mnb/mistral`, or `$lib/tidal`
+- Hex colors, soft shadows, or Tailwind classes. Tokens live in `packages/tokens/src/variables.css`
+- A new shared control under an app instead of `packages/ui`
+- In-app links that skip `resolve()`, or a form that drops submitted values on `fail()`
 - Clickable `<div>`s, inputs without labels, errors without `role="alert"`
-- A new external host missing from CSP in `src/hooks.server.ts`
+- A new external host missing from CSP in `packages/auth/src/handle.ts`
+- A package that imports `$env` instead of taking the secret as an argument
 
 ## Response
 
@@ -23,4 +24,4 @@ Read the diff and the scoped rules in `.cursor/rules/`. Report only issues that 
 - **Should fix** — wrong tokens, naming, or a duplicated component
 - **Note** — optional, only if it affects the next reader
 
-Skip praise and skip style nits that the existing file already does on purpose (tabs, BEM, JSDoc on services).
+Skip praise and skip style nits that the existing file already does on purpose (tabs, `mnb-` class names, JSDoc on services).

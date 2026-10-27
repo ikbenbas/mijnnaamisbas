@@ -1,27 +1,27 @@
 ---
 description: Design tokens and brutalist styling — no hardcoded colors or Tailwind
-globs: src/**/*.{css,svelte}
+globs: "{apps,packages}/**/*.{css,svelte}"
 alwaysApply: false
 ---
 
 # Styles
 
-Tokens live in `src/lib/styles/base/variables.css` and are pulled in by `src/lib/styles/styles.css`, which `+layout.svelte` imports once. Do not add a second global stylesheet under `assets/css/`.
+Tokens live in `packages/tokens/src/variables.css`. `packages/tokens/src/styles.css` pulls in the global CSS, and `@mnb/ui` imports that once. Do not add a second global stylesheet.
 
 ## Look
 
 Brutalist mono, not the old mint/pink theme:
 
-- Paper is `--color-offwhite` / `--color-paper`. Ink is `--color-ink` / `--color-black`
-- Borders are thick and black (`--border-width-thick`, `--color-border-primary`)
-- Shadows are hard offsets (`--shadow-sm` is `2px 2px 0 black`), not soft blurs
-- `--color-secondary` (blue) is for focus and rare emphasis only
-- Type uses `--font-display` for UI labels and `--font-primary` for body
+- Paper is `--mnb-color-offwhite` / `--mnb-color-paper`. Ink is `--mnb-color-ink` / `--mnb-color-black`
+- Borders are thick and black (`--mnb-border-width-thick`, `--mnb-color-black`)
+- Shadows are hard offsets (`--mnb-shadow-sm` is `2px 2px 0 black`), not soft blurs
+- `--mnb-color-secondary` (blue) is for focus and rare emphasis only
+- Type uses `--mnb-font-display` for UI labels and `--mnb-font-primary` for body
 
 ## Rules
 
 - Prefer an existing token over a new raw value. Spacing is the `--space-*` scale
 - A new color, size, or shadow is added to `variables.css` and then referenced. Do not paste hex into a component
-- Component CSS is scoped and nested with the project's PostCSS setup. Class names follow BEM in shared components
-- Honor `prefers-reduced-motion` for anything that animates (see `animations.css`)
+- Component CSS is scoped and nested with the project's PostCSS setup. Shared components use an `mnb-` root class and short part names, not BEM
+- Honor `prefers-reduced-motion` for anything that animates (see `packages/tokens/src/animations.css`)
 - Give images and media a size or `aspect-ratio` so the page does not jump

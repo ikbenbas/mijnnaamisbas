@@ -1,0 +1,15 @@
+---
+description: SvelteKit apps — ports, root env, in-app vs cross-app links
+globs: apps/**/*.{svelte,ts,js}
+alwaysApply: false
+---
+
+# Apps
+
+Read that app's `.instructions.md` (`apps/bookmarks`, `apps/espresso`, or `apps/tidal`).
+
+- Bookmarks **5173** (`/`, `/list`, `/add`, `/login`). Espresso **5174** (`/notes`). Tidal **5175** (`/callback`, not `/tidal/callback`). Storybook **6006**.
+- `kit.env.dir` is `../..` so one root `.env` feeds `$env`. Do not add a second env file inside the app.
+- Private secrets stay in the app. Pass them into `@mnb/hygraph` and `@mnb/mistral`.
+- `resolve()` for routes in this app. Other apps get absolute URLs from `appUrls()`.
+- `pnpm dev` uses `--strictPort`. One busy port stops all three apps.

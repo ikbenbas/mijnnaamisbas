@@ -1,0 +1,36 @@
+const o = {
+  credentialsUpdated: "CredentialsUpdatedMessage"
+};
+class e extends Error {
+  errorCode;
+  /**
+   * Constructor.
+   *
+   * @param errorCode Defined by the user of this error, but must match the regexp: [0-9a-z]{1,5}
+   */
+  constructor(t, r) {
+    super(t, r), Object.setPrototypeOf(this, e.prototype), Error.captureStackTrace && Error.captureStackTrace(this, e), this.name = "TidalError", this.errorCode = t;
+  }
+}
+class s extends e {
+  constructor(t, r) {
+    super(t, r), Object.setPrototypeOf(this, s.prototype), Error.captureStackTrace && Error.captureStackTrace(this, s), this.name = "IllegalArgumentError";
+  }
+}
+class c extends e {
+  constructor(t, r) {
+    super(t, r), Object.setPrototypeOf(this, c.prototype), Error.captureStackTrace && Error.captureStackTrace(this, c), this.name = "NetworkError";
+  }
+}
+class a extends e {
+  constructor(t, r) {
+    super(t, r), Object.setPrototypeOf(this, a.prototype), Error.captureStackTrace && Error.captureStackTrace(this, a), this.name = "RetryableError";
+  }
+}
+export {
+  s as IllegalArgumentError,
+  c as NetworkError,
+  a as RetryableError,
+  e as TidalError,
+  o as messageTypes
+};

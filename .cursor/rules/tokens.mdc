@@ -1,0 +1,11 @@
+---
+description: Design tokens — brutalist variables, no new hex in components
+globs: packages/tokens/**
+alwaysApply: false
+---
+
+# @mnb/tokens
+
+Read `packages/tokens/.instructions.md`. The live theme is `src/variables.css`.
+
+Add a custom property there as `--mnb-name`, then use `var(--mnb-name)`. Do not invent a second palette. `DESIGN_SYSTEM.md` is the old mint/pink theme.

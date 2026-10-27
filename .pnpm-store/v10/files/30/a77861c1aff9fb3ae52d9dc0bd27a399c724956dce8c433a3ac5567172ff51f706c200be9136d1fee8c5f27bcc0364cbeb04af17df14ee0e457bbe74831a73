@@ -1,0 +1,81 @@
+export declare type Bus = (callbackFn: (e: BusEvent) => void) => void;
+
+export declare type BusEvent = CustomEvent<{
+    payload?: Credentials;
+    type: (typeof messageTypes)[keyof typeof messageTypes];
+}>;
+
+export declare type Credentials = {
+    clientId: string;
+    clientUniqueKey?: string;
+    expires?: number;
+    grantedScopes?: Array<string>;
+    requestedScopes: Array<string>;
+    token?: string;
+    userId?: string;
+};
+
+export declare type CredentialsProvider = {
+    bus: Bus;
+    getCredentials: GetCredentials;
+};
+
+declare type ErrorOptions_2 = {
+    cause?: unknown;
+};
+export { ErrorOptions_2 as ErrorOptions }
+
+export declare type GetCredentials = (apiErrorSubStatus?: string) => Promise<Credentials>;
+
+/**
+ * Raised whenever an illegal argument was passed to a function.
+ *
+ * @extends TidalError
+ */
+export declare class IllegalArgumentError extends TidalError {
+    constructor(errorCode: string, options?: ErrorOptions_2);
+}
+
+export declare const messageTypes: {
+    credentialsUpdated: "CredentialsUpdatedMessage";
+};
+
+/**
+ * Raised whenever an error occurs as the result of bad network conditions.
+ *
+ * @extends TidalError
+ */
+export declare class NetworkError extends TidalError {
+    constructor(errorCode: string, options?: ErrorOptions_2);
+}
+
+/**
+ * This is a pretty "rough" and "unprecise" error that indicates to the user of the module that the operation failed,
+ * but it might succeed if the user retries it. It is intended to be raised in situations where the user of the
+ * module cannot do that much even if they got more precise information, for example server errors. However,
+ * the error code should supply relevant information for debugging.
+ *
+ * @extends TidalError
+ */
+export declare class RetryableError extends TidalError {
+    constructor(errorCode: string, options?: ErrorOptions_2);
+}
+
+/**
+ * Generic TIDAL error
+ *
+ * @extends Error
+ */
+export declare class TidalError extends Error {
+    errorCode: string;
+    /**
+     * Constructor.
+     *
+     * @param errorCode Defined by the user of this error, but must match the regexp: [0-9a-z]{1,5}
+     */
+    constructor(errorCode: string, options?: ErrorOptions_2);
+}
+
+export declare type TidalMessage = Readonly<Record<string, unknown>>;
+
+export { }

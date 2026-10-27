@@ -1,20 +1,19 @@
-import svelte from 'eslint-plugin-svelte';
-import tsParser from '@typescript-eslint/parser';
+import prettierConfig from '@mnb/eslint-config/prettier';
+import storybookConfig from '@mnb/eslint-config/storybook';
+import svelteConfig from '@mnb/eslint-config/svelte';
 
 export default [
-    ...svelte.configs['flat/recommended'],
-    {
-        files: ['**/*.svelte'],
-        languageOptions: {
-            parserOptions: {
-                parser: tsParser,
-            },
-        },
-        rules: {
-            'svelte/no-navigation-without-resolve': 'warn'
-        }
-    },
-    {
-        ignores: ['.svelte-kit/**', 'node_modules/**', 'build/**']
-    }
+	...svelteConfig,
+	...storybookConfig,
+	prettierConfig,
+	{
+		ignores: [
+			'**/.svelte-kit/**',
+			'**/.turbo/**',
+			'**/build/**',
+			'**/dist/**',
+			'**/node_modules/**',
+			'**/storybook-static/**'
+		]
+	}
 ];
