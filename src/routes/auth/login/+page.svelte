@@ -1,17 +1,8 @@
 <script lang="ts">
-    let username = $state('');
-    let password = $state('');
-    let error = $state('');
+	import { Button } from '$lib';
+	import type { ActionData } from './$types';
 
-    const login = async () => {
-        try {
-            // TODO: Implement authentication
-            console.log('Login:', username);
-        } catch (e) {
-            error = 'Login failed';
-            console.error(e);
-        }
-    };
+	let { form }: { form: ActionData } = $props();
 </script>
 
 <svelte:head>
@@ -24,20 +15,20 @@
             <h1>Login</h1>
             <p class="subtitle">Welkom terug! Log in om door te gaan.</p>
 
-            <form action="#" method="POST" onsubmit={(e) => { e.preventDefault(); login(); }}>
-                {#if error}
-                    <p class="error-message">{error}</p>
+            <form method="POST" action="?/login">
+                {#if form?.error}
+                    <p class="error-message" role="alert">{form.error}</p>
                 {/if}
 
                 <div class="form-group">
                     <label for="username">Gebruikersnaam</label>
                     <input
                         id="username"
-                        bind:value={username}
                         name="username"
                         type="email"
                         autocomplete="username"
                         placeholder="je@email.nl"
+                        value={form?.username ?? ''}
                         required
                     />
                 </div>
@@ -46,7 +37,6 @@
                     <label for="password">Wachtwoord</label>
                     <input
                         id="password"
-                        bind:value={password}
                         name="password"
                         type="password"
                         autocomplete="current-password"
@@ -55,7 +45,7 @@
                     />
                 </div>
 
-                <button type="submit" class="submit-btn">Kom d'rin</button>
+                <Button type="submit" variant="primary" fullWidth>Kom d'rin</Button>
             </form>
         </div>
     </div>
@@ -128,24 +118,6 @@
         padding: 0.75rem;
         margin-bottom: 1.5rem;
         text-align: center;
-    }
-
-    .submit-btn {
-        width: 100%;
-        background: var(--gradient-primary);
-        border: none;
-        border-radius: 4px;
-        color: var(--color-text-inverse);
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: 600;
-        padding: 0.875rem 1.5rem;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .submit-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-focus);
     }
 
     @media (max-width: 480px) {

@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
+	import { Button } from '$lib';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form?: ActionData } = $props();
 
 	const today = new Date().toISOString().slice(0, 10);
-	const methodType = 'espresso'; // Default method type for new notes
 
 	function formatMethodType(value: string): string {
 		return value
@@ -19,34 +20,34 @@
 	<title>New note · Coffee Notes</title>
 </svelte:head>
 
-<div class="back"><a href="/espresso/notes">← All notes</a></div>
+<div class="back"><a href={resolve('/espresso/notes')}>← All notes</a></div>
 <h1>New experiment</h1>
 
 {#if form?.error}
 	<p class="error" role="alert">{form.error}</p>
 {/if}
 
-<form method="POST" use:enhance class="note-form">
+<form method="POST" action="?/create" use:enhance class="note-form">
 	<fieldset>
 		<legend>General</legend>
 		<div class="row">
 			<div class="field">
 				<label for="title">Title <span class="req">*</span></label>
-				<input id="title" name="title" type="text" required placeholder="e.g. First pull with new grinder" />
+				<input id="title" name="title" type="text" required value={form?.title ?? ''} placeholder="e.g. First pull with new grinder" />
 			</div>
 			<div class="field">
 				<label for="date">Date <span class="req">*</span></label>
-				<input id="date" name="date" type="date" required value={today} />
+				<input id="date" name="date" type="date" required value={form?.date || today} />
 			</div>
 		</div>
 		<div class="row">
 			<div class="field">
 				<label for="bean">Coffee bean / origin <span class="req">*</span></label>
-				<input id="bean" name="bean" type="text" required placeholder="e.g. Ethiopia Yirgacheffe" />
+				<input id="bean" name="bean" type="text" required value={form?.bean ?? ''} placeholder="e.g. Ethiopia Yirgacheffe" />
 			</div>
 			<div class="field">
 				<label for="roaster">Roaster</label>
-				<input id="roaster" name="roaster" type="text" placeholder="e.g. Mok" />
+				<input id="roaster" name="roaster" type="text" value={form?.roaster ?? ''} placeholder="e.g. Mok" />
 			</div>
 		</div>
 	</fieldset>
@@ -55,8 +56,8 @@
 		<legend>Brew method</legend>
 		<div class="field">
 			<label for="methodType">Method type <span class="req">*</span></label>
-			<select id="methodType" name="methodType" required value={methodType}>
-				<option value="" disabled selected>Select a method…</option>
+			<select id="methodType" name="methodType" required value={form?.methodType || 'espresso'}>
+				<option value="" disabled>Select a method…</option>
 				{#each data.methodTypes as method (method)}
 					<option value={method}>{formatMethodType(method)}</option>
 				{/each}
@@ -69,30 +70,30 @@
 		<div class="row row-4">
 			<div class="field">
 				<label for="dosage">Dosage (g) <span class="req">*</span></label>
-				<input id="dosage" name="dosage" type="number" step="0.1" min="0" required placeholder="18" />
+				<input id="dosage" name="dosage" type="number" step="0.1" min="0" required value={form?.dosage ?? ''} placeholder="18" />
 			</div>
 			<div class="field">
 				<label for="yield">Yield (g) <span class="req">*</span></label>
-				<input id="yield" name="yield" type="number" step="0.1" min="0" required placeholder="36" />
+				<input id="yield" name="yield" type="number" step="0.1" min="0" required value={form?.yield ?? ''} placeholder="36" />
 			</div>
 			<div class="field">
 				<label for="brewTime">Brew time <span class="req">*</span></label>
-				<input id="brewTime" name="brewTime" type="number" min="0" required placeholder="28" />
+				<input id="brewTime" name="brewTime" type="number" min="0" required value={form?.brewTime ?? ''} placeholder="28" />
 			</div>
 			<div class="field">
 				<label for="grindSize">Grind size</label>
-				<input id="grindSize" name="grindSize" type="number" step="0.1" min="0" placeholder="e.g. 2.0" />
+				<input id="grindSize" name="grindSize" type="number" step="0.1" min="0" value={form?.grindSize ?? ''} placeholder="e.g. 2.0" />
 				<span class="hint">Machine-specific unit</span>
 			</div>
 		</div>
 		<div class="row row-2">
 			<div class="field">
 				<label for="temperature">Temperature (°C)</label>
-				<input id="temperature" name="temperature" type="number" step="0.5" min="0" max="110" placeholder="93" />
+				<input id="temperature" name="temperature" type="number" step="0.5" min="0" max="110" value={form?.temperature ?? ''} placeholder="93" />
 			</div>
 			<div class="field">
 				<label for="pressure">Pressure (bar)</label>
-				<input id="pressure" name="pressure" type="number" step="0.5" min="0" max="20" placeholder="9" />
+				<input id="pressure" name="pressure" type="number" step="0.5" min="0" max="20" value={form?.pressure ?? ''} placeholder="9" />
 			</div>
 		</div>
 	</fieldset>
@@ -101,17 +102,17 @@
 		<legend>Tasting</legend>
 		<div class="field">
 			<label for="notes">Notes & observations</label>
-			<textarea id="notes" name="notes" rows="5" placeholder="Describe taste, texture, extraction quality…"></textarea>
+			<textarea id="notes" name="notes" rows="5" placeholder="Describe taste, texture, extraction quality…">{form?.notes ?? ''}</textarea>
 		</div>
 		<div class="field rating-field">
 			<label for="rating">Rating (1–10)</label>
-			<input id="rating" name="rating" type="number" min="1" max="10" step="1" placeholder="8" />
+			<input id="rating" name="rating" type="number" min="1" max="10" step="1" value={form?.rating ?? ''} placeholder="8" />
 		</div>
 	</fieldset>
 
 	<div class="form-actions">
-		<a href="/espresso/notes" class="btn btn-secondary">Cancel</a>
-		<button type="submit" class="btn btn-primary">Save note</button>
+		<Button href={resolve('/espresso/notes')} variant="secondary">Cancel</Button>
+		<Button type="submit" variant="primary">Save note</Button>
 	</div>
 </form>
 

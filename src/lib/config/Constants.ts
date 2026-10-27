@@ -3,18 +3,15 @@
  * Centralized application configuration following DRY principles
  */
 
-import { env } from '$env/dynamic/public';
-
 /**
  * Application-wide constants
  * All configuration values should be defined here for easy maintenance
  */
 export const CONSTANTS = {
 	/**
-	 * API Endpoints configuration
+	 * Public API hosts. Secrets and the Hygraph endpoint stay in private env vars.
 	 */
 	API_ENDPOINTS: {
-		HYGRAPH: env.PUBLIC_HYGRAPH_ENDPOINT || '',
 		TIDAL: 'https://api.tidal.com'
 	},
 	/**

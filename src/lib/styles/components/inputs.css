@@ -173,7 +173,7 @@ select {
     }
 
     &:focus-visible {
-        box-shadow: 0 0 0 3px rgba(var(--highlight-rgb), 0.5);
+        box-shadow: var(--shadow-focus);
     }
 
     option {

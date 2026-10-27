@@ -114,6 +114,28 @@ export const CREATE_BOOKMARK = gql`
 	}
 `;
 
+export const UPDATE_BOOKMARK = gql`
+	mutation UpdateBookmark($id: ID!, $data: BookmarkUpdateInput!) {
+		updateBookmark(where: { id: $id }, data: $data) {
+			id
+			title
+			slug
+			description
+			link
+			read
+			private
+		}
+	}
+`;
+
+export const DELETE_BOOKMARK = gql`
+	mutation DeleteBookmark($id: ID!) {
+		deleteBookmark(where: { id: $id }) {
+			id
+		}
+	}
+`;
+
 export const PUBLISH_BOOKMARK = gql`
 	mutation PublishBookmark($id: ID!) {
 		publishBookmark(where: { id: $id }, to: PUBLISHED) {

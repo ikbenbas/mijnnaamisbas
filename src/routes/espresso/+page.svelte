@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { Button } from '$lib';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -11,18 +13,18 @@
 <section class="hero">
 	<h1>Coffee notes</h1>
 	<p>Track your coffee experiments — dial in the perfect shot.</p>
-	<a href="/espresso/notes/new" class="btn btn-primary">Start a new note</a>
+	<Button href={resolve('/espresso/notes/new')} variant="primary">Start a new note</Button>
 </section>
 
 <div class="section-bar">Recent experiments</div>
 <section class="recent">
 	{#if data.notes.length === 0}
-		<p class="empty">No notes yet. <a href="/espresso/notes/new">Add your first experiment!</a></p>
+		<p class="empty">No notes yet. <a href={resolve('/espresso/notes/new')}>Add your first experiment!</a></p>
 	{:else}
 		<ul class="note-list">
 			{#each data.notes as note (note.id)}
 				<li class="note-card">
-					<a href="/espresso/notes/{note.id}">
+					<a href={resolve('/espresso/notes/[id]', { id: note.id })}>
 						<div class="note-header">
 							<span class="note-title">{note.title}</span>
 							{#if note.rating}
@@ -38,7 +40,9 @@
 				</li>
 			{/each}
 		</ul>
-		<a href="/espresso/notes" class="btn btn-secondary" style="margin-top:1.5rem">View all notes</a>
+		<div class="more">
+			<Button href={resolve('/espresso/notes')} variant="secondary">View all notes</Button>
+		</div>
 	{/if}
 </section>
 
@@ -61,35 +65,8 @@
 		margin: 0;
 	}
 
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		padding: 0.7rem 1.15rem;
-		font-family: var(--font-display);
-		font-size: var(--font-size-sm);
-		text-transform: uppercase;
-		letter-spacing: 0.03em;
-		text-decoration: none;
-		border: var(--border-width-thick) solid var(--color-black);
-		box-shadow: var(--shadow-sm);
-		opacity: 1;
-		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-	}
-
-	.btn-primary {
-		background: var(--color-black);
-		color: var(--color-offwhite);
-	}
-
-	.btn-secondary {
-		background: var(--color-offwhite);
-		color: var(--color-ink);
-	}
-
-	.btn:hover {
-		transform: translate(-1px, -1px);
-		box-shadow: var(--shadow-md);
-		opacity: 1;
+	.more {
+		margin-top: var(--space-lg);
 	}
 
 	.recent {

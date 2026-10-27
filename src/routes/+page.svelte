@@ -80,8 +80,8 @@
 		min-height: min(72vh, 640px);
 		padding: clamp(2rem, 6vw, 4rem);
 		background:
-			linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.72) 100%),
-			linear-gradient(125deg, #1a1a1a 0%, #3d3d3d 40%, #0a0a0a 100%);
+			linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--color-black) 72%, transparent) 100%),
+			linear-gradient(125deg, var(--color-primary-hover) 0%, var(--color-hero-mid) 40%, var(--color-hero-end) 100%);
 		color: var(--color-offwhite);
 		overflow: hidden;
 	}

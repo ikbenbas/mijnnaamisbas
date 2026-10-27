@@ -90,6 +90,22 @@ export const CREATE_NOTE = gql`
 	}
 `;
 
+export const UPDATE_NOTE = gql`
+	mutation UpdateNote($id: ID!, $data: EspressoNoteUpdateInput!) {
+		updateEspressoNote(where: { id: $id }, data: $data) {
+			id
+		}
+	}
+`;
+
+export const DELETE_NOTE = gql`
+	mutation DeleteNote($id: ID!) {
+		deleteEspressoNote(where: { id: $id }) {
+			id
+		}
+	}
+`;
+
 export const PUBLISH_NOTE = gql`
 	mutation PublishNote($id: ID!) {
 		publishEspressoNote(where: { id: $id }, to: PUBLISHED) {

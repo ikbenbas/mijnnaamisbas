@@ -1,7 +1,8 @@
 import type { Actions, PageServerLoad } from './$types';
 import { espressoNoteService, validateRequired, validateRange } from '$lib/services';
-import { redirect, fail } from '@sveltejs/kit';
 import { CONSTANTS } from '$lib/config/Constants';
+import { redirect, fail } from '@sveltejs/kit';
+import { resolve } from '$app/paths';
 
 export const load: PageServerLoad = async () => {
 	const methodTypes = await espressoNoteService.getMethodTypes();
@@ -9,49 +10,72 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions: Actions = {
-	default: async ({ request }) => {
+	create: async ({ request }) => {
 		const form = await request.formData();
+		const read = (name: string) => form.get(name)?.toString().trim() ?? '';
 
-		const title = form.get('title')?.toString().trim();
-		const date = form.get('date')?.toString();
-		const bean = form.get('bean')?.toString().trim();
-		const roaster = form.get('roaster')?.toString().trim() || undefined;
-		const grindSize = form.get('grindSize') ? Number(form.get('grindSize')) : undefined;
-		const dosage = Number(form.get('dosage'));
-		const yieldVal = Number(form.get('yield'));
-		const brewTime = Number(form.get('brewTime'));
-		const temperature = form.get('temperature') ? Number(form.get('temperature')) : undefined;
-		const pressure = form.get('pressure') ? Number(form.get('pressure')) : undefined;
-		const notes = form.get('notes')?.toString().trim() || undefined;
-		const rating = form.get('rating') ? Number(form.get('rating')) : undefined;
-		const methodType = form.get('methodType')?.toString();
+		const fields = {
+			title: read('title'),
+			date: read('date'),
+			bean: read('bean'),
+			roaster: read('roaster'),
+			methodType: read('methodType'),
+			dosage: read('dosage'),
+			yield: read('yield'),
+			brewTime: read('brewTime'),
+			grindSize: read('grindSize'),
+			temperature: read('temperature'),
+			pressure: read('pressure'),
+			notes: read('notes'),
+			rating: read('rating')
+		};
 
-		// Validation: Required fields
-		if (!title || !date || !bean || !dosage || !yieldVal || !brewTime || !methodType) {
-			return fail(422, { error: 'Please fill in all required fields.' });
+		const missing = [
+			validateRequired(fields.title, 'Title'),
+			validateRequired(fields.date, 'Date'),
+			validateRequired(fields.bean, 'Coffee bean'),
+			validateRequired(fields.methodType, 'Method type'),
+			validateRequired(fields.dosage, 'Dosage'),
+			validateRequired(fields.yield, 'Yield'),
+			validateRequired(fields.brewTime, 'Brew time')
+		].find((result) => !result.valid);
+
+		if (missing) {
+			return fail(400, { error: missing.error, ...fields });
 		}
 
-		// Create note using service
+		const rating = fields.rating ? Number(fields.rating) : undefined;
+		if (rating !== undefined) {
+			const ratingCheck = validateRange(rating, {
+				min: CONSTANTS.VALIDATION.rating.min,
+				max: CONSTANTS.VALIDATION.rating.max,
+				fieldName: 'Rating'
+			});
+			if (!ratingCheck.valid) {
+				return fail(400, { error: ratingCheck.error, ...fields });
+			}
+		}
+
 		const result = await espressoNoteService.create({
-			title,
-			date,
-			bean,
-			roaster,
-			grindSize,
-			dosage,
-			yield: yieldVal,
-			brewTime,
-			temperature,
-			pressure,
-			notes,
+			title: fields.title,
+			date: fields.date,
+			bean: fields.bean,
+			roaster: fields.roaster || undefined,
+			grindSize: fields.grindSize ? Number(fields.grindSize) : undefined,
+			dosage: Number(fields.dosage),
+			yield: Number(fields.yield),
+			brewTime: Number(fields.brewTime),
+			temperature: fields.temperature ? Number(fields.temperature) : undefined,
+			pressure: fields.pressure ? Number(fields.pressure) : undefined,
+			notes: fields.notes || undefined,
 			rating,
-			methodType
+			methodType: fields.methodType
 		});
 
-		if (!result.success) {
-			return fail(422, { error: result.error });
+		if (!result.success || !result.data?.id) {
+			return fail(500, { error: result.error ?? 'Failed to save espresso note.', ...fields });
 		}
 
-		redirect(303, `/espresso/notes/${result.data?.id}`);
+		redirect(303, resolve('/espresso/notes/[id]', { id: result.data.id }));
 	}
 };

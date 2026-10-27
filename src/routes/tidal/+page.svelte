@@ -1,5 +1,7 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import { resolve } from '$app/paths';
+    import { Button } from '$lib';
     import { CONSTANTS } from '$lib/config/Constants';
     import type { ActionData, PageData } from './$types';
 
@@ -37,8 +39,8 @@
                         {/if}
                     </div>
                 </div>
-                <form method="POST" action="/tidal/logout">
-                    <button type="submit" class="disconnect-btn">Disconnect</button>
+                <form method="POST" action={resolve('/tidal/logout')}>
+                    <Button type="submit" variant="secondary" size="sm">Disconnect</Button>
                 </form>
             </div>
             {#if data.justConnected}
@@ -51,15 +53,13 @@
                 <div class="connection-prompt">
                     <h3>Get Personalized Suggestions</h3>
                     <p>Connect your Tidal account to receive AI-powered playlist recommendations based on your actual music taste.</p>
-                    <a href="/tidal/login" class="connect-btn">
-                        <span>🎵</span> Connect Tidal Account
-                    </a>
+                    <Button href={resolve('/tidal/login')} variant="primary">Connect Tidal Account</Button>
                 </div>
             </div>
         {/if}
 
         {#if data.error}
-            <div class="error-message">
+            <div class="error-message" role="alert">
                 {#if data.error === 'auth_failed'}
                     Failed to authorize with Tidal. Please try again.
                 {:else if data.error === 'login_failed'}
@@ -92,6 +92,7 @@
                     type="text"
                     placeholder="e.g. relaxed, energetic, melancholic..."
                     class="form-input"
+                    value={form?.mood ?? ''}
                     required
                 />
             </div>
@@ -103,16 +104,17 @@
                     type="text"
                     placeholder="e.g. jazz, electronic, indie..."
                     class="form-input"
+                    value={form?.genre ?? ''}
                 />
             </div>
-            <button type="submit" class="submit-btn" disabled={loading}>
-                {loading ? 'Generating...' : '✨ Get Suggestions'}
-            </button>
+            <Button type="submit" variant="primary" disabled={loading} loading={loading}>
+                {loading ? 'Generating...' : 'Get suggestions'}
+            </Button>
         </form>
     </section>
 
     {#if form?.error}
-        <div class="error-message">{form.error}</div>
+        <div class="error-message" role="alert">{form.error}</div>
     {/if}
 
     {#if form?.suggestions && form.suggestions.length > 0}
@@ -229,25 +231,6 @@
     margin-top: 1rem;
 }
 
-.disconnect-btn {
-    background: var(--color-offwhite);
-    border: var(--border-width-thick) solid var(--color-border-primary);
-    color: var(--color-text-primary);
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: var(--font-size-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: var(--space-sm) var(--space-md);
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.disconnect-btn:hover {
-    background: var(--color-bg-secondary);
-    border-color: var(--color-text-tertiary);
-}
-
 .connection-status.disconnected {
     border-color: var(--color-border-primary);
 }
@@ -265,34 +248,6 @@
 .connection-prompt p {
     color: var(--color-text-secondary);
     margin: 0 0 var(--space-lg);
-}
-
-.connect-btn {
-    background: var(--color-black);
-    border: var(--border-width-thick) solid var(--color-black);
-    color: var(--color-offwhite);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-sm);
-    font-family: var(--font-display);
-    font-size: var(--font-size-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: var(--space-md) var(--space-lg);
-    text-decoration: none;
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-    opacity: 1;
-}
-
-.connect-btn:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: var(--shadow-md);
-    opacity: 1;
-}
-
-.connect-btn span {
-    font-size: 1.25rem;
 }
 
 .success-message {
@@ -345,35 +300,6 @@
     outline: none;
     border-color: var(--color-border-focus);
     box-shadow: var(--shadow-focus);
-}
-
-.submit-btn {
-    background: var(--color-black);
-    border: var(--border-width-thick) solid var(--color-black);
-    color: var(--color-offwhite);
-    cursor: pointer;
-    font-family: var(--font-display);
-    font-size: var(--font-size-sm);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding: var(--space-md) var(--space-xl);
-    box-shadow: var(--shadow-sm);
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-}
-
-.submit-btn:hover {
-    transform: translate(-1px, -1px);
-    box-shadow: var(--shadow-md);
-}
-
-.submit-btn:hover:not(:disabled) {
-    transform: translate(-1px, -1px);
-    box-shadow: var(--shadow-md);
-}
-
-.submit-btn:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
 }
 
 .error-message {

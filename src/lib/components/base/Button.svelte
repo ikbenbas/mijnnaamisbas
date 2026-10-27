@@ -22,6 +22,7 @@
 	 * ```
 	 */
 	interface Props extends HTMLButtonAttributes {
+		href?: string;
 		variant?: 'default' | 'primary' | 'secondary' | 'ghost' | 'danger';
 		size?: 'sm' | 'md' | 'lg';
 		fullWidth?: boolean;
@@ -33,6 +34,7 @@
 	}
 
 	let {
+		href,
 		variant = 'default',
 		size = 'md',
 		fullWidth = false,
@@ -59,21 +61,40 @@
 	);
 </script>
 
-<button
-	class={classes}
-	{type}
-	disabled={disabled || loading}
-	onclick={onclick}
-	aria-busy={loading}
-	{...rest}
->
-	{#if loading}
-		<span class="btn__spinner" aria-hidden="true"></span>
-	{/if}
-	<span class="btn__content" class:btn__content--loading={loading}>
-		{@render children()}
-	</span>
-</button>
+{#if href}
+	<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- caller passes resolve() -->
+	<a {href} class={classes}
+		aria-disabled={disabled || loading}
+		aria-busy={loading}
+		onclick={(event) => {
+			if (disabled || loading) event.preventDefault();
+			onclick?.(event);
+		}}
+	>
+		{#if loading}
+			<span class="btn__spinner" aria-hidden="true"></span>
+		{/if}
+		<span class="btn__content" class:btn__content--loading={loading}>
+			{@render children()}
+		</span>
+	</a>
+{:else}
+	<button
+		class={classes}
+		{type}
+		disabled={disabled || loading}
+		onclick={onclick}
+		aria-busy={loading}
+		{...rest}
+	>
+		{#if loading}
+			<span class="btn__spinner" aria-hidden="true"></span>
+		{/if}
+		<span class="btn__content" class:btn__content--loading={loading}>
+			{@render children()}
+		</span>
+	</button>
+{/if}
 
 <style>
 	.btn {
@@ -209,6 +230,18 @@
 	@keyframes spin {
 		to {
 			transform: rotate(360deg);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.btn,
+		.btn:hover {
+			transform: none;
+			transition: none;
+		}
+
+		.btn__spinner {
+			animation: none;
 		}
 	}
 </style>

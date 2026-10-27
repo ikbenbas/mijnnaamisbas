@@ -1,6 +1,6 @@
-import { Mistral } from '@mistralai/mistralai';
-import { env } from '$env/dynamic/private';
+import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
+import { completeJson } from '$lib/services';
 import { isAuthenticated, getUserMusicTaste } from '$lib/tidal';
 import type { UserMusicTaste } from '$lib/tidal';
 
@@ -41,12 +41,12 @@ export const actions: Actions = {
 		const genre = formData.get('genre')?.toString().trim() ?? '';
 
 		if (!mood && !genre) {
-			return { suggestions: null, error: 'Please provide a mood or genre.' };
-		}
-
-		const apiKey = env.MISTRAL_API_KEY ?? '';
-		if (!apiKey) {
-			return { suggestions: null, error: 'Mistral API key not configured.' };
+			return fail(400, {
+				mood,
+				genre,
+				suggestions: null,
+				error: 'Please provide a mood or genre.'
+			});
 		}
 
 		// Check if user is authenticated with Tidal
@@ -64,9 +64,6 @@ export const actions: Actions = {
 			}
 		}
 
-		const client = new Mistral({ apiKey });
-
-		// Build enhanced prompt with user data
 		let prompt = '';
 
 		if (userTaste && userTaste.totalPlaylists > 0) {
@@ -111,29 +108,19 @@ Format your response as a JSON array with objects containing: name, description,
 Only respond with the JSON array, no other text.`;
 		}
 
-        try {
-			const response = await client.chat.complete({
-				model: 'mistral-small-latest',
-				messages: [{ role: 'user', content: prompt }],
-				responseFormat: { type: 'json_object' }
-			});
-
-			const content = response.choices?.[0]?.message?.content ?? '[]';
-
-			let suggestions;
-			try {
-				const parsed = JSON.parse(typeof content === 'string' ? content : JSON.stringify(content));
-				suggestions = Array.isArray(parsed)
-					? parsed
-					: parsed.playlists ?? parsed.suggestions ?? [];
-			} catch {
-				suggestions = [];
-			}
-
-			return { suggestions, error: null, personalized: userTaste !== null };
-		} catch (e) {
-			console.error('Mistral API error:', e);
-			return { suggestions: null, error: 'Failed to generate suggestions. Please try again.' };
+		const completion = await completeJson(prompt);
+		if (!completion.ok) {
+			return fail(502, { mood, genre, suggestions: null, error: completion.error });
 		}
+
+		let suggestions;
+		try {
+			const parsed = JSON.parse(completion.content);
+			suggestions = Array.isArray(parsed) ? parsed : (parsed.playlists ?? parsed.suggestions ?? []);
+		} catch {
+			suggestions = [];
+		}
+
+		return { suggestions, mood, genre, error: null, personalized: userTaste !== null };
 	}
 };

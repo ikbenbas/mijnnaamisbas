@@ -6,7 +6,14 @@
 
 import { getHygraphClients, executeQuery, executeMutation, publishContent } from './hygraph';
 import type { Bookmark } from '$lib/types/bookmark';
-import { GET_BOOKMARKS, CREATE_BOOKMARK, PUBLISH_BOOKMARK } from '$lib/queries/bookmarks';
+import {
+	GET_BOOKMARKS,
+	GET_BOOKMARK_BY_SLUG,
+	CREATE_BOOKMARK,
+	UPDATE_BOOKMARK,
+	DELETE_BOOKMARK,
+	PUBLISH_BOOKMARK
+} from '$lib/queries/bookmarks';
 import { generateSlug } from '../utils/slug';
 import { extractTitleFromUrl } from '../validation/url';
 import { CONSTANTS } from '$lib/config/Constants';
@@ -29,6 +36,22 @@ export type BookmarkResult<T = Bookmark> = {
 	success: boolean;
 	data?: T;
 	error?: string;
+};
+
+/**
+ * Build the Hygraph update payload. A new title also gets a new slug.
+ */
+const bookmarkUpdateData = (updates: Partial<CreateBookmarkInput>): Record<string, unknown> => {
+	const data: Record<string, unknown> = {};
+	if (updates.link !== undefined) data.link = updates.link;
+	if (updates.description !== undefined) data.description = updates.description;
+	if (updates.read !== undefined) data.read = updates.read;
+	if (updates.private !== undefined) data.private = updates.private;
+	if (updates.title !== undefined) {
+		data.title = updates.title;
+		data.slug = generateSlug(updates.title);
+	}
+	return data;
 };
 
 /**
@@ -74,8 +97,14 @@ export const createHygraphBookmarkStrategy = (): IBookmarkService => {
 		 * @returns Bookmark or null if not found
 		 */
 		getBySlug: async (slug: string): Promise<Bookmark | null> => {
-			// TODO: Implement GET_BOOKMARK_BY_SLUG query
-			return null;
+			const data = await executeQuery<{ bookmark: Bookmark | null }>(
+				client,
+				GET_BOOKMARK_BY_SLUG,
+				{ slug },
+				'Fetch bookmark'
+			);
+
+			return data?.bookmark ?? null;
 		},
 
 		/**
@@ -144,11 +173,22 @@ export const createHygraphBookmarkStrategy = (): IBookmarkService => {
 		 * @returns Result with updated bookmark or error
 		 */
 		update: async (id: string, updates: Partial<CreateBookmarkInput>): Promise<BookmarkResult> => {
-			// TODO: Implement update functionality
-			return {
-				success: false,
-				error: 'Update not implemented yet'
-			};
+			try {
+				const data = bookmarkUpdateData(updates);
+				const result = await executeMutation<{ updateBookmark: Bookmark }>(
+					mutationClient,
+					UPDATE_BOOKMARK,
+					{ id, data },
+					'Update bookmark'
+				);
+
+				await publishContent(mutationClient, PUBLISH_BOOKMARK, id);
+
+				return { success: true, data: result.updateBookmark };
+			} catch (error) {
+				console.error('Update bookmark failed:', error);
+				return { success: false, error: 'Failed to update bookmark. Please try again.' };
+			}
 		},
 
 		/**
@@ -157,11 +197,13 @@ export const createHygraphBookmarkStrategy = (): IBookmarkService => {
 		 * @returns Result indicating success or error
 		 */
 		delete: async (id: string): Promise<BookmarkResult<void>> => {
-			// TODO: Implement delete functionality
-			return {
-				success: false,
-				error: 'Delete not implemented yet'
-			};
+			try {
+				await executeMutation(mutationClient, DELETE_BOOKMARK, { id }, 'Delete bookmark');
+				return { success: true };
+			} catch (error) {
+				console.error('Delete bookmark failed:', error);
+				return { success: false, error: 'Failed to delete bookmark. Please try again.' };
+			}
 		},
 
 		/**
@@ -170,13 +212,13 @@ export const createHygraphBookmarkStrategy = (): IBookmarkService => {
 		 * @returns true if exists, false otherwise
 		 */
 		existsBySlug: async (slug: string): Promise<boolean> => {
-			const bookmark = await executeQuery<{ bookmark: Bookmark | null }>(
+			const data = await executeQuery<{ bookmark: { id: string } | null }>(
 				client,
-				GET_BOOKMARKS,
+				GET_BOOKMARK_BY_SLUG,
 				{ slug },
 				'Check bookmark existence'
 			);
-			return bookmark?.bookmark !== null;
+			return data?.bookmark != null;
 		}
 	};
 };

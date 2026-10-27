@@ -1,11 +1,20 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import type { PageData } from './$types';
 	import type { EspressoSuggestionsResponse } from '$lib/types/espresso-suggestions';
 
-	let { data }: { data: PageData & { suggestions: EspressoSuggestionsResponse | null } } = $props();
+	let {
+		data
+	}: {
+		data: PageData & {
+			suggestions: EspressoSuggestionsResponse | null;
+			suggestionsError: string | null;
+		};
+	} = $props();
 
 	const note = $derived(data.note);
 	const suggestions = $derived(data.suggestions);
+	const suggestionsError = $derived(data.suggestionsError);
 	const ratio = $derived(note.yield && note.dosage ? (note.yield / note.dosage).toFixed(1) : null);
 </script>
 
@@ -13,7 +22,7 @@
 	<title>{note.title} · Coffee Notes</title>
 </svelte:head>
 
-<div class="back"><a href="/espresso/notes">← All notes</a></div>
+<div class="back"><a href={resolve('/espresso/notes')}>← All notes</a></div>
 
 <article class="note">
 	<header>
@@ -94,7 +103,7 @@
 					<div class="suggestion-item">
 						<h3>Parameter Adjustments</h3>
 						<ul class="parameters-list">
-							{#each suggestions.suggestions as suggestion}
+							{#each suggestions.suggestions as suggestion (suggestion.parameter)}
 								<li class="parameter-suggestion">
 									<div class="param-header">
 										<strong>{suggestion.parameter.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}</strong>
@@ -114,7 +123,7 @@
 					<div class="suggestion-item">
 						<h3>Additional Tips</h3>
 						<ul>
-							{#each Object.entries(suggestions.additional_tips) as [key, value]}
+							{#each Object.entries(suggestions.additional_tips) as [key, value] (key)}
 								<li>
 									<strong>{key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}:</strong> {value}
 								</li>
@@ -130,6 +139,8 @@
 					</div>
 				{/if}
 			</div>
+		{:else if suggestionsError}
+			<p class="error">{suggestionsError}</p>
 		{:else}
 			<p>No suggestions available.</p>
 		{/if}
@@ -335,7 +346,7 @@
 	}
 
 	.error {
-		color: #ef4444;
+		color: var(--color-error);
 		font-style: italic;
 	}
 </style>

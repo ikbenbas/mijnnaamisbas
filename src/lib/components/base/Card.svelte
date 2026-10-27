@@ -167,10 +167,6 @@
 		margin-bottom: var(--space-md);
 	}
 
-	.card__content {
-		/* Content inherits padding from card */
-	}
-
 	.card__footer {
 		padding-top: var(--space-md);
 		border-top: var(--border-width) solid var(--color-border-secondary);

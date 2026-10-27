@@ -1,7 +1,5 @@
-import { Mistral } from '@mistralai/mistralai';
-import { env } from '$env/dynamic/private';
 import type { PageServerLoad } from './$types';
-import { espressoNoteService } from '$lib/services';
+import { espressoNoteService, completeJson } from '$lib/services';
 import { error } from '@sveltejs/kit';
 import type { EspressoSuggestionsResponse } from '$lib/types/espresso-suggestions';
 
@@ -12,15 +10,8 @@ export const load: PageServerLoad = async ({ params }) => {
 		throw error(404, 'Note not found');
 	}
 
-    const apiKey = env.MISTRAL_API_KEY ?? '';
-    if (!apiKey) {
-        throw error(404, 'Mistral API key not configured.');
-    }
-
-    const client = new Mistral({ apiKey });
-    const response = await client.chat.complete({
-		model: 'mistral-small-latest',
-		messages: [{ role: 'user', content: `
+	try {
+		const completion = await completeJson(`
 You are an ${note.methodType || 'espresso'} coffee brewing expert. Analyze the following ${note.methodType || 'espresso'} extraction data and provide specific, actionable suggestions for improvement.
 
 COFFEE DATA:
@@ -61,23 +52,30 @@ GUIDELINES:
 - Provide specific numeric ranges in recommendations
 - Keep explanations concise and technical
 - Base suggestions on extraction theory and the rating provided
-        `}],
-		responseFormat: { type: 'json_object' }
-	});
+        `);
 
-    const suggestionsData = response.choices?.[0]?.message?.content || null;
+		if (!completion.ok) {
+			return { note, suggestions: null, suggestionsError: completion.error };
+		}
 
-    let parsedSuggestions: EspressoSuggestionsResponse | null = null;
-    if (suggestionsData) {
-        try {
-            parsedSuggestions = JSON.parse(suggestionsData) as EspressoSuggestionsResponse;
-        } catch (e) {
-            console.error('Failed to parse AI suggestions:', e);
-        }
-    }
+		let parsedSuggestions: EspressoSuggestionsResponse | null = null;
+		try {
+			parsedSuggestions = JSON.parse(completion.content) as EspressoSuggestionsResponse;
+		} catch (parseError) {
+			console.error('Failed to parse AI suggestions:', parseError);
+		}
 
-    return {
-        note,
-        suggestions: parsedSuggestions
-    };
+		return {
+			note,
+			suggestions: parsedSuggestions,
+			suggestionsError: null
+		};
+	} catch (e) {
+		console.error('Mistral API error:', e);
+		return {
+			note,
+			suggestions: null,
+			suggestionsError: 'Failed to generate AI suggestions. Please try again.'
+		};
+	}
 };

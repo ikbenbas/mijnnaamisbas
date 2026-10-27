@@ -1,13 +1,12 @@
 <script lang="ts">
-	// Espresso section uses the main layout navigation
-	// This layout just adds a sub-navigation for espresso pages
+	import { resolve } from '$app/paths';
 </script>
 
 <div class="espresso-layout">
 	<nav class="espresso-nav" aria-label="Coffee notes">
-		<a href="/espresso">Overview</a>
-		<a href="/espresso/notes">All notes</a>
-		<a href="/espresso/notes/new">+ New note</a>
+		<a href={resolve('/espresso')}>Overview</a>
+		<a href={resolve('/espresso/notes')}>All notes</a>
+		<a href={resolve('/espresso/notes/new')}>+ New note</a>
 	</nav>
 
 	<div class="espresso-content">
@@ -33,7 +32,7 @@
 	.espresso-nav a {
 		flex: 1;
 		text-align: center;
-		color: #fff;
+		color: var(--color-white);
 		text-decoration: none;
 		font-family: var(--font-primary);
 		font-weight: var(--font-weight-bold);
@@ -41,7 +40,7 @@
 		text-transform: uppercase;
 		letter-spacing: 0.04em;
 		padding: 0.7rem var(--space-md);
-		border-right: var(--border-width) solid #fff;
+		border-right: var(--border-width) solid var(--color-white);
 		opacity: 1;
 		transition: background var(--transition-fast), color var(--transition-fast);
 	}

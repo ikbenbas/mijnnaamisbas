@@ -123,7 +123,7 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: oklch(0 0 0 / 0.5);
+		background: color-mix(in srgb, var(--color-black) 50%, transparent);
 		display: flex;
 		align-items: center;
 		justify-content: center;

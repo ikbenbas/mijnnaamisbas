@@ -5,6 +5,8 @@
 
 // API Services - Core utilities
 export { getHygraphClients, executeQuery, executeMutation, publishContent } from './api/hygraph';
+export { completeJson } from './api/mistral';
+export type { MistralCompletion } from './api/mistral';
 
 // API Services - Strategy implementations
 export { createHygraphBookmarkStrategy, bookmarkService } from './api/bookmarks';

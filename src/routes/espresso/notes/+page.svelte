@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
+	import { Button } from '$lib';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -10,11 +12,11 @@
 
 <div class="header-row">
 	<h1>All experiments</h1>
-	<a href="/espresso/notes/new" class="btn btn-primary">+ New note</a>
+	<Button href={resolve('/espresso/notes/new')} variant="primary">+ New note</Button>
 </div>
 
 {#if data.notes.length === 0}
-	<p class="empty">No notes yet. <a href="/espresso/notes/new">Add your first experiment!</a></p>
+	<p class="empty">No notes yet. <a href={resolve('/espresso/notes/new')}>Add your first experiment!</a></p>
 {:else}
 	<table>
 		<thead>
@@ -31,7 +33,7 @@
 		<tbody>
 			{#each data.notes as note (note.id)}
 				<tr>
-					<td><a href="/espresso/notes/{note.id}">{note.title}</a></td>
+					<td><a href={resolve('/espresso/notes/[id]', { id: note.id })}>{note.title}</a></td>
 					<td>{note.bean}{note.roaster ? ` / ${note.roaster}` : ''}</td>
 					<td>{note.dosage}g</td>
 					<td>{note.yield}g</td>

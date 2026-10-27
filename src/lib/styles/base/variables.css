@@ -68,7 +68,12 @@
     --shadow-lg: 4px 4px 0 var(--color-black);
     --shadow-xl: 6px 6px 0 var(--color-black);
     --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-black) 25%, transparent);
+    --shadow-error: 0 0 0 3px color-mix(in srgb, var(--color-error) 35%, transparent);
     --shadow-fh-sm: 2px 2px 0 var(--color-black);
+
+    /* Dark hero stops. Components reference these instead of raw hex. */
+    --color-hero-mid: #3d3d3d;
+    --color-hero-end: #0a0a0a;
 
     /* Dot pattern (halftone paper) */
     --pattern-dots: radial-gradient(circle, #000 0.65px, transparent 0.7px);

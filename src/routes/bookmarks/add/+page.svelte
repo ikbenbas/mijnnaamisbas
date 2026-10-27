@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
 	import { enhance } from '$app/forms';
-	import { Modal } from '$lib';
+	import { Button, Modal } from '$lib';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
@@ -36,12 +36,13 @@
 
 <Modal open={isOpen} onClose={handleClose} title="Add Bookmark" maxWidth={600}>
 	{#if form?.error}
-		<div class="error-message" role="alert">
+		<div id="error-message" class="error-message" role="alert">
 			{form.error}
 		</div>
 	{/if}
 
 	<form
+		id="add-bookmark"
 		method="POST"
 		action="?/create"
 		use:enhance={() => {
@@ -94,20 +95,20 @@
 		</div>
 
 		{#snippet actions()}
-			<button type="button" onclick={handleClose} class="btn btn-secondary" disabled={isSubmitting}>
+			<Button type="button" variant="secondary" onclick={handleClose} disabled={isSubmitting}>
 				Cancel
-			</button>
-			<button type="submit" class="btn btn-primary" disabled={isSubmitting}>
+			</Button>
+			<Button type="submit" form="add-bookmark" variant="primary" disabled={isSubmitting} loading={isSubmitting}>
 				{isSubmitting ? 'Saving...' : 'Add Bookmark'}
-			</button>
+			</Button>
 		{/snippet}
 	</form>
 </Modal>
 
 <style>
 	.error-message {
-		background-color: oklch(0.95 0.05 25);
-		border: var(--border-width) solid oklch(0.85 0.10 25);
+		background-color: var(--color-error-light);
+		border: var(--border-width) solid var(--color-error);
 		border-radius: var(--radius-sm);
 		color: var(--color-error);
 		padding: var(--space-md);
@@ -164,47 +165,4 @@
 		margin-top: var(--space-xs);
 	}
 
-	.btn {
-		padding: var(--space-sm) var(--space-lg);
-		border: none;
-		border-radius: var(--radius-md);
-		font-size: var(--font-size-base);
-		font-weight: var(--font-weight-semibold);
-		cursor: pointer;
-		transition: all var(--transition-fast);
-	}
-
-	.btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
-	.btn-primary {
-		background: var(--gradient-primary);
-		color: var(--color-text-inverse);
-	}
-
-	.btn-primary:hover:not(:disabled) {
-		background: var(--gradient-primary-hover);
-	}
-
-	.btn-primary:focus {
-		outline: 2px solid var(--color-border-focus);
-		outline-offset: 2px;
-	}
-
-	.btn-secondary {
-		background-color: transparent;
-		border: var(--border-width) solid var(--color-border-primary);
-		color: var(--color-text-primary);
-	}
-
-	.btn-secondary:hover:not(:disabled) {
-		background-color: var(--color-bg-secondary);
-	}
-
-	.btn-secondary:focus {
-		outline: 2px solid var(--color-text-primary);
-		outline-offset: 2px;
-	}
 </style>

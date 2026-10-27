@@ -1,17 +1,6 @@
-// Hygraph client
-export { getHygraphClient, getHygraphMutationClient } from './hygraph';
-
-// Bookmark queries
-export * from './queries/bookmarks';
-
-// Espresso queries
-export * from './queries/espresso';
-
-// Types
 export * from './types/bookmark';
 export * from './types/espresso-note';
 
-// Base components - Unified design system
 export { default as Button } from './components/base/Button.svelte';
 export { default as Card } from './components/base/Card.svelte';
 export { default as Form } from './components/base/Form.svelte';

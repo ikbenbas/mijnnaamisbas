@@ -6,7 +6,15 @@
 
 import { getHygraphClients, executeQuery, executeMutation, publishContent } from './hygraph';
 import type { EspressoNote } from '$lib/types/espresso-note';
-import { GET_NOTES, GET_NOTE, CREATE_NOTE, PUBLISH_NOTE, GET_METHOD_TYPES } from '$lib/queries/espresso';
+import {
+	GET_NOTES,
+	GET_NOTE,
+	CREATE_NOTE,
+	UPDATE_NOTE,
+	DELETE_NOTE,
+	PUBLISH_NOTE,
+	GET_METHOD_TYPES
+} from '$lib/queries/espresso';
 import { CONSTANTS } from '$lib/config/Constants';
 
 /**
@@ -170,11 +178,17 @@ export const createHygraphEspressoNoteStrategy = (): IEspressoNoteService => {
 		 * @returns Result with updated note or error
 		 */
 		update: async (id: string, updates: Partial<CreateEspressoNoteInput>): Promise<EspressoNoteResult> => {
-			// TODO: Implement update functionality
-			return {
-				success: false,
-				error: 'Update not implemented yet'
-			};
+			try {
+				const data = Object.fromEntries(
+					Object.entries(updates).filter(([, value]) => value !== undefined)
+				);
+				await executeMutation(mutationClient, UPDATE_NOTE, { id, data }, 'Update espresso note');
+				await publishContent(mutationClient, PUBLISH_NOTE, id);
+				return { success: true, data: { id } as EspressoNote };
+			} catch (error) {
+				console.error('Update espresso note failed:', error);
+				return { success: false, error: 'Failed to update espresso note. Please try again.' };
+			}
 		},
 
 		/**
@@ -183,11 +197,13 @@ export const createHygraphEspressoNoteStrategy = (): IEspressoNoteService => {
 		 * @returns Result indicating success or error
 		 */
 		delete: async (id: string): Promise<EspressoNoteResult<void>> => {
-			// TODO: Implement delete functionality
-			return {
-				success: false,
-				error: 'Delete not implemented yet'
-			};
+			try {
+				await executeMutation(mutationClient, DELETE_NOTE, { id }, 'Delete espresso note');
+				return { success: true };
+			} catch (error) {
+				console.error('Delete espresso note failed:', error);
+				return { success: false, error: 'Failed to delete espresso note. Please try again.' };
+			}
 		},
 
 		/**

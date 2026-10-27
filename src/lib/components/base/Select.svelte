@@ -159,7 +159,7 @@
 	}
 
 	.select--error:focus {
-		box-shadow: 0 0 0 3px oklch(0.60 0.20 25 / 0.3);
+		box-shadow: var(--shadow-error);
 	}
 
 	.select-icon {

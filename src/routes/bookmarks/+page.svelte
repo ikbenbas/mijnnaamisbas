@@ -1,6 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { resolve } from '$app/paths';
+    import { Button } from '$lib';
     import type { PageData } from './$types';
 
     let { data }: { data: PageData } = $props();
@@ -21,7 +22,7 @@
 <div class="page-container">
 	<header class="page-header">
 		<h1>Bookmarks</h1>
-		<a href={resolve('/bookmarks/add')} class="btn-primary">+ Add bookmark</a>
+		<Button href={resolve('/bookmarks/add')} variant="primary">+ Add bookmark</Button>
 	</header>
 
 	<div class="keyboard-hint">
@@ -31,7 +32,7 @@
 	{#if data.bookmarks.length === 0}
 		<div class="empty-state">
 			<p>No bookmarks yet.</p>
-			<a href={resolve('/bookmarks/add')} class="btn-primary">Add your first bookmark</a>
+			<Button href={resolve('/bookmarks/add')} variant="primary">Add your first bookmark</Button>
 		</div>
 	{:else}
 		<ul class="bookmark-grid">
@@ -70,29 +71,6 @@
 		margin: 0;
 		color: var(--color-text-primary);
 		font-size: var(--font-size-4xl);
-	}
-
-	.btn-primary {
-		background: var(--color-black);
-		color: var(--color-offwhite);
-		padding: 0.7rem 1.15rem;
-		border: var(--border-width-thick) solid var(--color-black);
-		border-radius: 0;
-		text-decoration: none;
-		font-family: var(--font-display);
-		font-size: var(--font-size-sm);
-		text-transform: uppercase;
-		letter-spacing: 0.03em;
-		box-shadow: var(--shadow-sm);
-		transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-		display: inline-block;
-		opacity: 1;
-	}
-
-	.btn-primary:hover {
-		transform: translate(-1px, -1px);
-		box-shadow: var(--shadow-md);
-		opacity: 1;
 	}
 
 	.keyboard-hint {
