@@ -1,17 +1,19 @@
 # GitHub Copilot Instructions
 
-This document outlines the coding guidelines and best practices for GitHub Copilot when generating code for this project.
+Canonical guidance for this repo is [AGENTS.md](../AGENTS.md) and `.cursor/rules/`. When this file disagrees with the code, follow the code.
 
 ## Project Overview
 
-This is a **SvelteKit 2.x** frontend application (Svelte 5.x) using **TypeScript**, **TailwindCSS**, and **hygraph CMS** as a headless content backend. The app is a multilingual (nl/en) public-facing website with dynamic content rendering, advanced filtering, and performance-optimized image loading.
+This is a **SvelteKit 2** app (Svelte 5 runes) with **TypeScript**, custom CSS design tokens, and **Hygraph**. It is a personal site: bookmarks, TIDAL playlist suggestions (Mistral), and espresso notes.
 
 ### Tech Stack
 
-- **Framework**: SvelteKit 2.48.x with Svelte 5.42.x (using Svelte 5 runes: `$state`, `$derived`, `$effect`)
-- **Styling**: TailwindCSS 4.1.x with custom design tokens in `tailwind.config.ts`
-- **CMS**: Hygraph (headless CMS)
-- **Build**: Vite 7.x with Node adapter for SSR deployment
+- **Framework**: SvelteKit 2 with Svelte 5 runes (`$props`, `$state`, `$derived`, `$effect`)
+- **Styling**: tokens in `src/lib/styles/base/variables.css` (brutalist mono). Not Tailwind. There is no `tailwind.config.ts`
+- **Data**: Hygraph through `src/lib/services/`. Secrets via `$env/dynamic/private` only
+- **Build**: Vite, `@sveltejs/adapter-auto`, pnpm
+
+The sections below still mention Tailwind, content blocks, and Yup. Those are not in the project. Do not introduce them.
 
 ### Architecture Philosophy
 

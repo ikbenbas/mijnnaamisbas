@@ -1,0 +1,38 @@
+---
+description: mijnnaamisbas standards — SvelteKit 2, Svelte 5, design tokens, services, secrets
+alwaysApply: true
+---
+
+# mijnnaamisbas
+
+Personal SvelteKit site. See `AGENTS.md` for agents and layout.
+
+## Stack
+
+- SvelteKit 2 and Svelte 5 runes: `$props()`, `$state()`, `$derived()`, `$effect()`
+- TypeScript `strict`. Package manager is pnpm. Indent with tabs
+- Custom CSS tokens in `src/lib/styles/base/variables.css`. There is no Tailwind
+- Hygraph through `$lib/services`. Mistral and TIDAL stay on the server
+
+`DESIGN_SYSTEM.md` and `.github/copilot-instructions.md` describe a mint/pink theme and Tailwind. The code does not. Follow `variables.css`.
+
+## Non-negotiable
+
+- Read and write data in `+page.server.ts` or `+server.ts` through a service. Do not call Hygraph, Mistral, or TIDAL from a `.svelte` file
+- Secrets only via `$env/dynamic/private`. Never prefix a token with `PUBLIC_`
+- A new external origin goes on the CSP `connect-src` list in `src/hooks.server.ts`
+- Colors, type, radius, shadow, and spacing come from tokens. The look is brutalist: black borders, off-white paper, hard offset shadows. Blue (`--color-secondary`) is a rare accent
+- Shared UI and site chrome use BEM: `btn`, `btn--primary`, `btn__spinner`
+- Internal links use `resolve()` from `$app/paths`
+- Validate with `$lib/services/validation` and `CONSTANTS`. On invalid input return `fail(400)` and include the submitted fields
+- Arrow functions for utilities. JSDoc on exported services and base-component props
+- Do not add components under `src/lib/components/ui/` or `app/`. Those folders are unused. Shared UI lives in `base/`
+
+## Before finishing
+
+```bash
+pnpm exec eslint --fix <changed-files...>
+pnpm check
+```
+
+For a full feature, audit, or bug, read the matching file in `.agents/`.

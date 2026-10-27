@@ -1,0 +1,37 @@
+---
+description: SvelteKit route patterns — server loads, form actions, page data
+globs: src/routes/**/*.{svelte,ts}
+alwaysApply: false
+---
+
+# Routes
+
+Each feature is a folder under `src/routes/`. Study a neighbor before adding one (`bookmarks/add` for forms, `espresso/notes/[id]` for a detail page).
+
+## Server
+
+- `load` in `+page.server.ts` returns the data the page renders. Missing records throw `error(404, '...')`
+- Mutations are named form actions. Validate, then call the service. Failure is `fail(status, { error, ...fields })`. Success may `redirect`
+- Keep prompts, API clients, and tokens in the server file. The page only receives typed data
+- User-facing errors are short sentences. Log the underlying error with `console.error`
+
+```ts
+export const actions: Actions = {
+	create: async ({ request }) => {
+		const link = (await request.formData()).get('link')?.toString().trim();
+		const urlValidation = validateUrlField(link, true);
+		if (!urlValidation.valid) return fail(400, { error: urlValidation.error, link });
+		// call bookmarkService.create(...)
+	}
+};
+```
+
+## Page
+
+- `let { data }: { data: PageData } = $props()` and derive view values with `$derived`
+- Forms use `method="POST"`, `action="?/create"`, and `use:enhance`. Restore fields from `form` in `$effect` when the action returns them
+- Put a `<title>` in `<svelte:head>`
+- Navigation links go through `resolve()`. Active state compares `$page.url.pathname`
+- Page `<style>` is scoped. Use tokens. Short class names are fine here (`.note`, `.param`)
+
+A new top-level section also gets a link in `src/routes/+layout.svelte`.
